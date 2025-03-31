@@ -20,7 +20,6 @@
 // Stepper motor rotation control variables
 int Voltas_Motor = 3;  // Number of motor rotations
 const int stepsPerRevolution = 1700;  // Number of steps for one full revolution
-#define STANDBYPin 2
 
 
 // TinyGPSPlus object for GPS functionality
@@ -106,6 +105,14 @@ void setup() {
   stepper.setSpeed(40);  // Set speed for stepper motor 1
   stepper2.setSpeed(80);  // Set speed for stepper motor 2
 
+  // MOFIX Standby Pin of Stepper Controller
+  // pinMode(2, OUTPUT);
+  // digitalWrite(2, LOW);  // Set standby pin to LOW to disable enable motor
+
+  // MOFIX Set the PWM Pin High - we don't use PWM and the controller wants to see it held to VCC
+  #define PWM_PIN 20
+  pinMode(PWM_PIN, OUTPUT);
+  digitalWrite(PWM_PIN, HIGH);  // Set PWM pin to HIGH to enable motor
 
 
   // Load predefined bird coordinates
