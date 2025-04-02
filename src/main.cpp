@@ -106,13 +106,15 @@ void setup() {
   stepper2.setSpeed(80);  // Set speed for stepper motor 2
 
   // MOFIX Standby Pin of Stepper Controller
-  // pinMode(2, OUTPUT);
-  // digitalWrite(2, LOW);  // Set standby pin to LOW to disable enable motor
+  pinMode(2, OUTPUT);
+  digitalWrite(2, HIGH);
 
   // MOFIX Set the PWM Pin High - we don't use PWM and the controller wants to see it held to VCC
   #define PWM_PIN 20
-  pinMode(PWM_PIN, OUTPUT);
-  digitalWrite(PWM_PIN, HIGH);  // Set PWM pin to HIGH to enable motor
+  analogWrite(PWM_PIN, 0);
+
+  // pinMode(PWM_PIN, OUTPUT);
+  // digitalWrite(PWM_PIN, HIGH);  // Set PWM pin to HIGH to enable motor
 
 
   // Load predefined bird coordinates
@@ -196,21 +198,29 @@ void displayInfo() {
       Serial.println("Musica");
 
       if (coordinates[i].species == 1) {
+          analogWrite(PWM_PIN, 127);  // Set PWM pin to HIGH to enable motor
+          delay(1000);
           while (Voltas_Motor != 0) {
             
             stepper.step(stepsPerRevolution);
             stepper.step(-stepsPerRevolution);
             Voltas_Motor = Voltas_Motor - 1;
           }
+          analogWrite(PWM_PIN, 0);  // Set PWM pin to LOW to disable motor
+          delay(1000);
       }
 
       if (coordinates[i].species == 2) {
+          analogWrite(PWM_PIN, 127);  // Set PWM pin to HIGH to enable motor
+          delay(1000);
           while (Voltas_Motor != 0) {
             
             stepper2.step(stepsPerRevolution);
             stepper2.step(-stepsPerRevolution);
             Voltas_Motor = Voltas_Motor - 1;
           }
+          analogWrite(PWM_PIN, 0);  // Set PWM pin to LOW to disable motor
+          delay(1000);
       }
       
       if (digitalRead(BTN_PIN) == LOW) {   // Check if button is pressed
@@ -735,14 +745,24 @@ void TesteBegin() {
   Serial.println("Starting Test...");
   //for (int i = 0; i < 16; i++) stepper.step(stepsPerRevolution);
   //for (int j = 0; j < 16; j++) stepper.step(-stepsPerRevolution);
+  analogWrite(PWM_PIN, 127);
+  delay(1000);  
   for(int i = 0; i < 3; i++){
     stepper.step(stepsPerRevolution);
     stepper.step(-stepsPerRevolution);
   }
+  analogWrite(PWM_PIN, 0);
+  delay(1000);
+
+  analogWrite(PWM_PIN, 127);
+  delay(1000);
   for(int j = 0; j < 3; j++){
     stepper2.step(stepsPerRevolution);
     stepper2.step(-stepsPerRevolution);
   }
+  analogWrite(PWM_PIN, 0);
+  delay(1000);
+
   DF1201S.playFileNum(3);
   delay(2000);
   DF1201S.pause();
