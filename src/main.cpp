@@ -7,9 +7,12 @@
 #include <DFRobot_DF1201S.h>  // Library for MP3 module control
 #include <Stepper.h>  // Library for stepper motor control
 
-#define PIN    16  // Data pin for NeoPixel
+#define NEOPIXEL_PIN    16  // Data pin for NeoPixel
 #define NUMPIXELS 1  // Number of NeoPixels
 
+#define STANDBY_PIN 2  // Pin for standby control
+#define PWM_PIN_1 20  // Pin for PWM control of motor 1
+#define PWM_PIN_2 21  // Pin for PWM control of motor 2
 
 // Define the GPS Serial Port (Use Hardware Serial1)
 #define RXPin 0  // Feather M4 RX1 (connect to GPS TX)
@@ -24,7 +27,7 @@ const int stepsPerRevolution = 1700;  // Number of steps for one full revolution
 
 // TinyGPSPlus object for GPS functionality
 TinyGPSPlus gps;
-Adafruit_NeoPixel strip(NUMPIXELS, PIN, NEO_GRB + NEO_KHZ800);  // NeoPixel object
+Adafruit_NeoPixel strip(NUMPIXELS, NEOPIXEL_PIN, NEO_GRB + NEO_KHZ800);  // NeoPixel object
 SoftwareSerial DF1201SSerial(25, 24);  // SoftwareSerial for MP3 module communication
 DFRobot_DF1201S DF1201S;  // MP3 module object
 Stepper stepper(stepsPerRevolution, 10, 11, 12, 13);  // Stepper motor 1 (4-pin connection)
@@ -105,16 +108,18 @@ void setup() {
   stepper.setSpeed(40);  // Set speed for stepper motor 1
   stepper2.setSpeed(80);  // Set speed for stepper motor 2
 
-  // MOFIX Standby Pin of Stepper Controller
-  pinMode(2, OUTPUT);
-  digitalWrite(2, HIGH);
+  // Hold Standby High to enable motors. PWM is used to control the motor speed
+  pinMode(STANDBY_PIN, OUTPUT);
+  digitalWrite(STANDBY_PIN, HIGH);
 
-  // MOFIX Set the PWM Pin High - we don't use PWM and the controller wants to see it held to VCC
-  #define PWM_PIN 20
-  analogWrite(PWM_PIN, 0);
+  // Start with motors off
+  pinMode(PWM_PIN_1, OUTPUT);
+  pinMode(PWM_PIN_2, OUTPUT);
+  analogWrite(PWM_PIN_1, 0);
+  analogWrite(PWM_PIN_2, 0);
 
-  // pinMode(PWM_PIN, OUTPUT);
-  // digitalWrite(PWM_PIN, HIGH);  // Set PWM pin to HIGH to enable motor
+  // pinMode(PWM_PIN_1, OUTPUT);
+  // digitalWrite(PWM_PIN_1, HIGH);  // Set PWM pin to HIGH to enable motor
 
 
   // Load predefined bird coordinates
@@ -198,7 +203,7 @@ void displayInfo() {
       Serial.println("Musica");
 
       if (coordinates[i].species == 1) {
-          analogWrite(PWM_PIN, 127);  // Set PWM pin to HIGH to enable motor
+          analogWrite(PWM_PIN_1, 127);  // Set PWM pin to HIGH to enable motor
           delay(1000);
           while (Voltas_Motor != 0) {
             
@@ -206,12 +211,12 @@ void displayInfo() {
             stepper.step(-stepsPerRevolution);
             Voltas_Motor = Voltas_Motor - 1;
           }
-          analogWrite(PWM_PIN, 0);  // Set PWM pin to LOW to disable motor
+          analogWrite(PWM_PIN_1, 0);  // Set PWM pin to LOW to disable motor
           delay(1000);
       }
 
       if (coordinates[i].species == 2) {
-          analogWrite(PWM_PIN, 127);  // Set PWM pin to HIGH to enable motor
+          analogWrite(PWM_PIN_2, 127);  // Set PWM pin to HIGH to enable motor
           delay(1000);
           while (Voltas_Motor != 0) {
             
@@ -219,7 +224,7 @@ void displayInfo() {
             stepper2.step(-stepsPerRevolution);
             Voltas_Motor = Voltas_Motor - 1;
           }
-          analogWrite(PWM_PIN, 0);  // Set PWM pin to LOW to disable motor
+          analogWrite(PWM_PIN_2, 0);  // Set PWM pin to LOW to disable motor
           delay(1000);
       }
       
@@ -745,22 +750,22 @@ void TesteBegin() {
   Serial.println("Starting Test...");
   //for (int i = 0; i < 16; i++) stepper.step(stepsPerRevolution);
   //for (int j = 0; j < 16; j++) stepper.step(-stepsPerRevolution);
-  analogWrite(PWM_PIN, 127);
+  analogWrite(PWM_PIN_1, 127);
   delay(1000);  
   for(int i = 0; i < 3; i++){
     stepper.step(stepsPerRevolution);
     stepper.step(-stepsPerRevolution);
   }
-  analogWrite(PWM_PIN, 0);
+  analogWrite(PWM_PIN_1, 0);
   delay(1000);
 
-  analogWrite(PWM_PIN, 127);
+  analogWrite(PWM_PIN_2, 127);
   delay(1000);
   for(int j = 0; j < 3; j++){
     stepper2.step(stepsPerRevolution);
     stepper2.step(-stepsPerRevolution);
   }
-  analogWrite(PWM_PIN, 0);
+  analogWrite(PWM_PIN_2, 0);
   delay(1000);
 
   DF1201S.playFileNum(3);
