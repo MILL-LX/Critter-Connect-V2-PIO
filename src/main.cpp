@@ -13,8 +13,8 @@
 #define STANDBY_PIN 2 // Pin for standby control
 #define PWM_PIN_1 19  // Pin for PWM control of motor 1
 #define PWM_PIN_2 20  // Pin for PWM control of motor 2
-#define PWM_ON 255 // PWM value for motor on
-#define PWM_OFF 0   // PWM value for motor off
+#define PWM_ON 255    // PWM value for motor on
+#define PWM_OFF 0     // PWM value for motor off
 
 // Define the GPS Serial Port (Use Hardware Serial1)
 #define RXPin 0 // Feather M4 RX1 (connect to GPS TX)
@@ -30,7 +30,7 @@ TinyGPSPlus gps;
 Adafruit_NeoPixel strip(NUMPIXELS, NEOPIXEL_PIN, NEO_GRB + NEO_KHZ800); // NeoPixel object
 SoftwareSerial DF1201SSerial(25, 24);                                   // SoftwareSerial for MP3 module communication
 DFRobot_DF1201S DF1201S;                                                // MP3 module object
-Stepper stepper1(stepsPerRevolution, 10, 11, 12, 13);                    // Stepper motor 1 (4-pin connection)
+Stepper stepper1(stepsPerRevolution, 10, 11, 12, 13);                   // Stepper motor 1 (4-pin connection)
 Stepper stepper2(stepsPerRevolution, 3, 7, 8, 9);                       // Stepper motor 2 (4-pin connection)
 
 // Button Pin
@@ -98,7 +98,7 @@ void setup()
 
   pinMode(BTN_PIN, INPUT_PULLUP); // Enable internal pull-up resistor
 
-  stepper1.setSpeed(40);  // Set speed for stepper motor 1
+  stepper1.setSpeed(40); // Set speed for stepper motor 1
   stepper2.setSpeed(80); // Set speed for stepper motor 2
 
   // Hold Standby High to enable motors. PWM is used to control the motor speed
@@ -243,7 +243,10 @@ void displayInfo()
         if (coordinates[i].species == 1)
         {
           DF1201S.playFileNum(2);
-          delay(8000);
+          while (DF1201S.isPlaying())
+          {
+            delay(100);
+          }
           DF1201S.pause();
           DF1201S.next();
           DF1201S.pause();
@@ -252,7 +255,10 @@ void displayInfo()
         {
 
           DF1201S.playFileNum(1);
-          delay(8000);
+          while (DF1201S.isPlaying())
+          {
+            delay(100);
+          }
           DF1201S.pause();
           DF1201S.next();
           DF1201S.pause();
@@ -777,7 +783,11 @@ void TestDevices()
   for (int filenum = 1; filenum <= 3; filenum++)
   {
     DF1201S.playFileNum(filenum);
-    delay(2000);
+    while (DF1201S.isPlaying())
+    {
+      delay(100);
+    }
+    
     DF1201S.pause();
     DF1201S.next();
     DF1201S.pause();
