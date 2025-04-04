@@ -787,7 +787,7 @@ void TestDevices()
     {
       delay(100);
     }
-    
+
     DF1201S.pause();
     DF1201S.next();
     DF1201S.pause();
