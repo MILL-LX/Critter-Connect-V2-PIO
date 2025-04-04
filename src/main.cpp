@@ -13,6 +13,8 @@
 #define STANDBY_PIN 2 // Pin for standby control
 #define PWM_PIN_1 19  // Pin for PWM control of motor 1
 #define PWM_PIN_2 20  // Pin for PWM control of motor 2
+#define PWM_ON 255 // PWM value for motor on
+#define PWM_OFF 0   // PWM value for motor off
 
 // Define the GPS Serial Port (Use Hardware Serial1)
 #define RXPin 0 // Feather M4 RX1 (connect to GPS TX)
@@ -106,8 +108,8 @@ void setup()
   // Start with motors off
   pinMode(PWM_PIN_1, OUTPUT);
   pinMode(PWM_PIN_2, OUTPUT);
-  analogWrite(PWM_PIN_1, 0);
-  analogWrite(PWM_PIN_2, 0);
+  analogWrite(PWM_PIN_1, PWM_OFF);
+  analogWrite(PWM_PIN_2, PWM_OFF);
 
   // pinMode(PWM_PIN_1, OUTPUT);
   // digitalWrite(PWM_PIN_1, HIGH);  // Set PWM pin to HIGH to enable motor
@@ -212,26 +214,26 @@ void displayInfo()
 
       if (coordinates[i].species == 1)
       {
-        analogWrite(PWM_PIN_1, 127); // Set PWM pin to HIGH to enable motor
+        analogWrite(PWM_PIN_1, PWM_ON); // Set PWM pin to HIGH to enable motor
         for (int i = 0; i < Voltas_Motor; i++)
         {
 
           stepper1.step(stepsPerRevolution);
           stepper1.step(-stepsPerRevolution);
         }
-        analogWrite(PWM_PIN_1, 0); // Set PWM pin to LOW to disable motor
+        analogWrite(PWM_PIN_1, PWM_OFF); // Set PWM pin to LOW to disable motor
       }
 
       if (coordinates[i].species == 2)
       {
-        analogWrite(PWM_PIN_2, 127); // Set PWM pin to HIGH to enable motor
+        analogWrite(PWM_PIN_2, PWM_ON); // Set PWM pin to HIGH to enable motor
         for (int i = 0; i < Voltas_Motor; i++)
         {
 
           stepper2.step(stepsPerRevolution);
           stepper2.step(-stepsPerRevolution);
         }
-        analogWrite(PWM_PIN_2, 0); // Set PWM pin to LOW to disable motor
+        analogWrite(PWM_PIN_2, PWM_OFF); // Set PWM pin to LOW to disable motor
       }
 
       if (digitalRead(BTN_PIN) == LOW)
@@ -751,24 +753,24 @@ void TestDevices()
 {
   Serial.println("Starting Test...");
 
-  analogWrite(PWM_PIN_1, 127);
+  analogWrite(PWM_PIN_1, PWM_ON);
   delay(1000);
   for (int i = 0; i < 3; i++)
   {
     stepper1.step(stepsPerRevolution);
     stepper1.step(-stepsPerRevolution);
   }
-  analogWrite(PWM_PIN_1, 0);
+  analogWrite(PWM_PIN_1, PWM_OFF);
   delay(1000);
 
-  analogWrite(PWM_PIN_2, 127);
+  analogWrite(PWM_PIN_2, PWM_ON);
   delay(1000);
   for (int i = 0; i < 3; i++)
   {
     stepper2.step(stepsPerRevolution);
     stepper2.step(-stepsPerRevolution);
   }
-  analogWrite(PWM_PIN_2, 0);
+  analogWrite(PWM_PIN_2, PWM_OFF);
   delay(1000);
 
   Serial.println("Testing DFPlayer...");
