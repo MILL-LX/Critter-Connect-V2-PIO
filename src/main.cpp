@@ -1,63 +1,56 @@
 #include <Arduino.h>
-#include <TinyGPSPlus.h>  // Library for GPS functionality
-#include <Adafruit_NeoPixel.h>  // Library for NeoPixel LED control
-#include <SoftwareSerial.h>  // Library for software serial communication
-#include <HardwareSerial.h>  // Library for hardware serial communication
-#include <Wire.h>  // Library for I2C communication
-#include <DFRobot_DF1201S.h>  // Library for MP3 module control
-#include <Stepper.h>  // Library for stepper motor control
+#include <TinyGPSPlus.h>       // Library for GPS functionality
+#include <Adafruit_NeoPixel.h> // Library for NeoPixel LED control
+#include <SoftwareSerial.h>    // Library for software serial communication
+#include <HardwareSerial.h>    // Library for hardware serial communication
+#include <Wire.h>              // Library for I2C communication
+#include <DFRobot_DF1201S.h>   // Library for MP3 module control
+#include <Stepper.h>           // Library for stepper motor control
 
-#define NEOPIXEL_PIN    16  // Data pin for NeoPixel
-#define NUMPIXELS 1  // Number of NeoPixels
+#define NEOPIXEL_PIN 16 // Data pin for NeoPixel
+#define NUMPIXELS 1     // Number of NeoPixels
 
-#define STANDBY_PIN 2  // Pin for standby control
+#define STANDBY_PIN 2 // Pin for standby control
 #define PWM_PIN_1 20  // Pin for PWM control of motor 1
 #define PWM_PIN_2 21  // Pin for PWM control of motor 2
 
 // Define the GPS Serial Port (Use Hardware Serial1)
-#define RXPin 0  // Feather M4 RX1 (connect to GPS TX)
-#define TXPin 1  // Feather M4 TX1 (connect to GPS RX)
+#define RXPin 0 // Feather M4 RX1 (connect to GPS TX)
+#define TXPin 1 // Feather M4 TX1 (connect to GPS RX)
 #define GPSBaud 9600
 
-
 // Stepper motor rotation control variables
-int Voltas_Motor = 3;  // Number of motor rotations
-const int stepsPerRevolution = 1700;  // Number of steps for one full revolution
-
+int Voltas_Motor = 3;                // Number of motor rotations
+const int stepsPerRevolution = 1700; // Number of steps for one full revolution
 
 // TinyGPSPlus object for GPS functionality
 TinyGPSPlus gps;
-Adafruit_NeoPixel strip(NUMPIXELS, NEOPIXEL_PIN, NEO_GRB + NEO_KHZ800);  // NeoPixel object
-SoftwareSerial DF1201SSerial(25, 24);  // SoftwareSerial for MP3 module communication
-DFRobot_DF1201S DF1201S;  // MP3 module object
-Stepper stepper(stepsPerRevolution, 10, 11, 12, 13);  // Stepper motor 1 (4-pin connection)
-Stepper stepper2(stepsPerRevolution, 3, 7, 8, 9);  // Stepper motor 2 (4-pin connection)
-
-
+Adafruit_NeoPixel strip(NUMPIXELS, NEOPIXEL_PIN, NEO_GRB + NEO_KHZ800); // NeoPixel object
+SoftwareSerial DF1201SSerial(25, 24);                                   // SoftwareSerial for MP3 module communication
+DFRobot_DF1201S DF1201S;                                                // MP3 module object
+Stepper stepper1(stepsPerRevolution, 10, 11, 12, 13);                    // Stepper motor 1 (4-pin connection)
+Stepper stepper2(stepsPerRevolution, 3, 7, 8, 9);                       // Stepper motor 2 (4-pin connection)
 
 // Button Pin
 #define BTN_PIN 6
 
-
-
-
-
-int flag;  // Variable for flagging LED actions
-const int intervalBlink = 200;  // Interval for LED blinking (in ms)
-const int pauseTime = 10000;  // Pause time for LED after blinking (in ms)
+int flag;                         // Variable for flagging LED actions
+const int intervalBlink = 200;    // Interval for LED blinking (in ms)
+const int pauseTime = 10000;      // Pause time for LED after blinking (in ms)
 unsigned long previousBlink = 0;  // Time tracking for blinking
-unsigned long startBlinkTime = 0;  // Start time for pause after blinking
-bool isBlinking = true;  // Flag to check if LED should be blinking
-int blinkCount = 0;  // Counter for blink cycles
-bool BlinkState = LOW;  // Current state of the LED (on/off)
+unsigned long startBlinkTime = 0; // Start time for pause after blinking
+bool isBlinking = true;           // Flag to check if LED should be blinking
+int blinkCount = 0;               // Counter for blink cycles
+bool BlinkState = LOW;            // Current state of the LED (on/off)
 
-int Brilho = 150;  // Brightness level for NeoPixel
+int Brilho = 150; // Brightness level for NeoPixel
 
 // Structure to hold coordinates and species information
-struct CoordinatesBirds {
-  float longitude;  // Longitude of bird location
-  float latitude;   // Latitude of bird location
-  int species;      // Species ID
+struct CoordinatesBirds
+{
+  float longitude; // Longitude of bird location
+  float latitude;  // Latitude of bird location
+  int species;     // Species ID
 };
 
 // Number of coordinates and pointer to coordinate array
@@ -67,37 +60,35 @@ CoordinatesBirds *coordinates;
 // Earth's radius in meters for Haversine distance calculation
 const float R = 6371000;
 
-
 // Function prototypes
 CoordinatesBirds *loadCoordinatesFiles(int &numCoordinates);
 float haversineDistance(float lat1, float lon1, float lat2, float lon2);
 float toRadians(float degree);
-void TesteBegin();
+void TestDevices();
 void displayInfo();
 
+void setup()
+{
 
-void setup() {
-
-  
-  Serial.begin(115200);  // Initialize USB Serial for debugging
-  Serial1.begin(GPSBaud);  // Initialize GPS on Serial1
-  strip.begin();  // Initialize NeoPixel strip
-  strip.setBrightness(Brilho);  // Set NeoPixel brightness  
-  DF1201SSerial.begin(115200);  // Initialize communication with MP3 module
-  while(!DF1201S.begin(DF1201SSerial)){
+  Serial.begin(115200);        // Initialize USB Serial for debugging
+  Serial1.begin(GPSBaud);      // Initialize GPS on Serial1
+  strip.begin();               // Initialize NeoPixel strip
+  strip.setBrightness(Brilho); // Set NeoPixel brightness
+  DF1201SSerial.begin(115200); // Initialize communication with MP3 module
+  while (!DF1201S.begin(DF1201SSerial))
+  {
     Serial.println("Init failed, please check the wire connection!");
-    delay(1000);  // Retry if initialization fails
+    delay(1000); // Retry if initialization fails
   }
 
-  strip.setPixelColor(0, strip.Color(0, 0, 0));  
+  strip.setPixelColor(0, strip.Color(0, 0, 0));
   strip.show();
 
-
   // MP3 Module Settings
-  DF1201S.setVol(100);  // Set volume
-  DF1201S.switchFunction(DF1201S.MUSIC);  // Set MP3 module mode to music
-  DF1201S.setPlayMode(DF1201S.SINGLE);  // Set single track play mode
-  DF1201S.setPrompt(false);  // Disable prompt sounds
+  DF1201S.setVol(30);                    // MOFIX Set volume 0-30 - set to max for deployment
+  DF1201S.switchFunction(DF1201S.MUSIC); // Set MP3 module mode to music
+  DF1201S.setPlayMode(DF1201S.SINGLE);   // Set single track play mode
+  DF1201S.setPrompt(false);              // Disable prompt sounds
 
   Serial.println(F("GPS Example for Adafruit Feather M4 Express"));
   Serial.print(F("Using TinyGPSPlus library v. "));
@@ -105,8 +96,8 @@ void setup() {
 
   pinMode(BTN_PIN, INPUT_PULLUP); // Enable internal pull-up resistor
 
-  stepper.setSpeed(40);  // Set speed for stepper motor 1
-  stepper2.setSpeed(80);  // Set speed for stepper motor 2
+  stepper1.setSpeed(40);  // Set speed for stepper motor 1
+  stepper2.setSpeed(80); // Set speed for stepper motor 2
 
   // Hold Standby High to enable motors. PWM is used to control the motor speed
   pinMode(STANDBY_PIN, OUTPUT);
@@ -121,28 +112,32 @@ void setup() {
   // pinMode(PWM_PIN_1, OUTPUT);
   // digitalWrite(PWM_PIN_1, HIGH);  // Set PWM pin to HIGH to enable motor
 
-
   // Load predefined bird coordinates
   coordinates = loadCoordinatesFiles(numCoordinates);
 
   // Perform hardware test
-  TesteBegin();
-  
-  DF1201S.pause();  // Pause the MP3 playback after the test
+  TestDevices();
+
+  DF1201S.pause(); // Pause the MP3 playback after the test
 }
 
-void loop() {
+void loop()
+{
   // Read GPS data
-  while (Serial1.available() > 0) {
-    if (gps.encode(Serial1.read())) {
+  while (Serial1.available() > 0)
+  {
+    if (gps.encode(Serial1.read()))
+    {
       displayInfo();
     }
   }
 
   // Check if GPS is connected
-  if (millis() > 5000 && gps.charsProcessed() < 10) {
+  if (millis() > 5000 && gps.charsProcessed() < 10)
+  {
     Serial.println(F("No GPS detected: check wiring."));
-    while (true); // Stop program if no GPS detected
+    while (true)
+      ; // Stop program if no GPS detected
   }
 }
 
@@ -150,41 +145,55 @@ void loop() {
   Function: displayInfo
   Description: Displays GPS info, controls music, LED, and motor.
 *************************************/
-void displayInfo() {
+void displayInfo()
+{
   Serial.print(F("Location: "));
-  if (gps.location.isValid()) {
+  if (gps.location.isValid())
+  {
     Serial.print(gps.location.lat(), 6);
     Serial.print(F(","));
     Serial.print(gps.location.lng(), 6);
-  } else {
+  }
+  else
+  {
     Serial.print(F("INVALID"));
   }
 
   Serial.print(F("  Date/Time: "));
-  if (gps.date.isValid()) {
+  if (gps.date.isValid())
+  {
     Serial.print(gps.date.month());
     Serial.print(F("/"));
     Serial.print(gps.date.day());
     Serial.print(F("/"));
     Serial.print(gps.date.year());
-  } else {
+  }
+  else
+  {
     Serial.print(F("INVALID"));
   }
 
   Serial.print(F(" "));
-  if (gps.time.isValid()) {
-    if (gps.time.hour() < 10) Serial.print(F("0"));
+  if (gps.time.isValid())
+  {
+    if (gps.time.hour() < 10)
+      Serial.print(F("0"));
     Serial.print(gps.time.hour());
     Serial.print(F(":"));
-    if (gps.time.minute() < 10) Serial.print(F("0"));
+    if (gps.time.minute() < 10)
+      Serial.print(F("0"));
     Serial.print(gps.time.minute());
     Serial.print(F(":"));
-    if (gps.time.second() < 10) Serial.print(F("0"));
+    if (gps.time.second() < 10)
+      Serial.print(F("0"));
     Serial.print(gps.time.second());
     Serial.print(F("."));
-    if (gps.time.centisecond() < 10) Serial.print(F("0"));
+    if (gps.time.centisecond() < 10)
+      Serial.print(F("0"));
     Serial.print(gps.time.centisecond());
-  } else {
+  }
+  else
+  {
     Serial.print(F("INVALID"));
   }
 
@@ -192,123 +201,116 @@ void displayInfo() {
   Serial.println(numCoordinates);
 
   // Loop through predefined coordinates and calculate distance
-  for (int i = 0; i < numCoordinates; i++) {
+  for (int i = 0; i < numCoordinates; i++)
+  {
     float distancia = haversineDistance(coordinates[i].latitude, coordinates[i].longitude, gps.location.lat(), gps.location.lng());
 
-
-
-
     // If the distance is less than 40 meters
-    if (distancia < 40) {
+    if (distancia < 40)
+    {
       Serial.println("Musica");
 
-      if (coordinates[i].species == 1) {
-          analogWrite(PWM_PIN_1, 127);  // Set PWM pin to HIGH to enable motor
-          delay(1000);
-          while (Voltas_Motor != 0) {
-            
-            stepper.step(stepsPerRevolution);
-            stepper.step(-stepsPerRevolution);
-            Voltas_Motor = Voltas_Motor - 1;
-          }
-          analogWrite(PWM_PIN_1, 0);  // Set PWM pin to LOW to disable motor
-          delay(1000);
+      if (coordinates[i].species == 1)
+      {
+        analogWrite(PWM_PIN_1, 127); // Set PWM pin to HIGH to enable motor
+        for (int i = 0; i < Voltas_Motor; i++)
+        {
+
+          stepper1.step(stepsPerRevolution);
+          stepper1.step(-stepsPerRevolution);
+        }
+        analogWrite(PWM_PIN_1, 0); // Set PWM pin to LOW to disable motor
       }
 
-      if (coordinates[i].species == 2) {
-          analogWrite(PWM_PIN_2, 127);  // Set PWM pin to HIGH to enable motor
-          delay(1000);
-          while (Voltas_Motor != 0) {
-            
-            stepper2.step(stepsPerRevolution);
-            stepper2.step(-stepsPerRevolution);
-            Voltas_Motor = Voltas_Motor - 1;
-          }
-          analogWrite(PWM_PIN_2, 0);  // Set PWM pin to LOW to disable motor
-          delay(1000);
-      }
-      
-      if (digitalRead(BTN_PIN) == LOW) {   // Check if button is pressed
-          Serial.println("Botão pressionado");
+      if (coordinates[i].species == 2)
+      {
+        analogWrite(PWM_PIN_2, 127); // Set PWM pin to HIGH to enable motor
+        for (int i = 0; i < Voltas_Motor; i++)
+        {
 
-        if (coordinates[i].species == 1) {
+          stepper2.step(stepsPerRevolution);
+          stepper2.step(-stepsPerRevolution);
+        }
+        analogWrite(PWM_PIN_2, 0); // Set PWM pin to LOW to disable motor
+      }
+
+      if (digitalRead(BTN_PIN) == LOW)
+      { // Check if button is pressed
+        Serial.println("Botão pressionado");
+
+        if (coordinates[i].species == 1)
+        {
           DF1201S.playFileNum(2);
           delay(8000);
           DF1201S.pause();
           DF1201S.next();
           DF1201S.pause();
         }
-        if (coordinates[i].species == 2) {
-         
+        if (coordinates[i].species == 2)
+        {
+
           DF1201S.playFileNum(1);
           delay(8000);
           DF1201S.pause();
           DF1201S.next();
           DF1201S.pause();
         }
-        
-      } else {
+      }
+      else
+      {
         Serial.println("Botão não pressionado");
         DF1201S.pause();
       }
-      
-      strip.setPixelColor(0, strip.Color(255, 255, 255));  
+
+      strip.setPixelColor(0, strip.Color(255, 255, 255));
       strip.show();
       flag = i;
-
-      
     }
 
-    if (distancia > 40 && flag == i) {
+    if (distancia > 40 && flag == i)
+    {
       DF1201S.pause();
 
-
-
       unsigned long currentMILLIS = millis();
-    
-    if (isBlinking) {
-        if (currentMILLIS - previousBlink >= intervalBlink) {
-            previousBlink = currentMILLIS;
-            BlinkState = !BlinkState; // Alterna estado do LED
-            
-            if (BlinkState) {
-                strip.setPixelColor(0, strip.Color(255, 255, 255));
-            } else {
-                strip.setPixelColor(0, strip.Color(0, 0, 0));
-                blinkCount++;
-            }
-            strip.show();
-            
-            if (blinkCount >= 3) { // Após 3 piscadas
-                isBlinking = false;
-                startBlinkTime = currentMILLIS;
-            }
+
+      if (isBlinking)
+      {
+        if (currentMILLIS - previousBlink >= intervalBlink)
+        {
+          previousBlink = currentMILLIS;
+          BlinkState = !BlinkState; // Alterna estado do LED
+
+          if (BlinkState)
+          {
+            strip.setPixelColor(0, strip.Color(255, 255, 255));
+          }
+          else
+          {
+            strip.setPixelColor(0, strip.Color(0, 0, 0));
+            blinkCount++;
+          }
+          strip.show();
+
+          if (blinkCount >= 3)
+          { // Após 3 piscadas
+            isBlinking = false;
+            startBlinkTime = currentMILLIS;
+          }
         }
-    } else {
-        if (currentMILLIS - startBlinkTime >= pauseTime) {
-            isBlinking = true;
-            blinkCount = 0;
+      }
+      else
+      {
+        if (currentMILLIS - startBlinkTime >= pauseTime)
+        {
+          isBlinking = true;
+          blinkCount = 0;
         }
-    }
+      }
 
-
-
-
-
-
-
-      
       strip.show();
-      Voltas_Motor = 3;
     }
   }
 }
-
-
-
-
-
-
 
 /*************************************
   Function: haversineDistance
@@ -342,7 +344,8 @@ float haversineDistance(float lat1, float lon1, float lat2, float lon2)
   Function: toRadians
   Description: Converts degrees to radians.
 *************************************/
-float toRadians(float degree) {
+float toRadians(float degree)
+{
   return degree * (PI / 180);
 }
 
@@ -350,7 +353,8 @@ float toRadians(float degree) {
   Function: loadCoordinatesFiles
   Description: Loads predefined coordinates.
 *************************************/
-CoordinatesBirds *loadCoordinatesFiles(int &numCoordinates) {
+CoordinatesBirds *loadCoordinatesFiles(int &numCoordinates)
+{
   static CoordinatesBirds coordinates[] = {
       {-9.140070, 38.720580, 2},
       {-9.139885, 38.722155, 2},
@@ -734,49 +738,52 @@ CoordinatesBirds *loadCoordinatesFiles(int &numCoordinates) {
       {-16.931906499999968, 32.63634300000007, 1},
       {-16.902419149999957, 32.67416384100005, 1},
       {-16.908638888999974, 32.82340833300003, 1},
-      {-16.873130164999964, 32.646830333000025, 1}
-  };
+      {-16.873130164999964, 32.646830333000025, 1}};
   numCoordinates = sizeof(coordinates) / sizeof(coordinates[0]);
   return coordinates;
 }
 
-
-
 /*************************************
-  Function: TesteBegin
+  Function: TestDevices
   Description: Performs hardware tests.
 *************************************/
-void TesteBegin() {
+void TestDevices()
+{
   Serial.println("Starting Test...");
-  //for (int i = 0; i < 16; i++) stepper.step(stepsPerRevolution);
-  //for (int j = 0; j < 16; j++) stepper.step(-stepsPerRevolution);
+
   analogWrite(PWM_PIN_1, 127);
-  delay(1000);  
-  for(int i = 0; i < 3; i++){
-    stepper.step(stepsPerRevolution);
-    stepper.step(-stepsPerRevolution);
+  delay(1000);
+  for (int i = 0; i < 3; i++)
+  {
+    stepper1.step(stepsPerRevolution);
+    stepper1.step(-stepsPerRevolution);
   }
   analogWrite(PWM_PIN_1, 0);
   delay(1000);
 
   analogWrite(PWM_PIN_2, 127);
   delay(1000);
-  for(int j = 0; j < 3; j++){
+  for (int i = 0; i < 3; i++)
+  {
     stepper2.step(stepsPerRevolution);
     stepper2.step(-stepsPerRevolution);
   }
   analogWrite(PWM_PIN_2, 0);
   delay(1000);
 
-  DF1201S.playFileNum(3);
-  delay(2000);
-  DF1201S.pause();
-  Serial.println("Test Completed!");
-  DF1201S.next();
-  DF1201S.pause();
+  Serial.println("Testing DFPlayer...");
+  for (int filenum = 1; filenum <= 3; filenum++)
+  {
+    DF1201S.playFileNum(filenum);
+    delay(2000);
+    DF1201S.pause();
+    DF1201S.next();
+    DF1201S.pause();
+  }
 
-  for (int i = 0; i < 3; i++) {
-    strip.setPixelColor(0, strip.Color(255, 255, 255));  
+  for (int i = 0; i < 3; i++)
+  {
+    strip.setPixelColor(0, strip.Color(255, 255, 255));
     strip.show();
     delay(500);
     strip.setPixelColor(0, strip.Color(0, 0, 0));
