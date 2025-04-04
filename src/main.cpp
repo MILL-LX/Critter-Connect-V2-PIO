@@ -11,8 +11,8 @@
 #define NUMPIXELS 1     // Number of NeoPixels
 
 #define STANDBY_PIN 2 // Pin for standby control
-#define PWM_PIN_1 20  // Pin for PWM control of motor 1
-#define PWM_PIN_2 21  // Pin for PWM control of motor 2
+#define PWM_PIN_1 19  // Pin for PWM control of motor 1
+#define PWM_PIN_2 20  // Pin for PWM control of motor 2
 
 // Define the GPS Serial Port (Use Hardware Serial1)
 #define RXPin 0 // Feather M4 RX1 (connect to GPS TX)
