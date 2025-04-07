@@ -364,9 +364,12 @@ float toRadians(float degree)
 CoordinatesBirds *loadCoordinatesFiles(int &numCoordinates)
 {
   static CoordinatesBirds coordinates[] = {
+      // MOFIX - test locations in Lisbon
+      {-9.156067344999594, 38.71925441818425, 1},
       {-9.140070, 38.720580, 2},
       {-9.139885, 38.722155, 2},
       {-9.141329, 38.720367, 1},
+
       {-16.896143, 32.662378, 2},
       {-17.029402, 32.787575, 2},
       {-17.104467, 32.67932, 2},
