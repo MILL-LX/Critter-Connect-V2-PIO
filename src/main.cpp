@@ -87,7 +87,7 @@ void setup()
   strip.show();
 
   // MP3 Module Settings
-  DF1201S.setVol(30);                    // MOFIX Set volume 0-30 - set to max for deployment
+  DF1201S.setVol(/*30*/ 5);                    // MOFIX Set volume 0-30 - set to max for deployment
   DF1201S.switchFunction(DF1201S.MUSIC); // Set MP3 module mode to music
   DF1201S.setPlayMode(DF1201S.SINGLE);   // Set single track play mode
   DF1201S.setPrompt(false);              // Disable prompt sounds
@@ -149,15 +149,18 @@ void loop()
 *************************************/
 void displayInfo()
 {
+  uint32_t blink_color;
   Serial.print(F("Location: "));
   if (gps.location.isValid())
   {
+    blink_color = strip.Color(255, 255, 255);
     Serial.print(gps.location.lat(), 6);
     Serial.print(F(","));
     Serial.print(gps.location.lng(), 6);
   }
   else
   {
+    blink_color = strip.Color(255, 0, 0);
     Serial.print(F("INVALID"));
   }
 
@@ -290,7 +293,7 @@ void displayInfo()
 
           if (BlinkState)
           {
-            strip.setPixelColor(0, strip.Color(255, 255, 255));
+            strip.setPixelColor(0, blink_color);
           }
           else
           {
@@ -365,7 +368,8 @@ CoordinatesBirds *loadCoordinatesFiles(int &numCoordinates)
 {
   static CoordinatesBirds coordinates[] = {
       // MOFIX - test locations in Lisbon
-      {-9.156067344999594, 38.71925441818425, 1},
+      {-9.156067344999594, 38.71925441818425, 1},  // TEST LOCATION 2
+      {-9.141010, 38.719576, 1}, // MILL
       {-9.140070, 38.720580, 2},
       {-9.139885, 38.722155, 2},
       {-9.141329, 38.720367, 1},
@@ -783,18 +787,24 @@ void TestDevices()
   delay(1000);
 
   Serial.println("Testing DFPlayer...");
-  for (int filenum = 1; filenum <= 3; filenum++)
+  int filenum = 3;
+  DF1201S.playFileNum(filenum);
+  while (DF1201S.isPlaying())
   {
-    DF1201S.playFileNum(filenum);
-    while (DF1201S.isPlaying())
-    {
-      delay(100);
-    }
-
-    DF1201S.pause();
-    DF1201S.next();
-    DF1201S.pause();
+    delay(100);
   }
+  // for (int filenum = 3; filenum <= 3; filenum++)
+  // {
+  //   DF1201S.playFileNum(filenum);
+  //   while (DF1201S.isPlaying())
+  //   {
+  //     delay(100);
+  //   }
+
+  //   DF1201S.pause();
+  //   DF1201S.next();
+  //   DF1201S.pause();
+  // }
 
   for (int i = 0; i < 3; i++)
   {
