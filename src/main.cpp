@@ -2,7 +2,6 @@
 #include "PeriodicAction.h"
 #include "PrintAction.h"
 
-// Corrected order: Period = 10s, Duration = 2s
 PeriodicAction<PrintAction> periodicPrintAction(10, 2);
 
 unsigned long programStartTime = 0;
@@ -17,7 +16,6 @@ void setup()
   delay(1000); // Extra delay to allow serial monitor connection
 
   Serial.println("Starting periodic print action...");
-
   periodicPrintAction.start(); // Start the periodic action task
 
   programStartTime = millis(); // Record the time when setup finishes and loop starts
