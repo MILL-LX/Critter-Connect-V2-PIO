@@ -2,10 +2,10 @@
 
 template <typename ActionType>
 PeriodicAction<ActionType>::PeriodicAction(
-    uint8_t activeDurationSeconds,
+    uint8_t actionDurationSeconds,
     uint8_t periodIntervalSeconds,
     ActionType* actionInstance)
-    : activeDurationSeconds(activeDurationSeconds),
+    : actionDurationSeconds(actionDurationSeconds),
       periodIntervalSeconds(periodIntervalSeconds),
       actionInstance(actionInstance) {}
 
@@ -43,7 +43,7 @@ void PeriodicAction<ActionType>::taskFunction(void* parameters) {
         uint32_t elapsedSeconds = elapsedTicks / configTICK_RATE_HZ;
         uint32_t secondsInCurrentPeriod = elapsedSeconds % instance->periodIntervalSeconds;
 
-        if (secondsInCurrentPeriod < instance->activeDurationSeconds) {
+        if (secondsInCurrentPeriod < instance->actionDurationSeconds) {
             instance->actionInstance->performAction();
             vTaskDelay(pdMS_TO_TICKS(500));  // 500ms delay between actions
         } else {
