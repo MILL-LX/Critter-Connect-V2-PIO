@@ -2,11 +2,10 @@
 
 template <typename ActionType>
 PeriodicAction<ActionType>::PeriodicAction(
-    uint8_t actionDurationSeconds,
-    uint8_t periodIntervalSeconds)
+    uint8_t actionPeriodSeconds,
+    uint8_t actionDurationSeconds)
     : actionDurationSeconds(actionDurationSeconds),
-      periodIntervalSeconds(periodIntervalSeconds),
-      actionInstance(actionInstance) {}
+    actionPeriodSeconds(actionPeriodSeconds) {}
 
 template <typename ActionType>
 void PeriodicAction<ActionType>::start() {
@@ -33,20 +32,19 @@ void PeriodicAction<ActionType>::stop() {
 template <typename ActionType>
 void PeriodicAction<ActionType>::taskFunction(void* parameters) {
     auto* instance = static_cast<PeriodicAction<ActionType>*>(parameters);
-    TickType_t startTick = xTaskGetTickCount();
 
+
+    bool actionPerformed = false;
+    TickType_t startTick = xTaskGetTickCount();
     while (true) {
         TickType_t nowTick = xTaskGetTickCount();
         TickType_t elapsedTicks = nowTick - startTick;
-
         uint32_t elapsedSeconds = elapsedTicks / configTICK_RATE_HZ;
-        uint32_t secondsInCurrentPeriod = elapsedSeconds % instance->periodIntervalSeconds;
+        uint32_t secondsInCurrentPeriod = elapsedSeconds % instance->actionPeriodSeconds;
 
-        if (secondsInCurrentPeriod < instance->actionDurationSeconds) {
-            instance->actionInstance.performAction();
-            vTaskDelay(pdMS_TO_TICKS(500));  // 500ms delay between actions
-        } else {
-            vTaskDelay(pdMS_TO_TICKS(100));  // Idle poll every 100ms
+        if (secondsInCurrentPeriod == 0 && !actionPerformed) {
+            instance->actionInstance.performAction(instance->actionDurationSeconds);
+            actionPerformed = true;
         }
     }
 }

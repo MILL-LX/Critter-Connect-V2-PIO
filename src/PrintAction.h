@@ -1,7 +1,8 @@
 #pragma once
-#include "Action.h"
 
-class PrintAction : public Action {
+#include <cstdint>
+
+class PrintAction {
 public:
-    void performAction() override;
+    void performAction(uint8_t actionDurationSeconds);
 };

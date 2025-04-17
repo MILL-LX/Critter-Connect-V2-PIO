@@ -2,25 +2,38 @@
 #include "PeriodicAction.h"
 #include "PrintAction.h"
 
-PeriodicAction<PrintAction> periodicPrintAction(2, 10); // active 2s every 10s
+// Corrected order: Period = 10s, Duration = 2s
+PeriodicAction<PrintAction> periodicPrintAction(10, 2);
+
+unsigned long programStartTime = 0;
+bool actionTaskStopped = false;
+const unsigned long stopAfterDuration = 60 * 1000UL; // 60 seconds in milliseconds
 
 void setup()
 {
   Serial.begin(115200);
-
-  // Wait for the Serial connection to be established
   while (!Serial)
+    delay(100); // Wait a bit for Serial to initialize
+  delay(1000); // Extra delay to allow serial monitor connection
+
+  Serial.println("Starting periodic print action...");
+
+  periodicPrintAction.start(); // Start the periodic action task
+
+  programStartTime = millis(); // Record the time when setup finishes and loop starts
+  while(true)
   {
-    delay(100); // Wait a bit for Serial to initialize, if necessary
+    if (!actionTaskStopped && (millis() - programStartTime >= stopAfterDuration))
+    {
+      Serial.println("One minute elapsed. Stopping periodic print action task...");
+      periodicPrintAction.stop(); // Stop the periodic action task
+      actionTaskStopped = true;   // Set the flag so we don't try to stop it again
+    }
+
+    delay(10);
   }
-
-  // Delay for 1 second after Serial.begin()
-  delay(1000);
-
-  periodicPrintAction.start(); // Start the periodic action
 }
 
 void loop()
 {
-  // Main loop remains free
 }
