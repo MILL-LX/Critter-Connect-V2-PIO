@@ -3,8 +3,7 @@
 template <typename ActionType>
 PeriodicAction<ActionType>::PeriodicAction(
     uint8_t actionDurationSeconds,
-    uint8_t periodIntervalSeconds,
-    ActionType* actionInstance)
+    uint8_t periodIntervalSeconds)
     : actionDurationSeconds(actionDurationSeconds),
       periodIntervalSeconds(periodIntervalSeconds),
       actionInstance(actionInstance) {}
@@ -44,7 +43,7 @@ void PeriodicAction<ActionType>::taskFunction(void* parameters) {
         uint32_t secondsInCurrentPeriod = elapsedSeconds % instance->periodIntervalSeconds;
 
         if (secondsInCurrentPeriod < instance->actionDurationSeconds) {
-            instance->actionInstance->performAction();
+            instance->actionInstance.performAction();
             vTaskDelay(pdMS_TO_TICKS(500));  // 500ms delay between actions
         } else {
             vTaskDelay(pdMS_TO_TICKS(100));  // Idle poll every 100ms

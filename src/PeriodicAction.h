@@ -8,8 +8,7 @@ template <typename ActionType>
 class PeriodicAction {
 public:
     PeriodicAction(uint8_t actionDurationSeconds,
-                   uint8_t periodIntervalSeconds,
-                   ActionType* actionInstance);
+                   uint8_t periodIntervalSeconds);
 
     void start();
     void stop();
@@ -20,7 +19,7 @@ private:
     TaskHandle_t taskHandle = nullptr;
     uint8_t actionDurationSeconds;
     uint8_t periodIntervalSeconds;
-    ActionType* actionInstance;
+    ActionType actionInstance;
 };
 
 // Include the implementation of the template class
