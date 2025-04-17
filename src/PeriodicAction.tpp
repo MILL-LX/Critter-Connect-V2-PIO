@@ -49,8 +49,15 @@ void PeriodicAction<ActionType>::taskFunction(void *parameters)
 
         if (secondsInCurrentPeriod == 0 && !actionPerformed)
         {
+            Serial.print("PeriodicActionPeriod Started: "); Serial.println(elapsedSeconds);
+
             instance->actionInstance.performAction(instance->actionDurationSeconds);
             actionPerformed = true;
+
+        }
+        else if (secondsInCurrentPeriod != 0)
+        {
+            actionPerformed = false;
         }
 
         vTaskDelay(pdMS_TO_TICKS(10));
