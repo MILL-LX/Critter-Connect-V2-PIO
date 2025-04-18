@@ -1,0 +1,32 @@
+#pragma once
+
+#include <Adafruit_NeoPixel.h>
+
+const int defaultPin = 16;
+const int defaultNumPixels = 1;
+
+class NeoPixel
+{
+public:
+    enum Color
+    {
+        OFF = 0x000000,
+        WARN = 0xff0000,
+        ON = 0xffffff
+    };
+
+    void setColor(Color color)
+    {
+        _strip->setPixelColor(0, color);
+        _strip->show();
+    }
+
+
+    NeoPixel(int pin = defaultPin, int numPixels = defaultNumPixels) : _strip(new Adafruit_NeoPixel(numPixels, pin, NEO_GRB + NEO_KHZ800)) {
+        _strip->begin();
+        setColor(OFF);
+    };
+
+private:
+    Adafruit_NeoPixel *_strip;
+};
