@@ -4,12 +4,12 @@
 #include "actions/NeoPixelAction.h"
 
 
-PeriodicAction<NeoPixelAction> periodicNeoPixelAction(10, 1);
+PeriodicAction<NeoPixelAction> periodicNeoPixelAction(30, 1);
 PeriodicAction<PrintAction> periodicPrintAction(10, 2);
 
 unsigned long programStartTime = 0;
 bool actionsStopped = false;
-const unsigned long stopAfterDuration = 60 * 1000UL; // 60 seconds in milliseconds
+const unsigned long stopAfterDuration = 300 * 1000UL; // 300 seconds in milliseconds
 
 void setup()
 {
@@ -20,7 +20,7 @@ void setup()
 
   Serial.println("Starting periodic actions...");
   periodicNeoPixelAction.start();
-  periodicPrintAction.start();
+  //periodicPrintAction.start();
   Serial.println("Periodic actions started.");
 
   programStartTime = millis(); // Record the time when setup finishes and loop starts
@@ -28,7 +28,7 @@ void setup()
   {
     if (!actionsStopped && (millis() - programStartTime >= stopAfterDuration))
     {
-      Serial.println("One minute elapsed. Stopping periodic actions...");
+      Serial.println("Five minutes have elapsed. Stopping periodic actions...");
       periodicNeoPixelAction.stop();
       periodicPrintAction.stop();
       Serial.println("Periodic actions stopped.");

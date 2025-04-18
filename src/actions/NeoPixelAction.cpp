@@ -18,7 +18,7 @@ void NeoPixelAction::performAction(uint8_t actionDurationSeconds)
     while (xTaskGetTickCount() < endTick)
     {
 
-        NeoPixel::Color color = on ? NeoPixel::Color::ON : NeoPixel::Color::OFF;
+        NeoPixel::Color color = on ? _on_color: NeoPixel::Color::OFF;
         on = !on;
 
         _neoPixel.setColor(color);

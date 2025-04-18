@@ -49,7 +49,7 @@ void PeriodicAction<ActionType>::taskFunction(void *parameters)
 
         if (secondsInCurrentPeriod == 0 && !actionPerformed)
         {
-            Serial.print("PeriodicActionPeriod Started: "); Serial.println(elapsedSeconds); Serial.println();
+            Serial.print("PeriodicActionPeriod Started: "); Serial.println(elapsedSeconds);
 
             instance->actionInstance.performAction(instance->actionDurationSeconds);
             actionPerformed = true;
