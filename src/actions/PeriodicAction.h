@@ -1,8 +1,9 @@
 #pragma once
 
-#include "FreeRTOS.h" // Ensure FreeRTOS types like TickType_t are available
-#include "task.h"     // Ensure task-related functions like vTaskDelete are available
-#include <cstdint>    // For uint32_t and other fixed-width types
+#include "FreeRTOS.h"
+#include "task.h"
+#include <cstdint>
+#include <atomic> // Include atomic header
 
 template <typename ActionType>
 class PeriodicAction
@@ -18,12 +19,11 @@ public:
 private:
     static void taskFunction(void *parameters);
 
-    bool _continueAction = false;
+    std::atomic<bool> _continueAction{false};
     TaskHandle_t _taskHandle = nullptr;
     uint32_t _actionPeriodMillis;
     uint32_t _actionDurationMillis;
     ActionType _actionInstance;
 };
 
-// Include the implementation of the template class
 #include "PeriodicAction.tpp"
