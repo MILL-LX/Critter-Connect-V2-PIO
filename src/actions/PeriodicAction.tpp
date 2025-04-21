@@ -4,11 +4,14 @@
 #include <Arduino.h> // For Serial prints if needed
 
 template <typename ActionType>
-PeriodicAction<ActionType>::PeriodicAction(uint32_t actionPeriodMillis,
-                                           uint32_t actionDurationMillis)
+template <typename... ActionArgs>
+PeriodicAction<ActionType>::PeriodicAction(uint32_t actionPeriodMillis, 
+                                           uint32_t actionDurationMillis, ActionArgs &&...args)
     : actionPeriodMillis(actionPeriodMillis),
       actionDurationMillis(actionDurationMillis),
-      actionInstance(){}
+      actionInstance(std::forward<ActionArgs>(args)...)
+      {}
+
 
 template <typename ActionType>
 void PeriodicAction<ActionType>::start() {
@@ -52,4 +55,3 @@ void PeriodicAction<ActionType>::taskFunction(void* parameters) {
         Serial.println("Period ended.");
     }
 }
-

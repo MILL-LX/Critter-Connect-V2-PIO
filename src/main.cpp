@@ -10,7 +10,7 @@ void setup()
 
 void loop()
 {
-  PeriodicAction<NeoPixelAction> periodicNeoPixelAction(5000UL, 1000UL);
+  PeriodicAction<NeoPixelAction> periodicNeoPixelAction(5000UL, 1000UL, NeoPixel::StateColor::ON);
 
   Serial.println("Starting periodic actions...");
 

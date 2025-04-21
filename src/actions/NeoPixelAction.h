@@ -9,10 +9,10 @@
 class NeoPixelAction
 {
 public:
-    NeoPixelAction(NeoPixel::Color on_color=NeoPixel::Color::ON)    : _on_color(on_color) {}
+    NeoPixelAction(NeoPixel::StateColor on_color=NeoPixel::StateColor::ON)    : _on_color(on_color) {}
     void performAction(uint32_t actionDurationMillis);
 
 private:
-    NeoPixel::Color _on_color;
+    NeoPixel::StateColor _on_color;
     NeoPixel _neoPixel;
 };

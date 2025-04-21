@@ -20,7 +20,7 @@ void NeoPixelAction::performAction(uint32_t actionDurationMillis)
     bool on = true;
     while (xTaskGetTickCount() < endTick)
     {
-        NeoPixel::Color color = on ? _on_color: NeoPixel::Color::OFF;
+        NeoPixel::StateColor color = on ? _on_color: NeoPixel::StateColor::OFF;
         on = !on;
 
         _neoPixel.setColor(color);
@@ -41,6 +41,6 @@ void NeoPixelAction::performAction(uint32_t actionDurationMillis)
         }
     }
 
-    _neoPixel.setColor(NeoPixel::Color::OFF); // Ensure LED is off at the end
+    _neoPixel.setColor(NeoPixel::StateColor::OFF); // Ensure LED is off at the end
     Serial.println("Finished performing NeoPixelAction.");
 }

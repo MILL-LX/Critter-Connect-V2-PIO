@@ -8,14 +8,14 @@ const int defaultNumPixels = 1;
 class NeoPixel
 {
 public:
-    enum Color
+    enum StateColor
     {
         OFF = 0x000000,
         WARN = 0xff0000,
         ON = 0xffffff
     };
 
-    void setColor(Color color)
+    void setColor(StateColor color)
     {
         _strip->setPixelColor(0, color);
         _strip->show();

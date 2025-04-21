@@ -1,21 +1,22 @@
 #pragma once
 
-#include "FreeRTOS.h"   // Ensure FreeRTOS types like TickType_t are available
-#include "task.h"       // Ensure task-related functions like vTaskDelete are available
-#include <cstdint>      // For uint32_t and other fixed-width types
+#include "FreeRTOS.h" // Ensure FreeRTOS types like TickType_t are available
+#include "task.h"     // Ensure task-related functions like vTaskDelete are available
+#include <cstdint>    // For uint32_t and other fixed-width types
 
 template <typename ActionType>
-class PeriodicAction {
+class PeriodicAction
+{
 public:
-    // Use milliseconds and uint32_t for greater range
+    template <typename... ActionArgs>
     PeriodicAction(uint32_t actionPeriodMillis,
-                   uint32_t actionDurationMillis);
+                   uint32_t actionDurationMillis, ActionArgs &&...actionArgs);
 
     void start();
     void stop();
 
 private:
-    static void taskFunction(void* parameters);
+    static void taskFunction(void *parameters);
 
     TaskHandle_t taskHandle = nullptr;
     // Store values in milliseconds
