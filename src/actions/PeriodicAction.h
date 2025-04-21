@@ -18,11 +18,11 @@ public:
 private:
     static void taskFunction(void *parameters);
 
-    TaskHandle_t taskHandle = nullptr;
-    // Store values in milliseconds
-    uint32_t actionPeriodMillis;
-    uint32_t actionDurationMillis;
-    ActionType actionInstance;
+    bool _continueAction = false;
+    TaskHandle_t _taskHandle = nullptr;
+    uint32_t _actionPeriodMillis;
+    uint32_t _actionDurationMillis;
+    ActionType _actionInstance;
 };
 
 // Include the implementation of the template class

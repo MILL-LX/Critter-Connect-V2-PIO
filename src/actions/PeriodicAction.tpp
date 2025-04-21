@@ -7,15 +7,15 @@ template <typename ActionType>
 template <typename... ActionArgs>
 PeriodicAction<ActionType>::PeriodicAction(uint32_t actionPeriodMillis, 
                                            uint32_t actionDurationMillis, ActionArgs &&...args)
-    : actionPeriodMillis(actionPeriodMillis),
-      actionDurationMillis(actionDurationMillis),
-      actionInstance(std::forward<ActionArgs>(args)...)
+    : _actionPeriodMillis(actionPeriodMillis),
+      _actionDurationMillis(actionDurationMillis),
+      _actionInstance(std::forward<ActionArgs>(args)...)
       {}
 
 
 template <typename ActionType>
 void PeriodicAction<ActionType>::start() {
-    if (taskHandle == nullptr) {
+    if (_taskHandle == nullptr) {
         // Create the task
         xTaskCreate(
             taskFunction,           // Task function
@@ -23,9 +23,9 @@ void PeriodicAction<ActionType>::start() {
             2048,                   // Stack size (adjust as needed)
             this,                   // Parameter passed to the task
             1,                      // Priority (adjust as needed)
-            &taskHandle             // Task handle
+            &_taskHandle             // Task handle
         );
-        if (taskHandle == nullptr) {
+        if (_taskHandle == nullptr) {
              Serial.println("Failed to create PeriodicAction task!");
              // Handle error appropriately
         }
@@ -34,10 +34,7 @@ void PeriodicAction<ActionType>::start() {
 
 template <typename ActionType>
 void PeriodicAction<ActionType>::stop() {
-    if (taskHandle != nullptr) {
-        vTaskDelete(taskHandle);
-        taskHandle = nullptr;
-    }
+    _continueAction = false;
 }
 
 template <typename ActionType>
@@ -45,13 +42,17 @@ void PeriodicAction<ActionType>::taskFunction(void* parameters) {
     PeriodicAction<ActionType>* params = static_cast<PeriodicAction<ActionType>*>(parameters);
 
     // Convert period from milliseconds to ticks
-    const TickType_t periodTicks = pdMS_TO_TICKS(params->actionPeriodMillis);
+    const TickType_t periodTicks = pdMS_TO_TICKS(params->_actionPeriodMillis);
     TickType_t lastWakeTime = xTaskGetTickCount(); // Initialize lastWakeTime
 
-    while (true) {
+    params->_continueAction = true;
+    while (params->_continueAction) {
         Serial.println("Period starting...");
-        params->actionInstance.performAction(params->actionDurationMillis);
+        params->_actionInstance.performAction(params->_actionDurationMillis);
         vTaskDelayUntil(&lastWakeTime, periodTicks);
         Serial.println("Period ended.");
     }
+
+    vTaskDelete(params->_taskHandle);
+    params->_taskHandle = nullptr;
 }

@@ -5,7 +5,6 @@
 #include "NeoPixelAction.h"
 #include "devices/NeoPixel.h"
 
-// Accept duration in milliseconds
 void NeoPixelAction::performAction(uint32_t actionDurationMillis)
 {
     TickType_t startTick = xTaskGetTickCount();
