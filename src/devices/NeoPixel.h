@@ -12,7 +12,7 @@ public:
     {
         OFF = 0x000000,
         WARN = 0xff0000,
-        ON = 0xffffff
+        OK = 0xffffff
     };
 
     void setColor(StateColor color)

@@ -12,7 +12,7 @@ void NeoPixelAction::performAction(uint32_t actionDurationMillis)
     TickType_t durationTicks = pdMS_TO_TICKS(actionDurationMillis);
     TickType_t endTick = startTick + durationTicks;
 
-    const TickType_t delayIntervalTicks = pdMS_TO_TICKS(200); // Keep interval as is, or adjust if needed
+    const TickType_t delayIntervalTicks = pdMS_TO_TICKS(actionDurationMillis / 2); // Keep interval as is, or adjust if needed
 
     // Update log message if desired
     Serial.println("Performing NeoPixelAction for " + String(actionDurationMillis) + " ms.");
