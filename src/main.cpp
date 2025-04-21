@@ -1,44 +1,36 @@
 #include <Arduino.h>
 #include "actions/PeriodicAction.h"
-#include "actions/PrintAction.h"
 #include "actions/NeoPixelAction.h"
-
-
-PeriodicAction<NeoPixelAction> periodicNeoPixelAction(30, 1);
-PeriodicAction<PrintAction> periodicPrintAction(10, 2);
-
-unsigned long programStartTime = 0;
-bool actionsStopped = false;
-const unsigned long stopAfterDuration = 300 * 1000UL; // 300 seconds in milliseconds
 
 void setup()
 {
   Serial.begin(115200);
-  while (!Serial)
-    delay(100); // Wait a bit for Serial to initialize
-  delay(1000); // Extra delay to allow serial monitor connection
+  delay(3000); 
+}
+
+void loop()
+{
+  PeriodicAction<NeoPixelAction> periodicNeoPixelAction(5000UL, 1000UL);
 
   Serial.println("Starting periodic actions...");
+
   periodicNeoPixelAction.start();
-  //periodicPrintAction.start();
+
   Serial.println("Periodic actions started.");
 
-  programStartTime = millis(); // Record the time when setup finishes and loop starts
-  while(true)
+  const unsigned long stopAfterDuration = 300000UL; // 5 minutes in milliseconds
+  unsigned long programStartTime = millis();;
+  bool actionsStopped = false;
+  while (true)
   {
     if (!actionsStopped && (millis() - programStartTime >= stopAfterDuration))
     {
       Serial.println("Five minutes have elapsed. Stopping periodic actions...");
       periodicNeoPixelAction.stop();
-      periodicPrintAction.stop();
       Serial.println("Periodic actions stopped.");
-      actionsStopped = true;   // Set the flag so we don't try to stop it again
+      actionsStopped = true;
     }
 
-    delay(10);
+    vTaskDelay(pdMS_TO_TICKS(10));
   }
-}
-
-void loop()
-{
 }

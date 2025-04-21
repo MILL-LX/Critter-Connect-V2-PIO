@@ -1,65 +1,55 @@
+// PeriodicAction.tpp (Illustrative changes)
+
 #include "PeriodicAction.h"
-#include "task.h"
+#include <Arduino.h> // For Serial prints if needed
 
 template <typename ActionType>
-PeriodicAction<ActionType>::PeriodicAction(
-    uint8_t actionPeriodSeconds,
-    uint8_t actionDurationSeconds)
-    : actionDurationSeconds(actionDurationSeconds),
-      actionPeriodSeconds(actionPeriodSeconds) {}
+PeriodicAction<ActionType>::PeriodicAction(uint32_t actionPeriodMillis,
+                                           uint32_t actionDurationMillis)
+    : actionPeriodMillis(actionPeriodMillis),
+      actionDurationMillis(actionDurationMillis),
+      actionInstance(){}
 
 template <typename ActionType>
-void PeriodicAction<ActionType>::start()
-{
-    if (taskHandle == nullptr)
-    {
+void PeriodicAction<ActionType>::start() {
+    if (taskHandle == nullptr) {
+        // Create the task
         xTaskCreate(
-            taskFunction,
-            "PeriodicActionTask",
-            1024, // Stack size in words
-            this,
-            1, // Task priority
-            &taskHandle);
+            taskFunction,           // Task function
+            "PeriodicActionTask",   // Name of the task
+            2048,                   // Stack size (adjust as needed)
+            this,                   // Parameter passed to the task
+            1,                      // Priority (adjust as needed)
+            &taskHandle             // Task handle
+        );
+        if (taskHandle == nullptr) {
+             Serial.println("Failed to create PeriodicAction task!");
+             // Handle error appropriately
+        }
     }
 }
 
 template <typename ActionType>
-void PeriodicAction<ActionType>::stop()
-{
-    if (taskHandle != nullptr)
-    {
+void PeriodicAction<ActionType>::stop() {
+    if (taskHandle != nullptr) {
         vTaskDelete(taskHandle);
         taskHandle = nullptr;
     }
 }
 
 template <typename ActionType>
-void PeriodicAction<ActionType>::taskFunction(void *parameters)
-{
-    auto *instance = static_cast<PeriodicAction<ActionType> *>(parameters);
+void PeriodicAction<ActionType>::taskFunction(void* parameters) {
+    PeriodicAction<ActionType>* params = static_cast<PeriodicAction<ActionType>*>(parameters);
 
-    bool actionPerformed = false;
-    TickType_t startTick = xTaskGetTickCount();
-    while (true)
-    {
-        TickType_t nowTick = xTaskGetTickCount();
-        TickType_t elapsedTicks = nowTick - startTick;
-        uint32_t elapsedSeconds = elapsedTicks / configTICK_RATE_HZ;
-        uint32_t secondsInCurrentPeriod = elapsedSeconds % instance->actionPeriodSeconds;
+    // Convert period from milliseconds to ticks
+    const TickType_t periodTicks = pdMS_TO_TICKS(params->actionPeriodMillis);
+    TickType_t lastWakeTime = xTaskGetTickCount(); // Initialize lastWakeTime
 
-        if (secondsInCurrentPeriod == 0 && !actionPerformed)
-        {
-            Serial.print("PeriodicActionPeriod Started: "); Serial.println(elapsedSeconds);
-
-            instance->actionInstance.performAction(instance->actionDurationSeconds);
-            actionPerformed = true;
-
-        }
-        else if (secondsInCurrentPeriod != 0)
-        {
-            actionPerformed = false;
-        }
-
-        vTaskDelay(pdMS_TO_TICKS(10));
+    while (true) {
+        Serial.println("Period starting...");
+        params->actionInstance.performAction(params->actionDurationMillis);
+        vTaskDelayUntil(&lastWakeTime, periodTicks);
+        Serial.println("Period ended.");
     }
 }
+

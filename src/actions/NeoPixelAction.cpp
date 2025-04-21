@@ -5,36 +5,42 @@
 #include "NeoPixelAction.h"
 #include "devices/NeoPixel.h"
 
-void NeoPixelAction::performAction(uint8_t actionDurationSeconds)
+// Accept duration in milliseconds
+void NeoPixelAction::performAction(uint32_t actionDurationMillis)
 {
     TickType_t startTick = xTaskGetTickCount();
-    TickType_t durationTicks = pdMS_TO_TICKS(actionDurationSeconds * 1000UL);
+    // Convert duration directly from milliseconds to ticks
+    TickType_t durationTicks = pdMS_TO_TICKS(actionDurationMillis);
     TickType_t endTick = startTick + durationTicks;
 
-    const TickType_t delayIntervalTicks = pdMS_TO_TICKS(200);
+    const TickType_t delayIntervalTicks = pdMS_TO_TICKS(200); // Keep interval as is, or adjust if needed
 
-    Serial.println("Performing NeoPixelAction for " + String(actionDurationSeconds) + " seconds.");
+    // Update log message if desired
+    Serial.println("Performing NeoPixelAction for " + String(actionDurationMillis) + " ms.");
     bool on = true;
     while (xTaskGetTickCount() < endTick)
     {
-
         NeoPixel::Color color = on ? _on_color: NeoPixel::Color::OFF;
         on = !on;
 
         _neoPixel.setColor(color);
 
         TickType_t currentTime = xTaskGetTickCount();
-        if ((endTick - currentTime) < delayIntervalTicks)
+        TickType_t remainingTime = (endTick > currentTime) ? (endTick - currentTime) : 0; // Prevent underflow
+
+        if (remainingTime == 0) {
+             break; // Exit if duration already passed
+        } else if (remainingTime < delayIntervalTicks)
         {
-            vTaskDelay(endTick - currentTime);
-            break;
+            vTaskDelay(remainingTime); // Delay for the exact remaining time
+            break; // Exit after final delay
         }
         else
         {
-            vTaskDelay(delayIntervalTicks);
+            vTaskDelay(delayIntervalTicks); // Delay for the standard interval
         }
     }
 
-    _neoPixel.setColor(NeoPixel::Color::OFF);
+    _neoPixel.setColor(NeoPixel::Color::OFF); // Ensure LED is off at the end
     Serial.println("Finished performing NeoPixelAction.");
 }
