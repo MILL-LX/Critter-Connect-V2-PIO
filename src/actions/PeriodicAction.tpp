@@ -39,20 +39,21 @@ void PeriodicAction<ActionType>::stop() {
 
 template <typename ActionType>
 void PeriodicAction<ActionType>::taskFunction(void* parameters) {
-    PeriodicAction<ActionType>* params = static_cast<PeriodicAction<ActionType>*>(parameters);
+    PeriodicAction<ActionType>* periodicAction = static_cast<PeriodicAction<ActionType>*>(parameters);
 
     // Convert period from milliseconds to ticks
-    const TickType_t periodTicks = pdMS_TO_TICKS(params->_actionPeriodMillis);
+    const TickType_t periodTicks = pdMS_TO_TICKS(periodicAction->_actionPeriodMillis);
     TickType_t lastWakeTime = xTaskGetTickCount(); // Initialize lastWakeTime
 
-    params->_continueAction = true;
-    while (params->_continueAction) {
+    periodicAction->_continueAction = true;
+    while (periodicAction->_continueAction) {
         Serial.println("Period starting...");
-        params->_actionInstance.performAction(params->_actionDurationMillis);
+        periodicAction->_actionInstance.performAction(periodicAction->_actionDurationMillis);
         vTaskDelayUntil(&lastWakeTime, periodTicks);
         Serial.println("Period ended.");
     }
 
-    vTaskDelete(params->_taskHandle);
-    params->_taskHandle = nullptr;
+    Serial.println("PeriodicAction Task self-deleting after completing final cycle.");
+    vTaskDelete(nullptr);
+    periodicAction->_taskHandle = nullptr;
 }
