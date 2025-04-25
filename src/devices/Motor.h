@@ -1,5 +1,6 @@
 #pragma once
 
+#include "FreeRTOS.h"
 #include "task.h"
 
 #include <AccelStepper.h>
@@ -70,7 +71,7 @@ public:
             if (_stepper->distanceToGo() == 0) {
                 // Check if the stepper is truly done by checking current position
                 // This is a more robust check after run() has potentially completed the move
-                if (_stepper->currentPosition() == stepsInFullRange) {
+                if (_stepper->currentPosition() == motorPositiion) {
                    Serial.println("Reached motor position target.");
                    break;
                 }
@@ -79,8 +80,8 @@ public:
              // Move the motor
              _stepper->run();
 
-             // Don't monopolize the cpu
-             vTaskDelay(1);
+            // Don't monopolize the cpu
+            vTaskDelay(1);
         }
 
         disable();
