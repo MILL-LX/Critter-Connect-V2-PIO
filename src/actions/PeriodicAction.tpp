@@ -63,7 +63,7 @@ void PeriodicAction<ActionType>::taskFunction(void *parameters)
     periodicAction->_continueAction.store(true);
     while (runUntilExplicitlyStopped || (iterationsLeft && periodicAction->_continueAction.load()))
     {
-        String message = "Period of " + String(periodicAction->_actionPeriodMillis) + " millis running for " + (runUntilExplicitlyStopped ? "unknown" : String(iterationsLeft))+ " more iterations.";
+        String message = "Period of " + String(periodicAction->_actionPeriodMillis) + " millis running for " + (runUntilExplicitlyStopped ? "unlimited" : String(iterationsLeft))+ " more iterations.";
         Serial.println(message);
 
         TickType_t periodStartTime = xTaskGetTickCount();

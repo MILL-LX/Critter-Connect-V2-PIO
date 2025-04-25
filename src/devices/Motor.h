@@ -10,8 +10,8 @@ const int defaultStepPin = 19;
 const int defaultDirectionPin = 13;
 
 const long stepsInFullRange = 14000;
-const long maxSpeed = 20000;
-const long acceleration = 10000;
+const long maxSpeed = 40000 /*20000*/;
+const long acceleration = 10000 /*10000*/;
 
 class Motor
 {
@@ -45,6 +45,7 @@ public:
         Serial.println(_stepper->currentPosition());
         Serial.print("Target steps: +/- ");
         Serial.println(stepsInFullRange);
+        Serial.println("\n\n");
     };
 
     void enable()
@@ -81,7 +82,7 @@ public:
              _stepper->run();
 
             // Don't monopolize the cpu
-            vTaskDelay(1);
+            taskYIELD();
         }
 
         disable();
