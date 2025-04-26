@@ -5,6 +5,8 @@
 
 #include "StartupTest.h"
 
+#include "devices/SoundPlayer.h"
+
 void setup()
 {
   delay(2000); // let USB mount
@@ -16,10 +18,12 @@ void setup()
 
 void loop()
 {
-  startupTest();
+  //startupTest();
+  SoundPlayer sp;
 
   while(true) {
+    sp.playSound(SoundPlayer::Sound::TEST_TONE);
     Serial.println("Main loop doing nothing...");
-    vTaskDelay(pdMS_TO_TICKS(2000));
+    vTaskDelay(pdMS_TO_TICKS(500));
   }
 }
