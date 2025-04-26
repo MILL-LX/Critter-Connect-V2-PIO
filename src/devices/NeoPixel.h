@@ -27,6 +27,14 @@ public:
         setColor(OFF);
     };
 
+    ~NeoPixel() {
+        if (_strip) {
+            setColor(StateColor::OFF);
+            delete _strip;
+            _strip = nullptr;
+        }
+    }
+
 private:
     Adafruit_NeoPixel *_strip;
 };

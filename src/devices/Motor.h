@@ -48,6 +48,15 @@ public:
         Serial.println("\n\n");
     };
 
+    ~Motor()
+    {
+        if (_stepper != nullptr)
+        {
+            delete _stepper;
+            _stepper = nullptr;
+        }
+    }
+
     void enable()
     {
         Serial.println("Enabling motor driver.");
@@ -62,24 +71,28 @@ public:
         delay(5);
     }
 
-    void moveFullRangeInDirection(Direction direction) {
+    void moveFullRangeInDirection(Direction direction)
+    {
         enable();
 
         long motorPositiion = direction == FORWARD ? stepsInFullRange : 0;
         _stepper->moveTo(motorPositiion);
 
-        while(true) {
-            if (_stepper->distanceToGo() == 0) {
+        while (true)
+        {
+            if (_stepper->distanceToGo() == 0)
+            {
                 // Check if the stepper is truly done by checking current position
                 // This is a more robust check after run() has potentially completed the move
-                if (_stepper->currentPosition() == motorPositiion) {
-                   Serial.println("Reached motor position target.");
-                   break;
+                if (_stepper->currentPosition() == motorPositiion)
+                {
+                    Serial.println("Reached motor position target.");
+                    break;
                 }
-             }
+            }
 
-             // Move the motor
-             _stepper->run();
+            // Move the motor
+            _stepper->run();
 
             // Don't monopolize the cpu
             taskYIELD();

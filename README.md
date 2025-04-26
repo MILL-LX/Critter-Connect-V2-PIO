@@ -194,3 +194,7 @@ playMode = (const char*)str[10];
 - **DFRobot** for the DFPlayer Pro MP3 module.
 - **Seeed Studio** for the L76K GNSS module.
 - **Adafruit** for the TB6612 1.2A DC/Stepper Motor Driver.
+
+## TODO
+
+- Split some headers into separate .h and .cpp files
