@@ -22,7 +22,7 @@ void loop()
   SoundPlayer sp;
 
   while(true) {
-    sp.playSound(SoundPlayer::Sound::TEST_TONE);
+    sp.playSound(SoundPlayer::Sound::SPECIES_2);
     Serial.println("Main loop doing nothing...");
     vTaskDelay(pdMS_TO_TICKS(500));
   }

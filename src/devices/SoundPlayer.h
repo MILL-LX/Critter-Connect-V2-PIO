@@ -11,25 +11,19 @@ class SoundPlayer
 public:
     enum Sound
     {
-        TEST_TONE = 0,
-        SPECIES_1,
-        SPECIES_2,
-        NUM_SOUNDS
+
+        SPECIES_1 = 1,
+        SPECIES_2 = 3,
+        TEST_TONE = 5
     };
 
     void playSound(Sound sound)
     {
-        int soundFileNum = static_cast<int>(sound) + 1;
-        if (soundFileNum < 0 || soundFileNum >= NUM_SOUNDS)
-        {
-            Serial.println("Error: Invalid sound enum value.");
-            return;
-        }
-
+        int soundFileNum = static_cast<int>(sound);
         if (!_soundPlayer.isPlaying())
         {
             Serial.println("Starting to play sound file number " + String(soundFileNum));
-            _soundPlayer.playFileNum(2);
+            _soundPlayer.playFileNum(soundFileNum);
 
             while (_soundPlayer.isPlaying())
                 delay(500);
