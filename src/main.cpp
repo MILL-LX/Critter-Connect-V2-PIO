@@ -5,7 +5,6 @@
 
 #include "StartupTest.h"
 
-#include "devices/SoundPlayer.h"
 
 void setup()
 {
@@ -20,7 +19,8 @@ void loop()
 {
   startupTest();
 
-  while(true) {
+  while (true)
+  {
     Serial.println("Main loop doing nothing...");
     vTaskDelay(pdMS_TO_TICKS(500));
   }
