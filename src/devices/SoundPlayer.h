@@ -1,5 +1,8 @@
 #pragma once
 
+#include "FreeRTOS.h"
+#include "task.h"
+
 #include <SoftwareSerial.h>
 #include <DFRobot_DF1201S.h>
 
@@ -24,14 +27,6 @@ public:
         {
             Serial.println("Starting to play sound file number " + String(soundFileNum));
             _soundPlayer.playFileNum(soundFileNum);
-
-            while (_soundPlayer.isPlaying())
-                delay(500);
-
-            // Add some voodoo to make it play something other than the first file
-            _soundPlayer.pause();
-            _soundPlayer.next();
-            _soundPlayer.pause();
         }
         else
         {

@@ -1,6 +1,7 @@
 #include "actions/PeriodicAction.h"
 #include "actions/NeoPixelAction.h"
 #include "actions/MotorAction.h"
+#include "devices/SoundPlayer.h"
 
 #include "StartupTest.h"
 
@@ -14,6 +15,10 @@ void startupTest() {
     // Every 10 seconds move the motor for 10 seconds. Run until explicitly stopped.
     PeriodicAction<MotorAction> periodicMotorAction(10000UL, UINT32_MAX, 10000UL);
     periodicMotorAction.start();
+
+    // Play the test tone sound. Will Play until finished.
+    SoundPlayer soundPlayer;
+    soundPlayer.playSound(SoundPlayer::Sound::TEST_TONE);
   
     // Let the tests run for 30 seconds
     vTaskDelay(pdMS_TO_TICKS(30000));

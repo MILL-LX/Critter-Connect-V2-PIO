@@ -18,11 +18,9 @@ void setup()
 
 void loop()
 {
-  //startupTest();
-  SoundPlayer sp;
+  startupTest();
 
   while(true) {
-    sp.playSound(SoundPlayer::Sound::SPECIES_2);
     Serial.println("Main loop doing nothing...");
     vTaskDelay(pdMS_TO_TICKS(500));
   }
