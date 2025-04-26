@@ -20,8 +20,8 @@ void startupTest() {
     SoundPlayer soundPlayer;
     soundPlayer.playSound(SoundPlayer::Sound::TEST_TONE);
   
-    // Let the tests run for 30 seconds
-    vTaskDelay(pdMS_TO_TICKS(30000));
+    // Let the tests run for 10 seconds
+    vTaskDelay(pdMS_TO_TICKS(10000));
   
     // Stop all the actions
     Serial.println("Stopping test actions...");
