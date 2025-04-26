@@ -24,7 +24,7 @@ void startupTest() {
     periodicMotorAction.stop();
   
     // Wait for the actions to stop
-    // MOFIX - maybe add a boolean to say whether an action is still running
+    // MOFIX - maybe add a boolean to say whether an action is still running instead of using a delay
     Serial.println("Waiting for test actions to stop...");
     vTaskDelay(pdMS_TO_TICKS(10000));
   

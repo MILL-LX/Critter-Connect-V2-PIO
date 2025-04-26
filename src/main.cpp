@@ -19,7 +19,7 @@ void loop()
   startupTest();
 
   while(true) {
-    Serial.println("Main loop waiting...");
+    Serial.println("Main loop doing nothing...");
     vTaskDelay(pdMS_TO_TICKS(2000));
   }
 }
