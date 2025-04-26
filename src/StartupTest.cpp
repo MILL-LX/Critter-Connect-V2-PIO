@@ -9,7 +9,7 @@ void startupTest() {
     Serial.println("Starting Startup Tests...");
   
     // Every 10 seconds, blink OK colorfor 3 seconds. Run until explicitly stopped.
-    PeriodicAction<NeoPixelAction> periodicNeoPixelAction(10000UL, UINT32_MAX, 3000UL, NeoPixel::StateColor::OK);
+    PeriodicAction<NeoPixelAction> periodicNeoPixelAction(2000UL, UINT32_MAX, 2000UL, NeoPixel::StateColor::OK);
     periodicNeoPixelAction.start();
   
     // Every 10 seconds move the motor for 10 seconds. Run until explicitly stopped.

@@ -1,5 +1,3 @@
-#include "SpeciesCoordinates.h"
-
 class SpeciesProximityChecker
 {
 public:
