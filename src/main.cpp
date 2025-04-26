@@ -1,8 +1,9 @@
 
 #include <Arduino.h>
-#include "actions/PeriodicAction.h"
-#include "actions/NeoPixelAction.h"
-#include "actions/MotorAction.h"
+#include "FreeRTOS.h"
+#include "task.h"
+
+#include "StartupTest.h"
 
 void setup()
 {
@@ -15,18 +16,10 @@ void setup()
 
 void loop()
 {
-  Serial.println("Creating PeriodicActions...");
-  PeriodicAction<NeoPixelAction> periodicNeoPixelAction(10000UL, 30 /* UINT32_MAX */, 3000UL, NeoPixel::StateColor::OK);
-  PeriodicAction<MotorAction> periodicMotorAction(60000UL, 3, 10000UL);
-  vTaskDelay(pdMS_TO_TICKS(2000));
-
-
-  Serial.println("Starting PeriodicActions...");
-  periodicNeoPixelAction.start();
-  periodicMotorAction.start();
-  Serial.println("PeriodicActions started.");
+  startupTest();
 
   while(true) {
+    Serial.println("Main loop waiting...");
     vTaskDelay(pdMS_TO_TICKS(2000));
   }
 }

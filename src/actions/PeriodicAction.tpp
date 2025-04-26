@@ -61,7 +61,7 @@ void PeriodicAction<ActionType>::taskFunction(void *parameters)
     uint32_t iterationsLeft = periodicAction->_actionPeriodIterations;
     bool runUntilExplicitlyStopped = iterationsLeft == UINT32_MAX;
     periodicAction->_continueAction.store(true);
-    while (runUntilExplicitlyStopped || (iterationsLeft && periodicAction->_continueAction.load()))
+    while ((runUntilExplicitlyStopped || iterationsLeft) && periodicAction->_continueAction.load())
     {
         String message = "Period of " + String(periodicAction->_actionPeriodMillis) + " millis running for " + (runUntilExplicitlyStopped ? "unlimited" : String(iterationsLeft))+ " more iterations.";
         Serial.println(message);
@@ -77,6 +77,8 @@ void PeriodicAction<ActionType>::taskFunction(void *parameters)
     }
 
     Serial.println("PeriodicAction Task self-deleting.");
+    vTaskDelay(pdMS_TO_TICKS(100));
+
     periodicAction->_taskHandle = nullptr;
     vTaskDelete(nullptr);
 }
