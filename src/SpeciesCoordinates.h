@@ -1,11 +1,13 @@
-struct SpeciesCoordinates
+#pragma once
+
+struct SpeciesCoordinate
 {
-  float longitude; // Longitude of bird location
-  float latitude;  // Latitude of bird location
-  int species;     // Species ID
+    float longitude; // Longitude of bird location
+    float latitude;  // Latitude of bird location
+    int species;     // Species ID
 };
 
-static SpeciesCoordinates speciesCoordinates[] = {
+static SpeciesCoordinate speciesCoordinates[] = {
     // MOFIX - test locations in Lisbon
     {-9.156067344999594, 38.71925441818425, 1}, // TEST LOCATION 2
     {-9.141010, 38.719576, 1},                  // MILL

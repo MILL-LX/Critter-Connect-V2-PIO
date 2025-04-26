@@ -60,7 +60,7 @@ int numCoordinates;
 CoordinatesBirds *coordinates;
 
 // Earth's radius in meters for Haversine distance calculation
-const float R = 6371000;
+const float earthRadius = 6371000;
 
 // Function prototypes
 CoordinatesBirds *loadCoordinatesFiles(int &numCoordinates);
@@ -346,7 +346,7 @@ float haversineDistance(float lat1, float lon1, float lat2, float lon2)
   float c = 2 * atan2(sqrt(a), sqrt(1 - a));
 
   // Distance in meters
-  float distance = R * c;
+  float distance = earthRadius * c;
 
   return distance;
 }
