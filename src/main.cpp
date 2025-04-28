@@ -4,7 +4,9 @@
 #include "task.h"
 
 #include "StartupTest.h"
+#include "ApplicationStateManager.h"
 
+ApplicationStateManager app;
 
 void setup()
 {
@@ -19,9 +21,6 @@ void loop()
 {
   startupTest();
 
-  while (true)
-  {
-    Serial.println("Main loop doing nothing...");
-    vTaskDelay(pdMS_TO_TICKS(500));
-  }
+  // This runs forever
+  app.start();
 }

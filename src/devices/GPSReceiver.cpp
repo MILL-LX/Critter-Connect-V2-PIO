@@ -1,52 +1,62 @@
+#include "FreeRTOS.h"
+#include "task.h"
+
 #include <TinyGPSPlus.h>
 
-#include "GPSReceiver.h"
+#include "devices/GPSReceiver.h"
 
 TinyGPSPlus gps;
 
 void GPSReceiver::update()
 {
-    // MOFIX - Lock the data structure
-
-    // Read all available characters
     while (_serial.available() > 0)
     {
         char c = _serial.read();
 
-        // When we have a fully formed reading, lock our data snapshot and parse the data into it.
         if (gps.encode(c))
         {
-            if (_data.locationValid = gps.location.isValid())
+            GPSData tempData;
+
+            tempData.locationValid = gps.location.isValid();
+            if (tempData.locationValid)
             {
-                _data.lat = gps.location.lat();
-                _data.lon = gps.location.lng();
+                tempData.lat = gps.location.lat();
+                tempData.lon = gps.location.lng();
             }
 
-            if (_data.dateValid = gps.date.isValid())
+            tempData.dateValid = gps.date.isValid();
+            if (tempData.dateValid)
             {
-                _data.year = gps.date.year();
-                _data.month = gps.date.month();
-                _data.day = gps.date.day();
+                tempData.year = gps.date.year();
+                tempData.month = gps.date.month();
+                tempData.day = gps.date.day();
             }
 
-            if (_data.timeValid = gps.time.isValid())
+            tempData.timeValid = gps.time.isValid();
+            if (tempData.timeValid)
             {
-                _data.year = gps.time.hour();
-                _data.minute = gps.time.minute();
-                _data.second = gps.time.second();
-                _data.centisecond = gps.time.centisecond();
+                tempData.hour = gps.time.hour();
+                tempData.minute = gps.time.minute();
+                tempData.second = gps.time.second();
+                tempData.centisecond = gps.time.centisecond();
             }
 
-            _data.dataReady = (_data.locationValid || _data.dateValid || _data.timeValid);
+            tempData.dataReady = (tempData.locationValid || tempData.dateValid || tempData.timeValid);
+
+            taskENTER_CRITICAL();
+            _data = tempData;
+            taskEXIT_CRITICAL();
         }
     }
-
-    // MOFIX - Unlock the data structure
 }
 
 GPSData GPSReceiver::readData()
 {
-    // MOFIX - Lock the data structure
-    return _data;
-    // MOFIX - Unlock the data structure
+    GPSData copy;
+
+    taskENTER_CRITICAL();
+    copy = _data;
+    taskEXIT_CRITICAL();
+    
+    return copy;
 }
