@@ -3,6 +3,7 @@
 #include <Arduino.h>
 
 // These are the RX/TX pins on the Adafruit Feather Pico and they correspond to Serial1
+// These definitions currently serve as documentation only.
 const int defaultRXPin = 0;
 const int defaultTXPin = 1;
 const SerialUART defaultSerial = Serial1;
