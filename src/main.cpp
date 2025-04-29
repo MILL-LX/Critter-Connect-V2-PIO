@@ -14,13 +14,12 @@ void setup()
   Serial.begin(115200);
   delay(2000); // let Serial Stabilize
 
-  Serial.println("Setup complete.");
+  Serial.println("Setup complete. Running startup tests...");
+  startupTest();
 }
 
 void loop()
 {
-  //startupTest();
-
   // This runs forever
-  app.start();
+  app.run();
 }

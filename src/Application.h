@@ -1,9 +1,10 @@
+#include <atomic>
+
 class Application
 {
 public:
-    Application() : _is_running(false) {}
-    void start();
+    void run();
 
 private:
-    bool _is_running;
+    std::atomic<bool> _is_running{false};
 };
