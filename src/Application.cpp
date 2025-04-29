@@ -1,8 +1,8 @@
 #include <Arduino.h>
 
-#include "ApplicationStateManager.h"
+#include "Application.h"
 
-void ApplicationStateManager::start() {
+void Application::start() {
     if(_is_running) {
         Serial.println("Application already running, ignoring start().");
         return;

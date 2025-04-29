@@ -4,9 +4,9 @@
 #include "task.h"
 
 #include "StartupTest.h"
-#include "ApplicationStateManager.h"
+#include "Application.h"
 
-ApplicationStateManager app;
+Application app;
 
 void setup()
 {
@@ -19,7 +19,7 @@ void setup()
 
 void loop()
 {
-  startupTest();
+  //startupTest();
 
   // This runs forever
   app.start();
