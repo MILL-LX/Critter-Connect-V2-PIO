@@ -1,18 +1,20 @@
-#include "FreeRTOS.h"
-#include "task.h"
-
 #include <TinyGPSPlus.h>
 
 #include "devices/GPSReceiver.h"
+
+SerialUART *defaultSerial = &Serial1;
 
 TinyGPSPlus gps;
 
 void GPSReceiver::update()
 {
-    while (_serial.available() > 0)
-    {
-        char c = _serial.read();
+    long availableCharacters = _serial->available();
+    Serial.printf("%u GPS characters are available.", availableCharacters);
+    return;
 
+    while (availableCharacters > 0)
+    {
+        char c = _serial->read();
         if (gps.encode(c))
         {
             GPSData tempData;
@@ -42,21 +44,13 @@ void GPSReceiver::update()
             }
 
             tempData.dataReady = (tempData.locationValid || tempData.dateValid || tempData.timeValid);
-
-            taskENTER_CRITICAL();
             _data = tempData;
-            taskEXIT_CRITICAL();
         }
     }
 }
 
-GPSData GPSReceiver::readData()
+GPSReceiver::GPSData GPSReceiver::readData()
 {
-    GPSData copy;
-
-    taskENTER_CRITICAL();
-    copy = _data;
-    taskEXIT_CRITICAL();
-    
-    return copy;
+    update();
+    return _data;
 }

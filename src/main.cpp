@@ -15,7 +15,7 @@ void setup()
   delay(2000); // let Serial Stabilize
 
   Serial.println("Setup complete. Running startup tests...");
-  startupTest();
+  //MOFIX startupTest();
 }
 
 void loop()
