@@ -3,8 +3,8 @@
 #include "FreeRTOS.h"
 #include "task.h"
 
-#include "StartupTest.h"
-#include "Application.h"
+#include "app/StartupTest.h"
+#include "app/Application.h"
 
 Application app;
 
