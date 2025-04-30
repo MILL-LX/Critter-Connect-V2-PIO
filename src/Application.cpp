@@ -8,7 +8,7 @@
 
 // We don't need to update our location very frequently since
 // the GPS receiver is with a person who is walking.
-const ulong gpsCheckIntervalMillis = 1000;
+const ulong gpsCheckIntervalMillis = 60000;
 
 GPSReceiver *gpsReceiver = nullptr;
 
@@ -41,7 +41,7 @@ void Application::run()
             Serial.println("GPS Data Not Found...");
             long timeSinceFound = currentMillis - lastFound;
 
-            if(timeSinceFound > 10000)
+            if(timeSinceFound > 600000)
                 Serial.println("It's been too long since we got a location update.");
         }
 

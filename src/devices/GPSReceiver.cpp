@@ -8,14 +8,9 @@ TinyGPSPlus gps;
 
 void GPSReceiver::update()
 {
-    long availableCharacters = _serial->available();
-    Serial.printf("%u GPS characters are available.", availableCharacters);
-    return;
-
-    while (availableCharacters > 0)
+    while (_serial->available() > 0)
     {
-        char c = _serial->read();
-        if (gps.encode(c))
+        if (gps.encode(_serial->read()))
         {
             GPSData tempData;
 
@@ -47,6 +42,7 @@ void GPSReceiver::update()
             _data = tempData;
         }
     }
+    Serial.println();
 }
 
 GPSReceiver::GPSData GPSReceiver::readData()
