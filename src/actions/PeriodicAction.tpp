@@ -6,11 +6,9 @@ template <typename ActionType>
 template <typename... ActionArgs>
 PeriodicAction<ActionType>::PeriodicAction(uint32_t actionPeriodMillis,
                                            uint32_t actionPeriodIterations,
-                                           uint32_t actionDurationMillis,
                                            ActionArgs &&...args)
     : _actionPeriodMillis(actionPeriodMillis),
       _actionPeriodIterations(actionPeriodIterations),
-      _actionDurationMillis(actionDurationMillis),
       _actionInstance(std::forward<ActionArgs>(args)...)
 {
 }
@@ -68,7 +66,7 @@ void PeriodicAction<ActionType>::taskFunction(void *parameters)
 
         TickType_t periodStartTime = xTaskGetTickCount();
 
-        periodicAction->_actionInstance.performAction(periodicAction->_actionDurationMillis);
+        periodicAction->_actionInstance.performAction();
         vTaskDelayUntil(&lastWakeTime, periodTicks);
 
         Serial.println("Period ended after " + String(pdTICKS_TO_MS(xTaskGetTickCount() - periodStartTime)) + " millis.\n");

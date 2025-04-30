@@ -20,7 +20,7 @@ void setup()
 void loop()
 {
   // Every 10 seconds check for a location update for 1 second
-  PeriodicAction<GPSReceiverAction> periodicGPSReceiverAction(10000UL, UINT32_MAX, 1000UL);
+  PeriodicAction<GPSReceiverAction> periodicGPSReceiverAction(10000UL, UINT32_MAX);
   periodicGPSReceiverAction.start();
 
   while(true)

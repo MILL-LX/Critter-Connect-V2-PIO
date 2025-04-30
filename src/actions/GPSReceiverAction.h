@@ -5,7 +5,7 @@
 class GPSReceiverAction
 {
 public:
-    void performAction(uint32_t actionDurationMillis);
+    void performAction();
 
 private:
     std::atomic<bool> _is_running{false};

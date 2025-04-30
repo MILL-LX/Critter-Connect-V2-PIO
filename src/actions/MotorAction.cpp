@@ -4,13 +4,13 @@
 
 #include "MotorAction.h"
 
-void MotorAction::performAction(uint32_t actionDurationMillis)
+void MotorAction::performAction()
 {
-    TickType_t durationTicks = pdMS_TO_TICKS(actionDurationMillis);
+    TickType_t durationTicks = pdMS_TO_TICKS(_durationMillis);
     TickType_t startTick = xTaskGetTickCount();
     TickType_t endTick = startTick + durationTicks;
 
-    Serial.println("Performing MotorAction for " + String(actionDurationMillis) + " ms.");
+    Serial.printf("Performing MotorAction for %ums.\n", _durationMillis);
     
     Motor::Direction direction = Motor::Direction::FORWARD;
     while (xTaskGetTickCount() < endTick)

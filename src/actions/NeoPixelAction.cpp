@@ -5,16 +5,16 @@
 #include "NeoPixelAction.h"
 #include "devices/NeoPixel.h"
 
-void NeoPixelAction::performAction(uint32_t actionDurationMillis)
+void NeoPixelAction::performAction()
 {
     TickType_t startTick = xTaskGetTickCount();
     // Convert duration directly from milliseconds to ticks
-    TickType_t durationTicks = pdMS_TO_TICKS(actionDurationMillis);
+    TickType_t durationTicks = pdMS_TO_TICKS(_durationMillis);
     TickType_t endTick = startTick + durationTicks;
 
-    const TickType_t delayIntervalTicks = pdMS_TO_TICKS(actionDurationMillis / 2);
+    const TickType_t delayIntervalTicks = durationTicks / 2;
 
-    Serial.println("Performing NeoPixelAction for " + String(actionDurationMillis) + " ms.");
+    Serial.println("Performing NeoPixelAction for " + String(_durationMillis) + " ms.");
     bool on = true;
     while (xTaskGetTickCount() < endTick)
     {

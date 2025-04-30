@@ -12,7 +12,7 @@ const ulong gpsCheckIntervalMillis = 60000;
 
 GPSReceiver *gpsReceiver = nullptr;
 
-void GPSReceiverAction::performAction(uint32_t actionDurationMillis)
+void GPSReceiverAction::performAction()
 {
     if (_is_running.load())
     {

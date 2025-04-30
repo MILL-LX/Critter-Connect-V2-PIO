@@ -18,7 +18,7 @@ void startupTest() {
 
     // Play the test tone sound. Will Play until finished.
     SoundPlayer soundPlayer;
-    //soundPlayer.playSound(SoundPlayer::Sound::TEST_TONE);
+    soundPlayer.playSound(SoundPlayer::Sound::TEST_TONE);
   
     // Let the tests run for 9 seconds
     vTaskDelay(pdMS_TO_TICKS(9000));
