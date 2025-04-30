@@ -3,7 +3,6 @@
 #include "devices/GPSReceiver.h"
 
 SerialUART *defaultSerial = &Serial1;
-
 TinyGPSPlus gps;
 
 void GPSReceiver::update()
@@ -12,6 +11,8 @@ void GPSReceiver::update()
     {
         if (gps.encode(_serial->read()))
         {
+            Serial.print("GPS data successfully decoded.");
+
             GPSData tempData;
 
             tempData.locationValid = gps.location.isValid();
@@ -42,7 +43,6 @@ void GPSReceiver::update()
             _data = tempData;
         }
     }
-    Serial.println();
 }
 
 GPSReceiver::GPSData GPSReceiver::readData()
