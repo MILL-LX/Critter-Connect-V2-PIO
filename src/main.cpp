@@ -4,9 +4,8 @@
 #include "task.h"
 
 #include "app/StartupTest.h"
-#include "app/Application.h"
-
-Application app;
+#include "actions/PeriodicAction.h"
+#include "actions/GPSReceiverAction.h"
 
 void setup()
 {
@@ -20,6 +19,13 @@ void setup()
 
 void loop()
 {
-  // This runs forever
-  app.run();
+  // Every 10 seconds check for a location update for 1 second
+  PeriodicAction<GPSReceiverAction> periodicGPSReceiverAction(10000UL, UINT32_MAX, 1000UL);
+  periodicGPSReceiverAction.start();
+
+  while(true)
+  {
+    Serial.println("Main thread is just waiting...");
+    vTaskDelay(pdMS_TO_TICKS(60000));
+  }
 }

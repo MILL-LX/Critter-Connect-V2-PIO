@@ -3,8 +3,8 @@
 #include <FreeRTOS.h>
 #include "task.h"
 
-#include "Application.h"
-#include "SpeciesProximityChecker.h"
+#include "GPSReceiverAction.h"
+#include "app/SpeciesProximityChecker.h"
 
 // We don't need to update our location very frequently since
 // the GPS receiver is with a person who is walking.
@@ -12,7 +12,7 @@ const ulong gpsCheckIntervalMillis = 60000;
 
 GPSReceiver *gpsReceiver = nullptr;
 
-void Application::run()
+void GPSReceiverAction::performAction(uint32_t actionDurationMillis)
 {
     if (_is_running.load())
     {
@@ -51,7 +51,7 @@ void Application::run()
 }
 
 SpeciesProximityChecker checker;
-void Application::processLocationUpdate(GPSReceiver::GPSData gpsData)
+void GPSReceiverAction::processLocationUpdate(GPSReceiver::GPSData gpsData)
 {
     switch (checker.checkProximity(gpsData.lat, gpsData.lon))
     {

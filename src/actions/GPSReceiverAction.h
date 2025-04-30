@@ -2,10 +2,10 @@
 
 #include "devices/GPSReceiver.h"
 
-class Application
+class GPSReceiverAction
 {
 public:
-    void run();
+    void performAction(uint32_t actionDurationMillis);
 
 private:
     std::atomic<bool> _is_running{false};
