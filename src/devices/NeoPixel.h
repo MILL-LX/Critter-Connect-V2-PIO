@@ -11,6 +11,7 @@ public:
     enum StateColor
     {
         OFF = 0x000000,
+        TEST = 0x00ff00,
         WARN = 0xff0000,
         OK = 0xffffff
     };
