@@ -4,7 +4,7 @@
 #include "task.h"
 
 #include "Application.h"
-#include "devices/GPSReceiver.h"
+#include "SpeciesProximityChecker.h"
 
 // We don't need to update our location very frequently since
 // the GPS receiver is with a person who is walking.
@@ -19,7 +19,8 @@ void Application::run()
         Serial.println("Application already running, ignoring run().");
         return;
     }
-    else {
+    else
+    {
         Serial.println("Application starting...");
         gpsReceiver = new GPSReceiver();
     }
@@ -31,21 +32,34 @@ void Application::run()
 
         Serial.printf("Checking for location update at %u...\n", currentMillis);
         GPSReceiver::GPSData gpsData = gpsReceiver->readData();
-        if(gpsData.dataReady)
+        if (gpsData.locationValid)
         {
-            Serial.println("GPS Data Found, upddating application state...");
+            Serial.println("GPS Location Data Found, upddating application state...");
             lastFound = currentMillis;
+
+            processLocationUpdate(gpsData);
         }
         else
         {
-            Serial.println("GPS Data Not Found...");
             long timeSinceFound = currentMillis - lastFound;
-
-            if(timeSinceFound > 600000)
-                Serial.println("It's been too long since we got a location update.");
+            Serial.printf("GPS Data not found for %ums...", timeSinceFound);
         }
 
         Serial.printf("Waiting %ums for next location check...\n", gpsCheckIntervalMillis);
         vTaskDelay(pdMS_TO_TICKS(gpsCheckIntervalMillis));
+    }
+}
+
+SpeciesProximityChecker checker;
+void Application::processLocationUpdate(GPSReceiver::GPSData gpsData)
+{
+    switch (checker.checkProximity(gpsData.lat, gpsData.lon))
+    {
+    case SpeciesProximityChecker::OUTSIDE_ZONES:
+        break;
+    case SpeciesProximityChecker::IN_ZONE_SPECIES_1:
+        break;
+    case SpeciesProximityChecker::IN_ZONE_SPECIES_2:
+        break;
     }
 }
