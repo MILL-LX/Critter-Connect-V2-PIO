@@ -5,54 +5,101 @@
 
 #include "GPSReceiverAction.h"
 #include "app/SpeciesProximityChecker.h"
+#include "devices/GPSReceiver.h" // Include the header for GPSData definition
+
+void debugDumpGPSData(GPSReceiver::GPSData data)
+{
+    Serial.println("--- GPS Data Dump ---");
+    Serial.printf("Data Ready: %s\n", data.dataReady ? "Yes" : "No");
+
+    Serial.printf("Location Valid: %s\n", data.locationValid ? "Yes" : "No");
+    if (data.locationValid)
+    {
+        Serial.printf("  Latitude: %.6f\n", data.lat); // Use %.6f for float precision
+        Serial.printf("  Longitude: %.6f\n", data.lon);
+    }
+
+    Serial.printf("Date Valid: %s\n", data.dateValid ? "Yes" : "No");
+    if (data.dateValid)
+    {
+        Serial.printf("  Date: %04d-%02d-%02d\n", data.year, data.month, data.day); // Format YYYY-MM-DD
+    }
+
+    Serial.printf("Time Valid: %s\n", data.timeValid ? "Yes" : "No");
+    if (data.timeValid)
+    {
+        Serial.printf("  Time: %02d:%02d:%02d.%02d\n", data.hour, data.minute, data.second, data.centisecond); // Format HH:MM:SS.CS
+    }
+    Serial.println("--- End GPS Data Dump ---");
+}
 
 // We don't need to update our location very frequently since
 // the GPS receiver is with a person who is walking.
 const ulong gpsCheckIntervalMillis = 10000;
-
 GPSReceiver *gpsReceiver = nullptr;
-
 void GPSReceiverAction::performAction()
 {
     if (_is_running.load())
     {
-        Serial.println("Application already running, ignoring run().");
+        Serial.println("GPSReceiverAction already running, ignoring run().");
         return;
     }
     else
     {
-        Serial.println("Application starting...");
-        gpsReceiver = new GPSReceiver();
+        Serial.println("GPSReceiverAction starting...");
+        if (gpsReceiver == nullptr) {
+             gpsReceiver = new GPSReceiver();
+        }
+        _is_running.store(true); // Set the flag indicating it's running
     }
 
-    long lastFound = 0;
-    while (true)
+    long lastFound = 0; // Initialize lastFound, perhaps with millis() if needed immediately
+    while (_is_running.load()) // Check the atomic flag to allow stopping the loop
     {
-        long currentMillis = millis();
+        ulong currentMillis = millis();
 
-        Serial.printf("\n\nChecking for location update at %u...\n", currentMillis);
+        Serial.printf("\n\nChecking for location update at %lu...\n", currentMillis);
         GPSReceiver::GPSData gpsData = gpsReceiver->readData();
+        debugDumpGPSData(gpsData);
+
         if (gpsData.locationValid)
         {
-            Serial.println("GPS Location Data Found, upddating application state...");
+            Serial.println("GPS Location Data Found, updating application state...");
             lastFound = currentMillis;
 
             processLocationUpdate(gpsData);
         }
         else
         {
-            long timeSinceFound = currentMillis - lastFound;
-            Serial.printf("GPS Location Data not found for %ums...\n", timeSinceFound);
+            // Only print time since last found if a location *was* previously found
+            if (lastFound > 0) {
+                ulong timeSinceFound = currentMillis - lastFound;
+                Serial.printf("GPS Location Data not found for %lums...\n", timeSinceFound);
+            } else {
+                Serial.println("GPS Location Data not found yet...");
+            }
         }
 
-        Serial.printf("Waiting %ums for next location check...\n", gpsCheckIntervalMillis);
+        Serial.printf("Waiting %lu ms for next location check...\n", gpsCheckIntervalMillis);
         vTaskDelay(pdMS_TO_TICKS(gpsCheckIntervalMillis));
     }
+
+
+    Serial.println("GPSReceiverAction stopping...");
+
+    delete gpsReceiver;
+    gpsReceiver = nullptr;
 }
 
 SpeciesProximityChecker checker;
 void GPSReceiverAction::processLocationUpdate(GPSReceiver::GPSData gpsData)
 {
+    // Ensure gpsData.locationValid is true before using lat/lon
+    if (!gpsData.locationValid) {
+        Serial.println("Skipping proximity check due to invalid location data.");
+        return;
+    }
+
     switch (checker.checkProximity(gpsData.lat, gpsData.lon))
     {
     case SpeciesProximityChecker::OUTSIDE_ZONES:
@@ -65,7 +112,8 @@ void GPSReceiverAction::processLocationUpdate(GPSReceiver::GPSData gpsData)
         Serial.println("Inside Species 2 zone.");
         break;
     default:
-        Serial.println("Species Zone Status INVALID");
+        // This case should ideally not be reached if the enum is handled correctly.
+        Serial.println("Species Zone Status INVALID - Proximity check returned unexpected value.");
         break;
     }
 }
