@@ -45,9 +45,10 @@ public:
         }
         while (!_soundPlayer.begin(_serial))
         {
-            Serial.println("SoundPlayer serial initialization failed. Check the wire connection!");
+            Serial.println("SoundPlayer serial initialization failed, retrying...");
             delay(1000); // Retry if initialization fails
         }
+        Serial.println("SoundPlayer Initialized!");        
 
         _soundPlayer.setVol(/*30*/ 20);                  // MOFIX Set volume 0-30 - set to max for deployment
         _soundPlayer.switchFunction(_soundPlayer.MUSIC); // Set MP3 module mode to music
