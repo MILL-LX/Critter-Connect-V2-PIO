@@ -1,6 +1,6 @@
 #include <Arduino.h>
 
-#include "SpeciesProximityChecker.h"
+#include "SpeciesZone.h"
 #include "SpeciesCoordinates.h"
 
 const float earthRadius = 6371000;
@@ -34,7 +34,7 @@ float haversineDistance(float lat1, float lon1, float lat2, float lon2)
   return distance;
 }
 
-SpeciesProximityChecker::Proximity SpeciesProximityChecker::checkProximity(float lat, float lon)
+SpeciesZone::Zone SpeciesZone::zoneForLatLon(float lat, float lon)
 {
   bool matching_species = 0;
 
@@ -46,7 +46,7 @@ SpeciesProximityChecker::Proximity SpeciesProximityChecker::checkProximity(float
   }
 
   if (!matching_species) 
-    return SpeciesProximityChecker::OUTSIDE_ZONES;
+    return SpeciesZone::Zone::NON_SPECIES_ZONE;
   else
-    return (matching_species == 1) ? SpeciesProximityChecker::IN_ZONE_SPECIES_1 : SpeciesProximityChecker::IN_ZONE_SPECIES_2;
+    return (matching_species == 1) ? SpeciesZone::Zone::SPECIES_FROG_ZONE : SpeciesZone::Zone::SPECIES_PIGEON_ZONE;
 }

@@ -15,8 +15,8 @@ public:
     enum Sound
     {
 
-        SPECIES_1 = 1,
-        SPECIES_2 = 3,
+        SPECIES_FROG = 1,
+        SPECIES_PIGEON = 3,
         TEST_TONE = 5
     };
 
