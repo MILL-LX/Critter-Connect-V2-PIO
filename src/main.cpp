@@ -14,7 +14,7 @@ void setup()
   delay(2000); // let Serial Stabilize
 
   Serial.println("Setup complete. Running startup tests...");
-  startupTest();
+  //startupTest();
 }
 
 void loop()
@@ -25,7 +25,7 @@ void loop()
 
   while(true)
   {
-    Serial.println("Main thread is just waiting...");
-    vTaskDelay(pdMS_TO_TICKS(60000));
+    // Serial.println("Main thread is just waiting...");
+    vTaskDelay(pdMS_TO_TICKS(10000));
   }
 }

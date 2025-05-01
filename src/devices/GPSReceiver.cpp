@@ -7,13 +7,24 @@ TinyGPSPlus gps;
 
 void GPSReceiver::update()
 {
+    char reading[64];
+    size_t bytesRead = 0;
+
+    Serial.print("Checking for GPS data...");
     while (_serial->available() > 0)
     {
-        if (gps.encode(_serial->read()))
-        {
-            Serial.print("GPS data successfully decoded.");
+        char c = _serial->read();
 
+        reading[bytesRead++] = c;
+        Serial.print(".");
+
+        if (gps.encode(c))
+        {
             GPSData tempData;
+
+            Serial.print("\nGPS data successfully decoded\n");
+            Serial.write((const uint8_t *)reading, bytesRead);
+            bytesRead = 0;
 
             tempData.locationValid = gps.location.isValid();
             if (tempData.locationValid)
@@ -41,8 +52,13 @@ void GPSReceiver::update()
 
             tempData.dataReady = (tempData.locationValid || tempData.dateValid || tempData.timeValid);
             _data = tempData;
+
+            Serial.println("\nGPS Data updated, returning...\n");
+            return;
         }
     }
+
+    Serial.println("\nProcessed all available GPS Data, returning without updating...\n");
 }
 
 GPSReceiver::GPSData GPSReceiver::readData()
