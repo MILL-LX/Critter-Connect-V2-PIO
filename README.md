@@ -197,4 +197,8 @@ playMode = (const char*)str[10];
 
 ## TODO
 
+- Update this document to reflect the final selection of devices and libraries
+- Switch to auto pointers instead of deleting members in class destructors
+- Consider whether splitting devices and actions is premature separation of concerns
+- Clean up how enum types are declared so that they are not accessible through class instances. That's just ugly.
 - Split some headers into separate .h and .cpp files
