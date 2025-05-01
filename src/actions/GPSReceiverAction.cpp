@@ -5,7 +5,8 @@
 
 #include "GPSReceiverAction.h"
 #include "app/SpeciesZone.h"
-#include "devices/GPSReceiver.h" // Include the header for GPSData definition
+#include "devices/GPSReceiver.h"
+#include "devices/SoundPlayer.h"
 
 void debugDumpGPSData(GPSReceiver::GPSData data)
 {
@@ -35,7 +36,7 @@ void debugDumpGPSData(GPSReceiver::GPSData data)
 
 // We don't need to update our location very frequently since
 // the GPS receiver is with a person who is walking.
-const ulong gpsCheckIntervalMillis = 10000;
+const ulong gpsCheckIntervalMillis = 30000;
 GPSReceiver *gpsReceiver = nullptr;
 void GPSReceiverAction::performAction()
 {
@@ -107,22 +108,23 @@ void GPSReceiverAction::processLocationUpdate(GPSReceiver::GPSData gpsData)
     switch (currentZone)
     {
     case SpeciesZone::Zone::NON_SPECIES_ZONE:
+        _periodicNeopixelAction->start();
+
         if (currentZone != _previousZone)
             Serial.println("Leaving species zone.");
         else
             Serial.println("Outside of all species zones.");
         break;
     case SpeciesZone::Zone::SPECIES_FROG_ZONE:
-        if (currentZone != _previousZone)
-            Serial.println("Entering Species 1 zone.");
-        else
-            Serial.println("Inside Species 1 zone.");
-        break;
     case SpeciesZone::Zone::SPECIES_PIGEON_ZONE:
+        _periodicNeopixelAction->stop();
+        _neopixel->setColor(NeoPixel::OK);
+
+
         if (currentZone != _previousZone)
-            Serial.println("Entering Species 2 zone.");
+            Serial.println("Entering %s zone.");
         else
-            Serial.println("Inside Species 2 zone.");
+            Serial.println("Inside %s zone.");
         break;
     default:
         // This case should ideally not be reached if the enum is handled correctly.

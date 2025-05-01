@@ -197,6 +197,7 @@ playMode = (const char*)str[10];
 
 ## TODO
 
+- Propagate stop from PeriodicAction to member actions
 - Update this document to reflect the final selection of devices and libraries
 - Switch to auto pointers instead of deleting members in class destructors
 - Consider whether splitting devices and actions is premature separation of concerns
