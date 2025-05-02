@@ -17,16 +17,17 @@ void startupTest() {
     periodicMotorAction.start();
 
     // Play the test tone sound. Will Play until finished.
-    SoundPlayer soundPlayer;
+    SoundPlayer &soundPlayer = ApplicationDevices::getInstance().getSoundPlayer();
     soundPlayer.playSound(SoundPlayer::Sound::TEST_TONE);
   
-    // Let the tests run for 9 seconds
-    vTaskDelay(pdMS_TO_TICKS(9000));
+    // Let the tests run for 8 seconds
+    vTaskDelay(pdMS_TO_TICKS(8000));
   
     // Stop all the actions
     Serial.println("Stopping test actions...");
     periodicMotorAction.stop();
-  
+
+    neoPixel.setColor(NeoPixel::StateColor::OFF);
     // Wait for the actions to stop
     // MOFIX - maybe add a boolean to say whether an action is still running instead of using a delay
     Serial.println("Waiting for test actions to stop...");
