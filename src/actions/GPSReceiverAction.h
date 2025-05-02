@@ -15,7 +15,8 @@ public:
     GPSReceiverAction() : _periodicNeopixelAction(std::make_unique<PeriodicAction<NeoPixelAction>>(2000, UINT32_MAX, 1000, NeoPixel::StateColor::OK)),
                           _periodicMotor1Action(std::make_unique<PeriodicAction<MotorAction>>(10000UL, UINT32_MAX, 10000UL, ApplicationDevices::getInstance().getMotor1())),
                           _soundPlayer(ApplicationDevices::getInstance().getSoundPlayer()),
-                          _neoPixel(ApplicationDevices::getInstance().getNeoPixel())
+                          _neoPixel(ApplicationDevices::getInstance().getNeoPixel()),
+                          _gpsReceiver(ApplicationDevices::getInstance().getGpsReceiver())
 
     {
     }
@@ -50,8 +51,9 @@ private:
 
     std::unique_ptr<PeriodicAction<NeoPixelAction>> _periodicNeopixelAction;
     std::unique_ptr<PeriodicAction<MotorAction>> _periodicMotor1Action;
-    SoundPlayer &_soundPlayer;
-    NeoPixel &_neoPixel;
+    SoundPlayer& _soundPlayer;
+    NeoPixel& _neoPixel;
+    GPSReceiver& _gpsReceiver;
 
     void processLocationUpdate(GPSReceiver::GPSData gpsData);
 };

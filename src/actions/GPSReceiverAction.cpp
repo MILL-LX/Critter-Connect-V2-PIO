@@ -35,7 +35,6 @@ void debugDumpGPSData(GPSReceiver::GPSData data)
 // We don't need to update our location very frequently since
 // the GPS receiver is with a person who is walking.
 const ulong gpsCheckIntervalMillis = 30000;
-GPSReceiver *gpsReceiver = nullptr;
 void GPSReceiverAction::performAction()
 {
     if (_is_running.load())
@@ -46,10 +45,6 @@ void GPSReceiverAction::performAction()
     else
     {
         Serial.println("GPSReceiverAction starting...");
-        if (gpsReceiver == nullptr)
-        {
-            gpsReceiver = new GPSReceiver();
-        }
         _is_running.store(true); // Set the flag indicating it's running
     }
 
@@ -59,7 +54,7 @@ void GPSReceiverAction::performAction()
         ulong currentMillis = millis();
 
         Serial.printf("\n\nChecking for location update at %lu...\n", currentMillis);
-        GPSReceiver::GPSData gpsData = gpsReceiver->readData();
+        GPSReceiver::GPSData gpsData = _gpsReceiver.readData();
         debugDumpGPSData(gpsData);
 
         if (gpsData.locationValid)
