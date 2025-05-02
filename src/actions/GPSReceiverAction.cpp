@@ -88,9 +88,6 @@ void GPSReceiverAction::performAction()
     }
 
     Serial.println("GPSReceiverAction stopping...");
-
-    delete gpsReceiver;
-    gpsReceiver = nullptr;
 }
 
 void GPSReceiverAction::processLocationUpdate(GPSReceiver::GPSData gpsData)
@@ -115,7 +112,8 @@ void GPSReceiverAction::processLocationUpdate(GPSReceiver::GPSData gpsData)
         break;
     case SpeciesZone::Zone::SPECIES_FROG_ZONE:
     case SpeciesZone::Zone::SPECIES_PIGEON_ZONE:
-        _periodicNeopixelAction->stop();
+        _periodicNeopixelAction->stop(); //MOFIX - make this a hard stop
+        _neoPixel.setColor(NeoPixel::StateColor::OK);
 
         if (currentZone != _previousZone)
             Serial.println("Entering %s zone.");
@@ -125,6 +123,8 @@ void GPSReceiverAction::processLocationUpdate(GPSReceiver::GPSData gpsData)
     default:
         // This case should ideally not be reached if the enum is handled correctly.
         Serial.println("Species Zone Status INVALID - Proximity check returned unexpected value.");
+        _periodicNeopixelAction->stop();
+        _neoPixel.setColor(NeoPixel::StateColor::WARN);
         break;
     }
 

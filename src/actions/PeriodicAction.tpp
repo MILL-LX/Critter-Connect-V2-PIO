@@ -44,6 +44,7 @@ void PeriodicAction<ActionType>::start()
 template <typename ActionType>
 void PeriodicAction<ActionType>::stop()
 {
+    //MOFIX propagate stop to contained action
     _continueAction.store(false);
 }
 
@@ -67,7 +68,7 @@ void PeriodicAction<ActionType>::taskFunction(void *parameters)
         TickType_t periodStartTime = xTaskGetTickCount();
 
         periodicAction->_actionInstance.performAction();
-        vTaskDelayUntil(&lastWakeTime, periodTicks);
+        vTaskDelayUntil(&lastWakeTime, periodTicks); //MOFIX hard stop
 
         Serial.println("Period ended after " + String(pdTICKS_TO_MS(xTaskGetTickCount() - periodStartTime)) + " millis.\n");
 
