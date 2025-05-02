@@ -16,7 +16,7 @@ public:
     GPSReceiverAction()
         : // Use std::make_unique for initialization in the member initializer list
           _neopixel(std::make_unique<NeoPixel>()),
-          _periodicNeopixelAction(std::make_unique<PeriodicAction<NeoPixelAction>>(1000, 5, 500, NeoPixel::StateColor::OK)),
+          _periodicNeopixelAction(std::make_unique<PeriodicAction<NeoPixelAction>>(2000, UINT32_MAX, 1000, NeoPixel::StateColor::OK)),
           _soundPlayer(std::make_unique<SoundPlayer>())
     {
         
