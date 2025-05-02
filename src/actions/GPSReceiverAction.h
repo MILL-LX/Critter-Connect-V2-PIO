@@ -1,19 +1,24 @@
 #include <atomic>
-#include <memory> // Include for std::unique_ptr
+#include <memory>
 
-#include "devices/GPSReceiver.h"
-#include "devices/NeoPixel.h"
-#include "devices/SoundPlayer.h"
+#include "devices/ApplicationDevices.h"
 
 #include "actions/PeriodicAction.h"
 #include "actions/NeoPixelAction.h"
+#include "actions/MotorAction.h"
 
 #include "app/SpeciesZone.h"
 
 class GPSReceiverAction
 {
 public:
-    GPSReceiverAction()        : _periodicNeopixelAction(std::make_unique<PeriodicAction<NeoPixelAction>>(2000, UINT32_MAX, 1000, NeoPixel::StateColor::OK)){}
+    GPSReceiverAction() : _periodicNeopixelAction(std::make_unique<PeriodicAction<NeoPixelAction>>(2000, UINT32_MAX, 1000, NeoPixel::StateColor::OK)),
+                          _periodicMotorAction(std::make_unique<PeriodicAction<MotorAction>>(10000UL, UINT32_MAX, 10000UL)),
+                          _soundPlayer(ApplicationDevices::getInstance().getSoundPlayer()),
+                          _neoPixel(ApplicationDevices::getInstance().getNeoPixel())
+
+    {
+    }
 
     // Destructor is still needed to explicitly stop the periodic action before
     // its unique_ptr goes out of scope and deletes the object.
@@ -44,6 +49,9 @@ private:
     SpeciesZone::Zone _previousZone = SpeciesZone::Zone::NON_SPECIES_ZONE;
 
     std::unique_ptr<PeriodicAction<NeoPixelAction>> _periodicNeopixelAction;
+    std::unique_ptr<PeriodicAction<MotorAction>> _periodicMotorAction;
+    SoundPlayer &_soundPlayer;
+    NeoPixel &_neoPixel;
 
     void processLocationUpdate(GPSReceiver::GPSData gpsData);
 };

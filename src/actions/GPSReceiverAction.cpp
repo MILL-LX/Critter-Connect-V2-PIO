@@ -5,8 +5,6 @@
 
 #include "GPSReceiverAction.h"
 #include "app/SpeciesZone.h"
-#include "devices/GPSReceiver.h"
-#include "devices/SoundPlayer.h"
 
 void debugDumpGPSData(GPSReceiver::GPSData data)
 {
