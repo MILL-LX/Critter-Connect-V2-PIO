@@ -118,8 +118,6 @@ void GPSReceiverAction::processLocationUpdate(GPSReceiver::GPSData gpsData)
     case SpeciesZone::Zone::SPECIES_FROG_ZONE:
     case SpeciesZone::Zone::SPECIES_PIGEON_ZONE:
         _periodicNeopixelAction->stop();
-        _neopixel->setColor(NeoPixel::OK);
-
 
         if (currentZone != _previousZone)
             Serial.println("Entering %s zone.");
