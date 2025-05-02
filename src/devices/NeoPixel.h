@@ -2,9 +2,12 @@
 
 #include <Adafruit_NeoPixel.h>
 
-const int defaultPin = 16;
+namespace NeoPixelDefs {
+    const int defaultPin = 16;
 const int defaultNumPixels = 1;
 const int defaultBrightness = 150;
+}
+
 
 class NeoPixel
 {
@@ -24,9 +27,9 @@ public:
     }
 
 
-    NeoPixel(int pin = defaultPin, int numPixels = defaultNumPixels) : _strip(new Adafruit_NeoPixel(numPixels, pin, NEO_GRB + NEO_KHZ800)) {
+    NeoPixel(int pin = NeoPixelDefs::defaultPin, int numPixels = NeoPixelDefs::defaultNumPixels) : _strip(new Adafruit_NeoPixel(numPixels, pin, NEO_GRB + NEO_KHZ800)) {
         _strip->begin();
-        _strip->setBrightness(defaultBrightness);
+        _strip->setBrightness(NeoPixelDefs::defaultBrightness);
         setColor(OFF);
     };
 
