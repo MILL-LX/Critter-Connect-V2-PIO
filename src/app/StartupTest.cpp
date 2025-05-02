@@ -1,7 +1,7 @@
 #include "actions/PeriodicAction.h"
 #include "actions/MotorAction.h"
 #include "devices/SoundPlayer.h"
-#include "devices/NeoPixel.h"
+#include "devices/ApplicationDevices.h"
 
 #include "StartupTest.h"
 
@@ -9,7 +9,7 @@ void startupTest() {
     Serial.println("Starting Startup Tests...");
   
     // Set the NeoPixel to the warning color for the duration of the test
-    NeoPixel neoPixel;
+    NeoPixel &neoPixel = ApplicationDevices::getInstance().getNeoPixel();
     neoPixel.setColor(NeoPixel::StateColor::TEST);
   
     // Every 10 seconds move the motor for 10 seconds. Run until explicitly stopped.

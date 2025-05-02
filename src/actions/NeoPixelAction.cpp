@@ -3,11 +3,11 @@
 #include "task.h"
 
 #include "NeoPixelAction.h"
-#include "devices/NeoPixel.h"
 
 void NeoPixelAction::performAction()
 {
     TickType_t startTick = xTaskGetTickCount();
+    
     // Convert duration directly from milliseconds to ticks
     TickType_t durationTicks = pdMS_TO_TICKS(_durationMillis);
     TickType_t endTick = startTick + durationTicks;
