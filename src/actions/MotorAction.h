@@ -7,7 +7,7 @@
 class MotorAction
 {
 public:
-    MotorAction(uint32_t durationMillis) : _durationMillis(durationMillis), _motor(ApplicationDevices::getInstance().getMotor()) {}
+    MotorAction(uint32_t durationMillis, Motor& motor) : _durationMillis(durationMillis), _motor(motor) {}
 
     void performAction();
 

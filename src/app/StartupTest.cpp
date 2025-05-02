@@ -13,8 +13,9 @@ void startupTest() {
     neoPixel.setColor(NeoPixel::StateColor::TEST);
   
     // Every 10 seconds move the motor for 10 seconds. Run until explicitly stopped.
-    PeriodicAction<MotorAction> periodicMotorAction(10000UL, UINT32_MAX, 10000UL);
-    periodicMotorAction.start();
+    Motor& motor1 = ApplicationDevices::getInstance().getMotor1();
+    PeriodicAction<MotorAction> periodicMotor1Action(10000UL, UINT32_MAX, 10000UL, motor1);
+    periodicMotor1Action.start();
 
     // Play the test tone sound. Will Play until finished.
     SoundPlayer &soundPlayer = ApplicationDevices::getInstance().getSoundPlayer();
@@ -25,7 +26,7 @@ void startupTest() {
   
     // Stop all the actions
     Serial.println("Stopping test actions...");
-    periodicMotorAction.stop();
+    periodicMotor1Action.stop();
 
     neoPixel.setColor(NeoPixel::StateColor::OFF);
     // Wait for the actions to stop

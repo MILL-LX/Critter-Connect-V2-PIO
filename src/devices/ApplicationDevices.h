@@ -35,7 +35,7 @@ public:
         // Access members directly within the class
         getButton();      // Initializes _button if null
         getGpsReceiver(); // Initializes _gpsReceiver if null
-        getMotor();       // Initializes _motor if null
+        getMotor1();       // Initializes _motor if null
         getNeoPixel();    // Initializes _neoPixel if null
         getSoundPlayer(); // Initializes _soundPlayer if null
     }
@@ -56,12 +56,12 @@ public:
         return *_gpsReceiver;
     }
 
-    Motor& getMotor() {
-        if (!_motor) {
+    Motor& getMotor1() {
+        if (!_motor1) {
             // Remember to add constructor arguments here if needed by Motor
-             _motor = std::make_unique<Motor>();
+             _motor1 = std::make_unique<Motor>();
         }
-        return *_motor;
+        return *_motor1;
     }
 
     NeoPixel& getNeoPixel() {
@@ -88,7 +88,7 @@ private:
     // --- Member variables remain the same ---
     std::unique_ptr<SoundButton> _button = nullptr;
     std::unique_ptr<GPSReceiver> _gpsReceiver = nullptr;
-    std::unique_ptr<Motor> _motor = nullptr;
+    std::unique_ptr<Motor> _motor1 = nullptr;
     std::unique_ptr<NeoPixel> _neoPixel = nullptr;
     std::unique_ptr<SoundPlayer> _soundPlayer = nullptr;
 

@@ -13,7 +13,7 @@ class GPSReceiverAction
 {
 public:
     GPSReceiverAction() : _periodicNeopixelAction(std::make_unique<PeriodicAction<NeoPixelAction>>(2000, UINT32_MAX, 1000, NeoPixel::StateColor::OK)),
-                          _periodicMotorAction(std::make_unique<PeriodicAction<MotorAction>>(10000UL, UINT32_MAX, 10000UL)),
+                          _periodicMotor1Action(std::make_unique<PeriodicAction<MotorAction>>(10000UL, UINT32_MAX, 10000UL, ApplicationDevices::getInstance().getMotor1())),
                           _soundPlayer(ApplicationDevices::getInstance().getSoundPlayer()),
                           _neoPixel(ApplicationDevices::getInstance().getNeoPixel())
 
@@ -49,7 +49,7 @@ private:
     SpeciesZone::Zone _previousZone = SpeciesZone::Zone::NON_SPECIES_ZONE;
 
     std::unique_ptr<PeriodicAction<NeoPixelAction>> _periodicNeopixelAction;
-    std::unique_ptr<PeriodicAction<MotorAction>> _periodicMotorAction;
+    std::unique_ptr<PeriodicAction<MotorAction>> _periodicMotor1Action;
     SoundPlayer &_soundPlayer;
     NeoPixel &_neoPixel;
 
