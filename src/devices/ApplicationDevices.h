@@ -7,7 +7,7 @@
 #include "devices/GPSReceiver.h"
 #include "devices/Motor.h"
 #include "devices/NeoPixel.h"
-//#include "devices/SoundButton.h"
+#include "devices/SoundButton.h"
 #include "devices/SoundPlayer.h"
 
 class ApplicationDevices
@@ -33,20 +33,20 @@ public:
     // to ensure all devices are created upfront.
     void setup() {
         // Access members directly within the class
-        //getButton();      // Initializes _button if null
+        getButton();      // Initializes _button if null
         getGpsReceiver(); // Initializes _gpsReceiver if null
         getMotor();       // Initializes _motor if null
         getNeoPixel();    // Initializes _neoPixel if null
         getSoundPlayer(); // Initializes _soundPlayer if null
     }
 
-    // --- Accessor methods remain the same ---
-    // SoundButton& getButton() {
-    //     if (!_button) {
-    //         _button = std::make_unique<SoundButton>();
-    //     }
-    //     return *_button;
-    // }
+    // --- Accessor methods ---
+    SoundButton& getButton() {
+        if (!_button) {
+            _button = std::make_unique<SoundButton>();
+        }
+        return *_button;
+    }
 
     GPSReceiver& getGpsReceiver() {
         if (!_gpsReceiver) {
@@ -86,7 +86,7 @@ private:
     ~ApplicationDevices() = default;
 
     // --- Member variables remain the same ---
-    //std::unique_ptr<SoundButton> _button = nullptr;
+    std::unique_ptr<SoundButton> _button = nullptr;
     std::unique_ptr<GPSReceiver> _gpsReceiver = nullptr;
     std::unique_ptr<Motor> _motor = nullptr;
     std::unique_ptr<NeoPixel> _neoPixel = nullptr;
