@@ -33,18 +33,22 @@ public:
     GPSReceiver(SerialUART *serial = defaultSerial, int baudRate = defaultBaudRate)
         : _serial(serial), // Initialize the pointer member
           _baudRate(baudRate)
-          // _data is default initialized by its member initializers above
+    // _data is default initialized by its member initializers above
     {
         // Good practice: Check if the pointer is valid before using it
-        if (_serial) {
+        if (_serial)
+        {
             _serial->begin(_baudRate); // Use '->' for pointers
-        } else {
+        }
+        else
+        {
             // Handle error - perhaps log or enter a safe state
             Serial.println("ERROR: GPSReceiver initialized with null serial port!");
         }
     }
 
     GPSData readData();
+    void debugDumpGPSData();
 
 private:
     SerialUART *_serial; // Member is a pointer

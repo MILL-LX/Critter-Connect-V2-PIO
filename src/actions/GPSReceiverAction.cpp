@@ -6,35 +6,9 @@
 #include "GPSReceiverAction.h"
 #include "app/SpeciesZone.h"
 
-void debugDumpGPSData(GPSReceiver::GPSData data)
-{
-    Serial.println("--- GPS Data Dump ---");
-    Serial.printf("Data Ready: %s\n", data.dataReady ? "Yes" : "No");
-
-    Serial.printf("Location Valid: %s\n", data.locationValid ? "Yes" : "No");
-    if (data.locationValid)
-    {
-        Serial.printf("  Latitude: %.6f\n", data.lat); // Use %.6f for float precision
-        Serial.printf("  Longitude: %.6f\n", data.lon);
-    }
-
-    Serial.printf("Date Valid: %s\n", data.dateValid ? "Yes" : "No");
-    if (data.dateValid)
-    {
-        Serial.printf("  Date: %04d-%02d-%02d\n", data.year, data.month, data.day); // Format YYYY-MM-DD
-    }
-
-    Serial.printf("Time Valid: %s\n", data.timeValid ? "Yes" : "No");
-    if (data.timeValid)
-    {
-        Serial.printf("  Time: %02d:%02d:%02d.%02d\n", data.hour, data.minute, data.second, data.centisecond); // Format HH:MM:SS.CS
-    }
-    Serial.println("--- End GPS Data Dump ---");
-}
-
 // We don't need to update our location very frequently since
 // the GPS receiver is with a person who is walking.
-const ulong gpsCheckIntervalMillis = 500;
+const ulong gpsCheckIntervalMillis = 1000;
 void GPSReceiverAction::performAction()
 {
     if (_is_running.load())
@@ -55,7 +29,6 @@ void GPSReceiverAction::performAction()
 
         Serial.printf("\n\nChecking for location update at %lu...\n", currentMillis);
         GPSReceiver::GPSData gpsData = _gpsReceiver.readData();
-        debugDumpGPSData(gpsData);
 
         if (gpsData.locationValid)
         {

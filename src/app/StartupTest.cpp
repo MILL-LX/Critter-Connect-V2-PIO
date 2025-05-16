@@ -28,17 +28,18 @@ void startupTest()
   soundPlayer.playSound(SoundPlayer::Sound::TEST_TONE);
 
   // Let the tests run for 8 seconds
-  vTaskDelay(pdMS_TO_TICKS(8000));
+  vTaskDelay(pdMS_TO_TICKS(10000));
 
   // Stop all the actions
   Serial.println("Stopping test actions...");
   periodicMotor1Action.stop();
+  periodicMotor2Action.stop();
 
   neoPixel.setColor(NeoPixel::StateColor::OFF);
   // Wait for the actions to stop
   // MOFIX - maybe add a boolean to say whether an action is still running instead of using a delay
   Serial.println("Waiting for test actions to stop...");
-  vTaskDelay(pdMS_TO_TICKS(1000));
+  vTaskDelay(pdMS_TO_TICKS(10000));
 
-  Serial.println("Startup Tests completed.");
+  Serial.println("Startup Tests completed.\n\n");
 }
