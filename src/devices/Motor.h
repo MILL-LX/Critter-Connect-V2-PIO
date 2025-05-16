@@ -5,11 +5,15 @@
 
 #include <AccelStepper.h>
 
-const int defaultEnablePin = 2;
-const int defaultStepPin = 19;
-const int defaultDirectionPin = 13;
+const int motor1EnablePin = 9;
+const int motor1StepPin = 8;
+const int motor1DirectionPin = 7;
 
-const long stepsInFullRange = 14000;
+const int motor2EnablePin = 12;
+const int motor2StepPin = 11;
+const int motor2DirectionPin = 10;
+
+const long stepsInFullRange = 11000;
 const long maxSpeed = 40000 /*20000*/;
 const long acceleration = 10000 /*10000*/;
 
@@ -22,10 +26,10 @@ public:
         REVERSE
     };
 
-    Motor(int enablePin = defaultEnablePin, int stepPin = defaultStepPin, int directionPin = defaultDirectionPin) : _enablePin(enablePin),
-                                                                                                                    _stepPin(stepPin),
-                                                                                                                    _directionPin(directionPin),
-                                                                                                                    _stepper(new AccelStepper(AccelStepper::DRIVER, _stepPin, _directionPin))
+    Motor(int enablePin, int stepPin, int directionPin) : _enablePin(enablePin),
+                                                          _stepPin(stepPin),
+                                                          _directionPin(directionPin),
+                                                          _stepper(new AccelStepper(AccelStepper::DRIVER, _stepPin, _directionPin))
     {
         // Set the pin modes for the control pins
         pinMode(_enablePin, OUTPUT);

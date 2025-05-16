@@ -14,15 +14,16 @@ class ApplicationDevices
 {
 public:
     // Delete copy constructor and assignment operator
-    ApplicationDevices(const ApplicationDevices&) = delete;
-    ApplicationDevices& operator=(const ApplicationDevices&) = delete;
+    ApplicationDevices(const ApplicationDevices &) = delete;
+    ApplicationDevices &operator=(const ApplicationDevices &) = delete;
 
     // Delete move constructor and assignment operator (optional but good practice for singletons)
-    ApplicationDevices(ApplicationDevices&&) = delete;
-    ApplicationDevices& operator=(ApplicationDevices&&) = delete;
+    ApplicationDevices(ApplicationDevices &&) = delete;
+    ApplicationDevices &operator=(ApplicationDevices &&) = delete;
 
     // Public static method to get the single instance
-    static ApplicationDevices& getInstance() {
+    static ApplicationDevices &getInstance()
+    {
         // Use a static local variable to ensure thread-safe initialization
         // on first call (guaranteed by C++11 standard and later)
         static ApplicationDevices instance;
@@ -31,49 +32,69 @@ public:
 
     // Call this method once during your application's initialization phase
     // to ensure all devices are created upfront.
-    void setup() {
+    void setup()
+    {
         // Access members directly within the class
         getButton();      // Initializes _button if null
         getGpsReceiver(); // Initializes _gpsReceiver if null
-        getMotor1();       // Initializes _motor if null
+        getMotor1();      // Initializes _motor if null
         getNeoPixel();    // Initializes _neoPixel if null
         getSoundPlayer(); // Initializes _soundPlayer if null
     }
 
     // --- Accessor methods ---
-    SoundButton& getButton() {
-        if (!_button) {
+    SoundButton &getButton()
+    {
+        if (!_button)
+        {
             _button = std::make_unique<SoundButton>();
         }
         return *_button;
     }
 
-    GPSReceiver& getGpsReceiver() {
-        if (!_gpsReceiver) {
+    GPSReceiver &getGpsReceiver()
+    {
+        if (!_gpsReceiver)
+        {
             // Remember to add constructor arguments here if needed by GPSReceiver
             _gpsReceiver = std::make_unique<GPSReceiver>();
         }
         return *_gpsReceiver;
     }
 
-    Motor& getMotor1() {
-        if (!_motor1) {
+    Motor &getMotor1()
+    {
+        if (!_motor1)
+        {
             // Remember to add constructor arguments here if needed by Motor
-             _motor1 = std::make_unique<Motor>();
+            _motor1 = std::make_unique<Motor>(motor1EnablePin, motor1StepPin, motor1DirectionPin);
         }
         return *_motor1;
     }
 
-    NeoPixel& getNeoPixel() {
-        if (!_neoPixel) {
+    Motor &getMotor2()
+    {
+        if (!_motor2)
+        {
+            // Remember to add constructor arguments here if needed by Motor
+            _motor2 = std::make_unique<Motor>(motor2EnablePin, motor2StepPin, motor2DirectionPin);
+        }
+        return *_motor2;
+    }
+    NeoPixel &getNeoPixel()
+    {
+        if (!_neoPixel)
+        {
             _neoPixel = std::make_unique<NeoPixel>();
         }
         return *_neoPixel;
     }
 
-    SoundPlayer& getSoundPlayer() {
-        if (!_soundPlayer) {
-             // Remember to add constructor arguments here if needed by SoundPlayer
+    SoundPlayer &getSoundPlayer()
+    {
+        if (!_soundPlayer)
+        {
+            // Remember to add constructor arguments here if needed by SoundPlayer
             _soundPlayer = std::make_unique<SoundPlayer>();
         }
         return *_soundPlayer;
@@ -89,6 +110,7 @@ private:
     std::unique_ptr<SoundButton> _button = nullptr;
     std::unique_ptr<GPSReceiver> _gpsReceiver = nullptr;
     std::unique_ptr<Motor> _motor1 = nullptr;
+    std::unique_ptr<Motor> _motor2 = nullptr;
     std::unique_ptr<NeoPixel> _neoPixel = nullptr;
     std::unique_ptr<SoundPlayer> _soundPlayer = nullptr;
 

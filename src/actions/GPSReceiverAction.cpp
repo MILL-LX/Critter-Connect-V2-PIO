@@ -34,7 +34,7 @@ void debugDumpGPSData(GPSReceiver::GPSData data)
 
 // We don't need to update our location very frequently since
 // the GPS receiver is with a person who is walking.
-const ulong gpsCheckIntervalMillis = 30000;
+const ulong gpsCheckIntervalMillis = 500;
 void GPSReceiverAction::performAction()
 {
     if (_is_running.load())
