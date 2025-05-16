@@ -7,61 +7,58 @@ TinyGPSPlus gps;
 
 void GPSReceiver::update()
 {
-    char reading[256];
-    size_t bytesRead = 0;
-
-    Serial.println("Checking for GPS data...");
-    while (_serial->available() > 0)
+    Serial.println("Checking for GPS Location data...");
+    _data.locationValid = false;
+    while (!_data.locationValid)
     {
-        char c = _serial->read();
-
-        reading[bytesRead++] = c;
-        //Serial.print(".");
-        Serial.write(c);
-
-
-
-        if (gps.encode(c))
+        while (_serial->available() > 0)
         {
-            GPSData tempData;
-
-            Serial.print("\nGPS data successfully decoded\n");
-            Serial.write((const uint8_t *)reading, bytesRead);
-            bytesRead = 0;
-
-            tempData.locationValid = gps.location.isValid();
-            if (tempData.locationValid)
+            char c = _serial->read();
+            Serial.write(c);
+            if (gps.encode(c))
             {
-                tempData.lat = gps.location.lat();
-                tempData.lon = gps.location.lng();
+                Serial.print("\nGPS data successfully decoded\n");
+
+                GPSData tempData;
+
+                tempData.locationValid = gps.location.isValid();
+                if (tempData.locationValid)
+                {
+                    Serial.println("Location Data VALID");
+                    tempData.lat = gps.location.lat();
+                    tempData.lon = gps.location.lng();
+                    Serial.printf("  Latitude: %.6f\n", tempData.lat);
+                    Serial.printf("  Longitude: %.6f\n", tempData.lon);
+                }
+
+                tempData.dateValid = gps.date.isValid();
+                if (tempData.dateValid)
+                {
+                    Serial.println("Date Data VALID");
+                    tempData.year = gps.date.year();
+                    tempData.month = gps.date.month();
+                    tempData.day = gps.date.day();
+                    Serial.printf("  Date: %04d-%02d-%02d\n", tempData.year, tempData.month, tempData.day);
+                }
+
+                tempData.timeValid = gps.time.isValid();
+                if (tempData.timeValid)
+                {
+                    Serial.println("Time Data VALID");
+                    tempData.hour = gps.time.hour();
+                    tempData.minute = gps.time.minute();
+                    tempData.second = gps.time.second();
+                    tempData.centisecond = gps.time.centisecond();
+                    Serial.printf("  Time: %02d:%02d:%02d.%02d\n", tempData.hour, tempData.minute, tempData.second, tempData.centisecond);
+                }
+
+                tempData.dataReady = (tempData.locationValid || tempData.dateValid || tempData.timeValid);
+                _data = tempData;
             }
-
-            tempData.dateValid = gps.date.isValid();
-            if (tempData.dateValid)
-            {
-                tempData.year = gps.date.year();
-                tempData.month = gps.date.month();
-                tempData.day = gps.date.day();
-            }
-
-            tempData.timeValid = gps.time.isValid();
-            if (tempData.timeValid)
-            {
-                tempData.hour = gps.time.hour();
-                tempData.minute = gps.time.minute();
-                tempData.second = gps.time.second();
-                tempData.centisecond = gps.time.centisecond();
-            }
-
-            tempData.dataReady = (tempData.locationValid || tempData.dateValid || tempData.timeValid);
-            _data = tempData;
-
-            Serial.println("\nGPS Data updated, returning...\n");
-            return;
         }
     }
 
-    Serial.println("\nProcessed all available GPS Data, returning without updating...\n");
+    Serial.println("Found Location data, returning...");
 }
 
 GPSReceiver::GPSData GPSReceiver::readData()
@@ -95,4 +92,3 @@ void GPSReceiver::debugDumpGPSData()
     }
     Serial.println("--- End GPS Data Dump ---");
 }
-
