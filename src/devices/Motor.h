@@ -6,8 +6,8 @@
 #include <AccelStepper.h>
 
 const int motor1EnablePin = 9;
-const int motor1StepPin = 8;
-const int motor1DirectionPin = 7;
+const int motor1StepPin = 6; //non-logger 8;
+const int motor1DirectionPin = 5; //non-logger 7;
 
 const int motor2EnablePin = 12;
 const int motor2StepPin = 11;
