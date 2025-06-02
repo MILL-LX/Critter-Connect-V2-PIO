@@ -6,9 +6,11 @@
 #include "GPSReceiverAction.h"
 #include "app/SpeciesZone.h"
 
+#include "devices/ApplicationDevices.h"
+
 // We don't need to update our location very frequently since
 // the GPS receiver is with a person who is walking.
-const ulong gpsCheckIntervalMillis = 60000;
+const ulong gpsCheckIntervalMillis = 100;
 void GPSReceiverAction::performAction()
 {
     if (_is_running.load())
@@ -80,8 +82,22 @@ void GPSReceiverAction::processLocationUpdate(GPSReceiver::GPSData gpsData)
         break;
     case SpeciesZone::Zone::SPECIES_FROG_ZONE:
     case SpeciesZone::Zone::SPECIES_PIGEON_ZONE:
-        _periodicNeopixelAction->stop(); //MOFIX - make this a hard stop
+        _periodicNeopixelAction->stop(); // MOFIX - make this a hard stop
         _neoPixel.setColor(NeoPixel::StateColor::OK);
+
+        if (ApplicationDevices::getInstance().getButton().isPressed())
+        {
+            Serial.println("Button pressed, playing sound.");
+            if (!ApplicationDevices::getInstance().getSoundPlayer().isPlaying())
+            {
+                SoundPlayer::Sound sound = (currentZone == SpeciesZone::Zone::SPECIES_FROG_ZONE) ? SoundPlayer::Sound::SPECIES_FROG : SoundPlayer::Sound::SPECIES_PIGEON;
+                ApplicationDevices::getInstance().getSoundPlayer().playSound(SoundPlayer::Sound::SPECIES_FROG);
+            }
+        }
+        else
+        {
+            Serial.println("Button not pressed, not playing sound.");
+        }
 
         if (currentZone != _previousZone)
             Serial.println("Entering %s zone.");

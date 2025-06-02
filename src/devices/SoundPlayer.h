@@ -34,6 +34,11 @@ public:
         }
     }
 
+    bool isPlaying()
+    {
+        return _soundPlayer.isPlaying();
+    }
+
     SoundPlayer(int rxPin = defaultRxPin, int txPin = defaultTxPin) : _serial(rxPin, txPin) // Initialize the SoftwareSerial member
     {
 
@@ -50,7 +55,7 @@ public:
         }
         Serial.println("SoundPlayer Initialized!");        
 
-        _soundPlayer.setVol(/*30*/ 20);                  // MOFIX Set volume 0-30 - set to max for deployment
+        _soundPlayer.setVol(30);                  // Set volume 0-30 - set to max for deployment
         _soundPlayer.switchFunction(_soundPlayer.MUSIC); // Set MP3 module mode to music
         _soundPlayer.setPlayMode(_soundPlayer.SINGLE);   // Set single track play mode
         _soundPlayer.setPrompt(false);                   // Disable prompt sounds
