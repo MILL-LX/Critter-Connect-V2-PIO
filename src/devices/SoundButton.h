@@ -4,7 +4,7 @@
 
 namespace SoundButtonDefs
 {
-    const int defaultPin = 6;
+    const int defaultPin = 4;
     const unsigned long defaultDebounceDelay = 50;
 }
 
