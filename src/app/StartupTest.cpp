@@ -32,14 +32,14 @@ void startupTest()
   Serial.println("Starting Startup Tests...");
   neoPixel.setColor(NeoPixel::StateColor::OK);
 
-  // Every 10 seconds move motor1 for 10 seconds. Run until explicitly stopped.
+  // Every 10 seconds move motor1 for 3 seconds. Run until explicitly stopped.
   Motor &motor1 = ApplicationDevices::getInstance().getMotor1();
-  PeriodicAction<MotorAction> periodicMotor1Action(10000UL, UINT32_MAX, 10000UL, motor1);
+  PeriodicAction<MotorAction> periodicMotor1Action(10000, UINT32_MAX, 3000UL, motor1);
   periodicMotor1Action.start();
 
-  // Every 10 seconds move motor2 for 10 seconds. Run until explicitly stopped.
+  // Every 10 seconds move motor2 for 3 seconds. Run until explicitly stopped.
   Motor &motor2 = ApplicationDevices::getInstance().getMotor2();
-  PeriodicAction<MotorAction> periodicMotor2Action(10000UL, UINT32_MAX, 10000UL, motor2);
+  PeriodicAction<MotorAction> periodicMotor2Action(10000, UINT32_MAX, 3000UL, motor2);
   periodicMotor2Action.start();
 
   // Play the test tone sound. Will Play until finished.
@@ -61,7 +61,7 @@ void startupTest()
     }
   }
 
-  // Let the tests run for 8 seconds
+  // Let the tests run for 10 seconds
   vTaskDelay(pdMS_TO_TICKS(10000));
 
   // Stop all the actions
