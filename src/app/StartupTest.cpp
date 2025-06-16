@@ -11,7 +11,7 @@ void startupTest()
 
   // Set the NeoPixel to the warning color for the duration of the test
   NeoPixel &neoPixel = ApplicationDevices::getInstance().getNeoPixel();
-  neoPixel.setColor(NeoPixel::StateColor::TEST);
+  neoPixel.setColor(NeoPixel::StateColor::OK);
 
   // Every 10 seconds move motor1 for 10 seconds. Run until explicitly stopped.
   Motor &motor1 = ApplicationDevices::getInstance().getMotor1();
@@ -25,7 +25,21 @@ void startupTest()
 
   // Play the test tone sound. Will Play until finished.
   SoundPlayer &soundPlayer = ApplicationDevices::getInstance().getSoundPlayer();
-  soundPlayer.playSound(SoundPlayer::Sound::TEST_TONE);
+  SoundPlayer::Sound soundList[] = {
+      SoundPlayer::Sound::TEST_TONE,
+      SoundPlayer::Sound::SPECIES_FROG,
+      SoundPlayer::Sound::SPECIES_PIGEON
+
+  };
+  for (const auto &sound : soundList)
+  {
+    soundPlayer.playSound(sound);
+    while (soundPlayer.isPlaying())
+    {
+      // Wait for the sound to finish playing
+      vTaskDelay(pdMS_TO_TICKS(100));
+    }
+  }
 
   // Let the tests run for 8 seconds
   vTaskDelay(pdMS_TO_TICKS(10000));

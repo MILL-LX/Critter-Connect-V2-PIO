@@ -14,7 +14,12 @@ void setup()
   delay(2000); // let Serial Stabilize
 
   Serial.println("Setup complete. Running startup tests...");
-  startupTest();
+  Serial.println("Demo Mode: Running startup tests in a loop every 5 seconds.");
+  while (true)
+  {
+    startupTest();
+    delay(5000); 
+  }
 }
 
 void loop()
@@ -23,7 +28,7 @@ void loop()
   PeriodicAction<GPSReceiverAction> periodicGPSReceiverAction(10000UL, UINT32_MAX);
   periodicGPSReceiverAction.start();
 
-  while(true)
+  while (true)
   {
     // Serial.println("Main thread is just waiting...");
     vTaskDelay(pdMS_TO_TICKS(10000));
