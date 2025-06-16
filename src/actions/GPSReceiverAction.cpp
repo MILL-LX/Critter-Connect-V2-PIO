@@ -105,7 +105,6 @@ void GPSReceiverAction::processLocationUpdate(GPSReceiver::GPSData gpsData)
             Serial.println("Inside %s zone.");
         break;
     default:
-        // This case should ideally not be reached if the enum is handled correctly.
         Serial.println("Species Zone Status INVALID - Proximity check returned unexpected value.");
         _periodicNeopixelAction->stop();
         _neoPixel.setColor(NeoPixel::StateColor::WARN);
