@@ -1,16 +1,35 @@
 #include "actions/PeriodicAction.h"
 #include "actions/MotorAction.h"
 #include "devices/SoundPlayer.h"
+#include "devices/SoundButton.h"
 #include "devices/ApplicationDevices.h"
 
 #include "StartupTest.h"
 
 void startupTest()
 {
-  Serial.println("Starting Startup Tests...");
 
-  // Set the NeoPixel to the warning color for the duration of the test
   NeoPixel &neoPixel = ApplicationDevices::getInstance().getNeoPixel();
+  neoPixel.setColor(NeoPixel::StateColor::TEST);
+
+  Serial.println("Waiting for button press...");
+  SoundButton &button = ApplicationDevices::getInstance().getButton();
+  while (!button.isPressed())
+    ;
+   while (button.isPressed())
+    ;
+
+
+  // while (true)
+  // {
+  //   if (button.isPressed())
+  //     Serial.println("Button PRESSED");
+  //   else
+  //     Serial.println("Button NOT PRESSED)");
+  //   vTaskDelay(pdMS_TO_TICKS(10));
+  // }
+
+  Serial.println("Starting Startup Tests...");
   neoPixel.setColor(NeoPixel::StateColor::OK);
 
   // Every 10 seconds move motor1 for 10 seconds. Run until explicitly stopped.
@@ -31,6 +50,7 @@ void startupTest()
       SoundPlayer::Sound::SPECIES_PIGEON
 
   };
+
   for (const auto &sound : soundList)
   {
     soundPlayer.playSound(sound);

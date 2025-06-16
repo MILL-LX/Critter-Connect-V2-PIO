@@ -18,7 +18,6 @@ void setup()
   while (true)
   {
     startupTest();
-    delay(5000); 
   }
 }
 
