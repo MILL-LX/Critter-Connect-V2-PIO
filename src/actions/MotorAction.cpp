@@ -6,17 +6,14 @@
 
 void MotorAction::performAction()
 {
-    TickType_t durationTicks = pdMS_TO_TICKS(_durationMillis);
-    TickType_t startTick = xTaskGetTickCount();
-    TickType_t endTick = startTick + durationTicks;
+    Serial.printf("Performing MotorAction for %u iterations.\n", _iterations);
 
-    Serial.printf("Performing MotorAction for %ums.\n", _durationMillis);
-    
     Motor::Direction direction = Motor::Direction::FORWARD;
-    while (xTaskGetTickCount() < endTick)
+    for (uint8_t i = 0; i < _iterations; ++i)
     {
-        _motor.moveFullRangeInDirection(direction);
-        direction = direction == Motor::Direction::FORWARD ? Motor::Direction::REVERSE : Motor::Direction::FORWARD;
+        Serial.println("Performing motor action iteration: " + String(i + 1));
+        _motor.moveFullRangeInDirection(Motor::Direction::FORWARD);
+        _motor.moveFullRangeInDirection(Motor::Direction::REVERSE);
     }
 
     Serial.println("Finished performing MotorAction.");

@@ -7,11 +7,11 @@
 class MotorAction
 {
 public:
-    MotorAction(uint32_t durationMillis, Motor& motor) : _durationMillis(durationMillis), _motor(motor) {}
+    MotorAction(uint8_t iterations, Motor& motor) : _iterations(iterations), _motor(motor) {}
 
     void performAction();
 
 private:
-    uint32_t _durationMillis;
+    uint8_t _iterations;
     Motor &_motor;
 };
