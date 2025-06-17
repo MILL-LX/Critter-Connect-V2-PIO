@@ -6,13 +6,14 @@
 
 #include "StartupTest.h"
 
+uint32_t evenOdd = 0;
 void startupTest()
 {
 
   NeoPixel &neoPixel = ApplicationDevices::getInstance().getNeoPixel();
   neoPixel.setColor(NeoPixel::StateColor::TEST);
 
-  Serial.println("Waiting for button press...");
+  Serial.println("Waiting for sound button press...");
   SoundButton &button = ApplicationDevices::getInstance().getButton();
   while (!button.isPressed())
     ;
@@ -22,15 +23,10 @@ void startupTest()
   Serial.println("Starting Startup Tests...");
   neoPixel.setColor(NeoPixel::StateColor::OK);
 
-  // Every 15 seconds move motor1 for 3 iterations. Run until explicitly stopped.
-  Motor &motor1 = ApplicationDevices::getInstance().getMotor1();
-  PeriodicAction<MotorAction> periodicMotor1Action(15000, UINT32_MAX, 3, motor1);
-  periodicMotor1Action.start();
+  Motor &motor = (evenOdd++ % 2 == 0) ? ApplicationDevices::getInstance().getMotor1() : ApplicationDevices::getInstance().getMotor2();
 
-  // Every 15 seconds move motor1 for 3 iterations. Run until explicitly stopped.
-  Motor &motor2 = ApplicationDevices::getInstance().getMotor2();
-  PeriodicAction<MotorAction> periodicMotor2Action(15000, UINT32_MAX, 3, motor2);
-  periodicMotor2Action.start();
+  PeriodicAction<MotorAction> periodicMotorAction(15000, UINT32_MAX, 3, motor);
+  periodicMotorAction.start();
 
   // Play the test tone sound. Will Play until finished.
   SoundPlayer &soundPlayer = ApplicationDevices::getInstance().getSoundPlayer();
@@ -48,8 +44,7 @@ void startupTest()
 
   // Stop all the actions
   Serial.println("Stopping test actions...");
-  periodicMotor1Action.stop();
-  periodicMotor2Action.stop();
+  periodicMotorAction.stop();
 
   Serial.println("Waiting for test actions to stop...");
   vTaskDelay(pdMS_TO_TICKS(10000));
