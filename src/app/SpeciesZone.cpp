@@ -4,6 +4,7 @@
 #include "SpeciesCoordinates.h"
 
 const float earthRadius = 6371000;
+const float zoneRadius = 35.0; // Radius in meters for species zones
 
 float toRadians(float degree)
 {
@@ -36,17 +37,18 @@ float haversineDistance(float lat1, float lon1, float lat2, float lon2)
 
 SpeciesZone::Zone SpeciesZone::zoneForLatLon(float lat, float lon)
 {
-  bool matching_species = 0;
+  uint8_t matching_species = 0;
 
   for (int i = 0; !matching_species && i < numSpeciesCoordinates; i++)
   {
     float distance = haversineDistance(speciesCoordinates[i].latitude, speciesCoordinates[i].longitude, lat, lon);
-    if(distance <= 40.0)
+    if(distance <= zoneRadius)
       matching_species = speciesCoordinates[i].species;
+      break;
   }
 
-  if (!matching_species) 
-    return SpeciesZone::Zone::NON_SPECIES_ZONE;
-  else
-    return (matching_species == 1) ? SpeciesZone::Zone::SPECIES_FROG_ZONE : SpeciesZone::Zone::SPECIES_PIGEON_ZONE;
+  // Cast the matching species to the Zone enum. Slightly dirty but flexible when adding new species.
+  // This assumes that species are defined in a way that they map directly to the Zone enum.
+  SpeciesZone::Zone zone = static_cast<SpeciesZone::Zone>(matching_species);
+  return zone;
 }
