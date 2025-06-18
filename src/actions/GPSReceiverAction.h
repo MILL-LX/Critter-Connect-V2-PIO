@@ -44,16 +44,19 @@ public:
     GPSReceiverAction &operator=(GPSReceiverAction &&) = default;
 
     void performAction();
-
+    bool isActive();
+    void setActive(bool value);
+    
 private:
     std::atomic<bool> _is_running{false};
     SpeciesZone::Zone _previousZone = SpeciesZone::Zone::NON_SPECIES_ZONE;
 
     std::unique_ptr<PeriodicAction<NeoPixelAction>> _periodicNeopixelAction;
     std::unique_ptr<PeriodicAction<MotorAction>> _periodicMotor1Action;
-    SoundPlayer& _soundPlayer;
-    NeoPixel& _neoPixel;
-    GPSReceiver& _gpsReceiver;
+    SoundPlayer &_soundPlayer;
+    NeoPixel &_neoPixel;
+    GPSReceiver &_gpsReceiver;
+    std::atomic<bool> _isActive{false};
 
     void processLocationUpdate(GPSReceiver::GPSData gpsData);
 };
