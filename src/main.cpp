@@ -14,11 +14,7 @@ void setup()
   delay(2000); // let Serial Stabilize
 
   Serial.println("Setup complete. Running startup tests...");
-  Serial.println("Demo Mode: Running startup tests in a loop every 5 seconds.");
-  while (true)
-  {
-    startupTest();
-  }
+  startupTest();
 }
 
 void loop()
