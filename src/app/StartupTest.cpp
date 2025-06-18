@@ -42,10 +42,13 @@ void startupTest()
   while (periodicMotorAction_frog.isActive())
     vTaskDelay(pdMS_TO_TICKS(100));
 
+  // Pause between actions
+  vTaskDelay(pdMS_TO_TICKS(2000));
+
   // Pigeon Sound and Motor Action
   Motor &motor_pigeon = ApplicationDevices::getInstance().getMotor2();
   PeriodicAction<MotorAction> periodicMotorAction_pigeon(15000, UINT32_MAX, 3, motor_pigeon);
-  periodicMotorAction_frog.start();
+  periodicMotorAction_pigeon.start();
 
   soundPlayer.playSound(SoundPlayer::Sound::SPECIES_PIGEON);
   while (soundPlayer.isPlaying())
