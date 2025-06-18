@@ -6,7 +6,6 @@
 
 #include "StartupTest.h"
 
-uint32_t evenOdd = 0;
 void startupTest()
 {
 
