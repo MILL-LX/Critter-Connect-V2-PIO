@@ -16,11 +16,12 @@ public:
 
     void performAction();
     bool isActive();
-    void setActive(bool value);
 
 private:
     uint32_t _durationMillis;
     NeoPixel::StateColor _on_color;
     NeoPixel &_neoPixel; // Reference member
     std::atomic<bool> _isActive{false};
+
+    void setActive(bool value);
 };

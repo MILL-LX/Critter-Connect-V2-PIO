@@ -44,7 +44,6 @@ void PeriodicAction<ActionType>::start()
 template <typename ActionType>
 void PeriodicAction<ActionType>::stop()
 {
-    //MOFIX propagate stop to contained action
     _continueAction.store(false);
 }
 

@@ -8,24 +8,22 @@
 
 #include "devices/ApplicationDevices.h"
 
-// We don't need to update our location very frequently since
-// the GPS receiver is with a person who is walking.
 const ulong gpsCheckIntervalMillis = 100;
 void GPSReceiverAction::performAction()
 {
-    if (_is_running.load())
+    if (isActive())
     {
-        Serial.println("GPSReceiverAction already running, ignoring run().");
+        Serial.println("GPSReceiverAction already running, ignoring performAction().");
         return;
     }
     else
     {
         Serial.println("GPSReceiverAction starting...");
-        _is_running.store(true); // Set the flag indicating it's running
+        setActive(true);
     }
 
     long lastFound = 0;        // Initialize lastFound, perhaps with millis() if needed immediately
-    while (_is_running.load()) // Check the atomic flag to allow stopping the loop
+    while (isActive())
     {
         ulong currentMillis = millis();
 
@@ -82,7 +80,12 @@ void GPSReceiverAction::processLocationUpdate(GPSReceiver::GPSData gpsData)
         break;
     case SpeciesZone::Zone::SPECIES_FROG_ZONE:
     case SpeciesZone::Zone::SPECIES_PIGEON_ZONE:
-        _periodicNeopixelAction->stop(); // MOFIX - make this a hard stop
+        _periodicNeopixelAction->stop();
+        while(_periodicNeopixelAction->isActive())
+        {
+            Serial.println("Waiting for Periodic NeoPixel Action to stop...");
+            vTaskDelay(pdMS_TO_TICKS(100));
+        }
         _neoPixel.setColor(NeoPixel::StateColor::OK);
 
         if (ApplicationDevices::getInstance().getButton().isPressed())

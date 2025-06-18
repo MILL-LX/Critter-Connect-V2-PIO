@@ -23,13 +23,11 @@ void setup()
 
 void loop()
 {
-  // Every 10 seconds check for a location update for 1 second
-  PeriodicAction<GPSReceiverAction> periodicGPSReceiverAction(10000UL, UINT32_MAX);
-  periodicGPSReceiverAction.start();
+  // The GPS Receiver Action runs indefinitely, checking out positions and updating the state.
+  GPSReceiverAction gpsReceiverAction;
+  gpsReceiverAction.performAction();
 
-  while (true)
-  {
-    // Serial.println("Main thread is just waiting...");
-    vTaskDelay(pdMS_TO_TICKS(10000));
-  }
+  // We should never get here
+  Serial.println("GPSReceiverAction completed unexpectedly. This should not happen.");
+  vTaskDelay(pdMS_TO_TICKS(1000)); // Wait a second before the next loop iteration
 }

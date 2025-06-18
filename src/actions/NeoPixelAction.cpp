@@ -16,7 +16,7 @@ void NeoPixelAction::performAction()
 
     Serial.println("Performing NeoPixelAction for " + String(_durationMillis) + " ms.");
     bool on = true;
-    //MOFIX implement stop logic
+    setActive(true);
     while (xTaskGetTickCount() < endTick)
     {
         NeoPixel::StateColor color = on ? _on_color: NeoPixel::StateColor::OFF;
@@ -39,6 +39,7 @@ void NeoPixelAction::performAction()
             vTaskDelay(delayIntervalTicks); // Delay for the standard interval
         }
     }
+    setActive(false);
 
     _neoPixel.setColor(NeoPixel::StateColor::OFF); // Ensure LED is off at the end
     Serial.println("Finished performing NeoPixelAction.");
