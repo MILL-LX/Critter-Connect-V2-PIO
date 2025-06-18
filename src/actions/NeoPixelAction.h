@@ -1,5 +1,6 @@
 #pragma once
 
+#include <atomic>
 #include <cstdint>
 
 #include "devices/ApplicationDevices.h"
@@ -11,12 +12,15 @@ public:
     NeoPixelAction(uint32_t durationMillis, NeoPixel::StateColor on_color)
         : _durationMillis(durationMillis),
           _on_color(on_color),
-          _neoPixel(ApplicationDevices::getInstance().getNeoPixel()){}
+          _neoPixel(ApplicationDevices::getInstance().getNeoPixel()) {}
 
     void performAction();
+    bool isActive();
+    void setActive(bool value);
 
 private:
     uint32_t _durationMillis;
     NeoPixel::StateColor _on_color;
-    NeoPixel& _neoPixel; // Reference member
+    NeoPixel &_neoPixel; // Reference member
+    std::atomic<bool> _isActive{false};
 };

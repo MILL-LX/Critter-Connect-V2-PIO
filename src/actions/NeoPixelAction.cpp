@@ -43,3 +43,13 @@ void NeoPixelAction::performAction()
     _neoPixel.setColor(NeoPixel::StateColor::OFF); // Ensure LED is off at the end
     Serial.println("Finished performing NeoPixelAction.");
 }
+
+bool NeoPixelAction::isActive()
+{
+    return _isActive.load();
+}
+
+void NeoPixelAction::setActive(bool value)
+{
+    _isActive.store(value);
+}

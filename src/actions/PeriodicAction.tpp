@@ -68,7 +68,7 @@ void PeriodicAction<ActionType>::taskFunction(void *parameters)
         TickType_t periodStartTime = xTaskGetTickCount();
 
         periodicAction->_actionInstance.performAction();
-        vTaskDelayUntil(&lastWakeTime, periodTicks); //MOFIX hard stop
+        vTaskDelayUntil(&lastWakeTime, periodTicks);
 
         Serial.println("Period ended after " + String(pdTICKS_TO_MS(xTaskGetTickCount() - periodStartTime)) + " millis.\n");
 
@@ -80,4 +80,10 @@ void PeriodicAction<ActionType>::taskFunction(void *parameters)
 
     periodicAction->_taskHandle = nullptr;
     vTaskDelete(nullptr);
+}
+
+template <typename ActionType>
+bool PeriodicAction<ActionType>::isActive()
+{
+    return _actionInstance.isActive() || _continueAction.load();
 }

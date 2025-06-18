@@ -113,3 +113,12 @@ void GPSReceiverAction::processLocationUpdate(GPSReceiver::GPSData gpsData)
 
     _previousZone = currentZone;
 }
+
+bool GPSReceiverAction::isActive()
+{
+    return _isActive.load();
+}
+void GPSReceiverAction::setActive(bool value)
+{
+    _isActive.store(value);
+}

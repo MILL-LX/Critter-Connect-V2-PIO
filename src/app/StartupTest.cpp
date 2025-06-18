@@ -23,31 +23,38 @@ void startupTest()
   Serial.println("Starting Startup Tests...");
   neoPixel.setColor(NeoPixel::StateColor::OK);
 
-  Motor &motor = (evenOdd++ % 2 == 0) ? ApplicationDevices::getInstance().getMotor1() : ApplicationDevices::getInstance().getMotor2();
-
-  PeriodicAction<MotorAction> periodicMotorAction(15000, UINT32_MAX, 3, motor);
-  periodicMotorAction.start();
-
-  // Play the test tone sound. Will Play until finished.
+  // Test Tone
   SoundPlayer &soundPlayer = ApplicationDevices::getInstance().getSoundPlayer();
-  SoundPlayer::Sound soundList[] = {
-      SoundPlayer::Sound::TEST_TONE,
-      SoundPlayer::Sound::SPECIES_FROG,
-      SoundPlayer::Sound::SPECIES_PIGEON};
+  soundPlayer.playSound(SoundPlayer::Sound::TEST_TONE);
+  while (soundPlayer.isPlaying())
+    vTaskDelay(pdMS_TO_TICKS(100));
 
-  for (const auto &sound : soundList)
-  {
-    soundPlayer.playSound(sound);
-    while (soundPlayer.isPlaying())
-      vTaskDelay(pdMS_TO_TICKS(100));
-  }
+  // Frog Sound and Motor Action
+  Motor &motor_frog = ApplicationDevices::getInstance().getMotor1();
+  PeriodicAction<MotorAction> periodicMotorAction_frog(15000, UINT32_MAX, 3, motor_frog);
+  periodicMotorAction_frog.start();
 
-  // Stop all the actions
-  Serial.println("Stopping test actions...");
-  periodicMotorAction.stop();
+  soundPlayer.playSound(SoundPlayer::Sound::SPECIES_FROG);
+  while (soundPlayer.isPlaying())
+    vTaskDelay(pdMS_TO_TICKS(100));
 
-  Serial.println("Waiting for test actions to stop...");
-  vTaskDelay(pdMS_TO_TICKS(10000));
+  periodicMotorAction_frog.stop();
+  while (periodicMotorAction_frog.isActive())
+    vTaskDelay(pdMS_TO_TICKS(100));
+
+  // Pigeon Sound and Motor Action
+  Motor &motor_pigeon = ApplicationDevices::getInstance().getMotor2();
+  PeriodicAction<MotorAction> periodicMotorAction_pigeon(15000, UINT32_MAX, 3, motor_pigeon);
+  periodicMotorAction_frog.start();
+
+  soundPlayer.playSound(SoundPlayer::Sound::SPECIES_PIGEON);
+  while (soundPlayer.isPlaying())
+    vTaskDelay(pdMS_TO_TICKS(100));
+
+  periodicMotorAction_pigeon.stop();
+  while (periodicMotorAction_pigeon.isActive())
+    vTaskDelay(pdMS_TO_TICKS(100));
+
   neoPixel.setColor(NeoPixel::StateColor::OFF);
 
   Serial.println("Startup Tests completed.\n\n");

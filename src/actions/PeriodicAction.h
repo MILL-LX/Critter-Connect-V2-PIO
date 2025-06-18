@@ -16,6 +16,7 @@ public:
 
     void start();
     void stop();
+    bool isActive();
 
 private:
     static void taskFunction(void *parameters);
