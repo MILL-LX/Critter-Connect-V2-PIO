@@ -4,6 +4,8 @@
 #include "devices/SoundButton.h"
 #include "devices/ApplicationDevices.h"
 
+#include "devices/VibratingMotor.h"
+
 #include "StartupTest.h"
 
 void startupTest()
@@ -22,6 +24,11 @@ void startupTest()
   Serial.println("Starting Startup Tests...");
   neoPixel.setColor(NeoPixel::StateColor::OK);
 
+  VibratingMotor &vibratingMotor = ApplicationDevices::getInstance().getVibratingMotor();
+  vibratingMotor.start();
+  vTaskDelay(pdMS_TO_TICKS(3000));
+  vibratingMotor.stop();
+
   // Test Tone
   SoundPlayer &soundPlayer = ApplicationDevices::getInstance().getSoundPlayer();
   soundPlayer.playSound(SoundPlayer::Sound::TEST_TONE);
@@ -30,7 +37,7 @@ void startupTest()
 
   // Frog Sound and Motor Action
   Motor &motor_frog = ApplicationDevices::getInstance().getMotor1();
-  PeriodicAction<MotorAction> periodicMotorAction_frog(15000, UINT32_MAX, 3, motor_frog);
+  PeriodicAction<MotorAction> periodicMotorAction_frog(10000, UINT32_MAX, 2, motor_frog);
   periodicMotorAction_frog.start();
 
   soundPlayer.playSound(SoundPlayer::Sound::SPECIES_FROG);
@@ -46,7 +53,7 @@ void startupTest()
 
   // Pigeon Sound and Motor Action
   Motor &motor_pigeon = ApplicationDevices::getInstance().getMotor2();
-  PeriodicAction<MotorAction> periodicMotorAction_pigeon(15000, UINT32_MAX, 3, motor_pigeon);
+  PeriodicAction<MotorAction> periodicMotorAction_pigeon(10000, UINT32_MAX, 2, motor_pigeon);
   periodicMotorAction_pigeon.start();
 
   soundPlayer.playSound(SoundPlayer::Sound::SPECIES_PIGEON);

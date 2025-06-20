@@ -3,7 +3,7 @@
 #include <Adafruit_NeoPixel.h>
 
 namespace NeoPixelDefs {
-    const int defaultPin = 13; /* final version */ /* 17; datalogger version*/ /* 16; non-datalogger version */
+    const int defaultPin = 13; /* datalogger version*/ /* 17; /* non-datalogger prototype version */ /* 16; /* non-datalogger version */
 const int defaultNumPixels = 1;
 const int defaultBrightness = 150;
 }

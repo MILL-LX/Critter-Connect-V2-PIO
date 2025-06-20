@@ -6,6 +6,7 @@
 
 #include "devices/GPSReceiver.h"
 #include "devices/Motor.h"
+#include "devices/VibratingMotor.h"
 #include "devices/NeoPixel.h"
 #include "devices/SoundButton.h"
 #include "devices/SoundPlayer.h"
@@ -38,6 +39,8 @@ public:
         getButton();      // Initializes _button if null
         getGpsReceiver(); // Initializes _gpsReceiver if null
         getMotor1();      // Initializes _motor if null
+        getMotor2();      // Initializes _motor if null
+        getVibratingMotor(); // Initializes _vibratingMotor if null
         getNeoPixel();    // Initializes _neoPixel if null
         getSoundPlayer(); // Initializes _soundPlayer if null
     }
@@ -81,6 +84,17 @@ public:
         }
         return *_motor2;
     }
+
+    VibratingMotor &getVibratingMotor()
+    {
+        if (!_vibratingMotor)
+        {
+            // Remember to add constructor arguments here if needed by VibratingMotor
+            _vibratingMotor = std::make_unique<VibratingMotor>();
+        }
+        return *_vibratingMotor;
+    }
+
     NeoPixel &getNeoPixel()
     {
         if (!_neoPixel)
@@ -111,6 +125,7 @@ private:
     std::unique_ptr<GPSReceiver> _gpsReceiver = nullptr;
     std::unique_ptr<Motor> _motor1 = nullptr;
     std::unique_ptr<Motor> _motor2 = nullptr;
+    std::unique_ptr<VibratingMotor> _vibratingMotor = nullptr;
     std::unique_ptr<NeoPixel> _neoPixel = nullptr;
     std::unique_ptr<SoundPlayer> _soundPlayer = nullptr;
 
