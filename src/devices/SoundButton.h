@@ -1,51 +1,40 @@
 #pragma once
 
 #include <Arduino.h>
+#include <FreeRTOS.h>
+#include <task.h>
 
 namespace SoundButtonDefs
 {
     const int defaultPin = 4;
-    const unsigned long defaultDebounceDelay = 50;
+    const TickType_t defaultDebounceDelay = pdMS_TO_TICKS(50);
 }
 
 class SoundButton
 {
 public:
-    SoundButton(int pin = SoundButtonDefs::defaultPin, unsigned long debounceDelay = SoundButtonDefs::defaultDebounceDelay) : _pin(pin),
-                                                                                                       _debounceDelay(debounceDelay),
-                                                                                                       _lastDebounceTime(0),
-                                                                                                       _lastButtonState(HIGH),
-                                                                                                       _buttonState(HIGH)
+    SoundButton(int pin = SoundButtonDefs::defaultPin, TickType_t debounceDelay = SoundButtonDefs::defaultDebounceDelay) : _pin(pin),
+                                                                                                                           _debounceDelay(debounceDelay)
     {
         pinMode(_pin, INPUT_PULLUP);
     };
 
     bool isPressed()
     {
+        // Read button state
         int reading = digitalRead(_pin);
-
-        if (reading != _lastButtonState)
+        
+        // If pressed, wait for debounce period and confirm
+        if (reading == LOW)
         {
-            _lastDebounceTime = millis();
+            vTaskDelay(_debounceDelay);
+            return (digitalRead(_pin) == LOW);
         }
-
-        if ((millis() - _lastDebounceTime) > _debounceDelay)
-        {
-            if (reading != _buttonState)
-            {
-                _buttonState = reading;
-            }
-        }
-
-        _lastButtonState = reading;
-
-        return (_buttonState == LOW);
+        
+        return false;
     }
 
 private:
     int _pin;
-    unsigned long _debounceDelay;
-    unsigned long _lastDebounceTime;
-    int _lastButtonState;
-    int _buttonState;
+    TickType_t _debounceDelay;
 };
