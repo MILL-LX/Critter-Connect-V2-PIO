@@ -42,7 +42,7 @@ public:
     bool isActive();
 
 private:
-    SpeciesZone::Zone _previousZone = SpeciesZone::Zone::NON_SPECIES_ZONE;
+    SpeciesZone::Zone _previousZone = SpeciesZone::Zone::UNKNOWN_ZONE;
 
     std::unique_ptr<PeriodicAction<NeoPixelAction>> _periodicNeopixelAction;
     SoundPlayer &_soundPlayer;

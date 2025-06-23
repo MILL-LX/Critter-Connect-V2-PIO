@@ -14,7 +14,7 @@ void NeoPixelAction::performAction()
 
     const TickType_t delayIntervalTicks = durationTicks / 2;
 
-    Serial.println("Performing NeoPixelAction for " + String(_durationMillis) + " ms.");
+    // Serial.println("Performing NeoPixelAction for " + String(_durationMillis) + " ms.");
     bool on = true;
     setActive(true);
     while (xTaskGetTickCount() < endTick)
@@ -42,7 +42,7 @@ void NeoPixelAction::performAction()
     setActive(false);
 
     _neoPixel.setColor(NeoPixel::StateColor::OFF); // Ensure LED is off at the end
-    Serial.println("Finished performing NeoPixelAction.");
+    // Serial.println("Finished performing NeoPixelAction.");
 }
 
 bool NeoPixelAction::isActive()

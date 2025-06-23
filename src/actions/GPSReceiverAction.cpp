@@ -8,7 +8,7 @@
 
 #include "devices/ApplicationDevices.h"
 
-const ulong gpsCheckIntervalMillis = 100;
+const ulong gpsCheckIntervalMillis = 1000;
 void GPSReceiverAction::performAction()
 {
     if (isActive())
@@ -73,22 +73,9 @@ void GPSReceiverAction::processLocationUpdate(GPSReceiver::GPSData gpsData)
     case SpeciesZone::Zone::NON_SPECIES_ZONE:
         if (currentZone != _previousZone)
         {
-            Serial.println("Leaving species zone.");
+            Serial.println("Entering non-species zone.");
             _neoPixel.setColor(NeoPixel::StateColor::OFF);
             _periodicNeopixelAction->start();
-        }
-        else
-        {
-            if (!_periodicNeopixelAction->isActive())
-            {
-                Serial.println("Starting periodic neopixel action for non-species zone.");
-                _periodicNeopixelAction->start();
-            }
-            else
-            {
-                Serial.println("Periodic neopixel action already active for non-species zone.");
-            }
-            Serial.println("Outside of all species zones.");
         }
         break;
     case SpeciesZone::Zone::SPECIES_FROG_ZONE:
