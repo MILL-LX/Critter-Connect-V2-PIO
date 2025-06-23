@@ -38,18 +38,18 @@ public:
 
         // Disable the TMC2209 driver initially
         disable();
-        Serial.println("Motor driver initially disabled.");
+        //Serial.println("Motor driver initially disabled.");
 
         // Configure AccelStepper settings
         _stepper->setMaxSpeed(maxSpeed);         // Max speed in steps per second
         _stepper->setAcceleration(acceleration); // Acceleration in steps per second^2
         _stepper->setCurrentPosition(0);         // Set the current position to 0
 
-        Serial.print("Initial position: ");
-        Serial.println(_stepper->currentPosition());
-        Serial.print("Target steps: +/- ");
-        Serial.println(stepsInFullRange);
-        Serial.println("\n\n");
+        // Serial.print("Initial position: ");
+        // Serial.println(_stepper->currentPosition());
+        // Serial.print("Target steps: +/- ");
+        // Serial.println(stepsInFullRange);
+        // Serial.println("\n\n");
     };
 
     ~Motor()
@@ -63,14 +63,14 @@ public:
 
     void enable()
     {
-        Serial.println("Enabling motor driver.");
+        //Serial.println("Enabling motor driver.");
         digitalWrite(_enablePin, LOW);
         delay(5);
     }
 
     void disable()
     {
-        Serial.println("Disabling motor driver.");
+        //Serial.println("Disabling motor driver.");
         digitalWrite(_enablePin, HIGH);
         delay(5);
     }

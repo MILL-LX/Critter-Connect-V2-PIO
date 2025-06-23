@@ -106,40 +106,40 @@ void GPSReceiver::debugDumpGPSData()
 GPSReceiver::GPSData GPSReceiver::mockGpsData(GPSReceiver::GPSData gpsData,
                                               bool useMockData)
 {
-    GPSReceiver::GPSData mockGgpsData = gpsData;
 
     if (!useMockData)
     {
-        return mockGgpsData; // Return original data if not using mock
+        return gpsData; // Return original data if not using mock
     }
 
+    GPSReceiver::GPSData mockGgpsData = gpsData;
     if (millis() < 60000)
     {
-        Serial.println("Simulate location in  non-species zone for testing purposes.");
+        Serial.println("Simulating location in  non-species zone for testing purposes.");
         mockGgpsData.lat = 1.0; // Example latitude
         mockGgpsData.lon = 1.0; // Example longitude
     }
     else if (millis() < 120000)
     {
-        Serial.println("Simulate location in  species zone 1 for testing purposes.");
+        Serial.println("Simulating location in  species zone 1 for testing purposes.");
         mockGgpsData.lat = 32.6585412143;  // Example latitude
         mockGgpsData.lon = -16.8685332416; // Example longitude
     }
     else if (millis() < 180000)
     {
-        Serial.println("Simulate location in  non-species zone for testing purposes.");
+        Serial.println("Simulating location in  non-species zone for testing purposes.");
         mockGgpsData.lat = 1.0; // Example latitude
         mockGgpsData.lon = 1.0; // Example longitude
     }
     else if (millis() < 240000)
     {
-        Serial.println("Simulate location in  species zone 2 for testing purposes.");
+        Serial.println("Simulating location in  species zone 2 for testing purposes.");
         mockGgpsData.lat = 32.662040384700205;  // Example latitude
         mockGgpsData.lon = -16.868402420468072; // Example longitude
     }
     else if (millis() < 300000)
     {
-        Serial.println("Simulate location in  non-species zone for testing purposes.");
+        Serial.println("Simulating location in  non-species zone for testing purposes.");
         mockGgpsData.lat = 1.0; // Example latitude
         mockGgpsData.lon = 1.0; // Example longitude
     }

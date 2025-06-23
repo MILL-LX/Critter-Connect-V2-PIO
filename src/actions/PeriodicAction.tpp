@@ -69,15 +69,15 @@ void PeriodicAction<ActionType>::taskFunction(void *parameters)
     periodicAction->_continueAction.store(true);
     while ((runUntilExplicitlyStopped || iterationsLeft) && periodicAction->_continueAction.load())
     {
-        String message = "PeriodicAction with period " + String(periodicAction->_actionPeriodMillis) + " millis running for " + (runUntilExplicitlyStopped ? "unlimited" : String(iterationsLeft)) + " more iterations.";
-        Serial.println(message);
+        // String message = "PeriodicAction with period " + String(periodicAction->_actionPeriodMillis) + " millis running for " + (runUntilExplicitlyStopped ? "unlimited" : String(iterationsLeft)) + " more iterations.";
+        // Serial.println(message);
 
         TickType_t periodStartTime = xTaskGetTickCount();
 
         periodicAction->_actionInstance.performAction();
         vTaskDelayUntil(&lastWakeTime, periodTicks);
 
-        Serial.println("PeriodAction ended after " + String(pdTICKS_TO_MS(xTaskGetTickCount() - periodStartTime)) + " millis.\n");
+        // Serial.println("PeriodAction ended after " + String(pdTICKS_TO_MS(xTaskGetTickCount() - periodStartTime)) + " millis.\n");
 
         iterationsLeft--;
     }
