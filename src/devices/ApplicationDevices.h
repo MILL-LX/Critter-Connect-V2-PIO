@@ -120,7 +120,7 @@ private:
     // Destructor can remain defaulted or be private as well if needed
     ~ApplicationDevices() = default;
 
-    // --- Member variables remain the same ---
+    // Device members
     std::unique_ptr<SoundButton> _button = nullptr;
     std::unique_ptr<GPSReceiver> _gpsReceiver = nullptr;
     std::unique_ptr<Motor> _motor1 = nullptr;
@@ -128,6 +128,4 @@ private:
     std::unique_ptr<VibratingMotor> _vibratingMotor = nullptr;
     std::unique_ptr<NeoPixel> _neoPixel = nullptr;
     std::unique_ptr<SoundPlayer> _soundPlayer = nullptr;
-
-    // Note: No static instance variable needed here because we use a static local in getInstance()
 };
