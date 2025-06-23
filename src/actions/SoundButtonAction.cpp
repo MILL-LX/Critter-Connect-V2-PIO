@@ -34,7 +34,7 @@ void SoundButtonAction::start()
         // Create the task
         BaseType_t result = xTaskCreate(
             taskFunction,         // Task function
-            "PeriodicActionTask", // Name of the task
+            "SoundButtonTask", // Name of the task
             1024,                 // Stack size (adjust as needed)
             this,                 // Parameter passed to the task
             1,                    // Priority (adjust as needed)
@@ -44,7 +44,7 @@ void SoundButtonAction::start()
         {
             _taskHandle = nullptr; // Ensure handle is null on failure
             setActive(false);      // Reset flag on failure
-            Serial.println("Failed to create PeriodicAction task!");
+            Serial.println("Failed to create SoundButtonAction task!");
         }
     }
     else
