@@ -5,7 +5,6 @@
 #include "devices/SoundButton.h"
 #include "devices/ApplicationDevices.h"
 
-
 #include "StartupTest.h"
 
 void startupTest()
@@ -22,25 +21,17 @@ void startupTest()
   Serial.println("Starting Startup Tests...");
   neoPixel.setColor(NeoPixel::StateColor::OK);
 
-  // VibratingMotor &vibratingMotor = ApplicationDevices::getInstance().getVibratingMotor();
-  // PeriodicAction<VibratingMotorAction> periodicVibratingMotorAction(1000, UINT32_MAX, 500, vibratingMotor);
-  // periodicVibratingMotorAction.start();
-  // vTaskDelay(pdMS_TO_TICKS(10000)); 
-  // periodicVibratingMotorAction.stop();
-  // while (periodicVibratingMotorAction.isActive())
-  //   vTaskDelay(pdMS_TO_TICKS(100));
-
-  VibratingMotor &vibratingMotor = ApplicationDevices::getInstance().getVibratingMotor();
-  PeriodicAction<VibratingMotorAction> periodicVibratingMotorAction(1000, 10, 500, vibratingMotor);
-  periodicVibratingMotorAction.start();
-  while (periodicVibratingMotorAction.isActive())
-    vTaskDelay(pdMS_TO_TICKS(100));
-
-
   // Test Tone
   SoundPlayer &soundPlayer = ApplicationDevices::getInstance().getSoundPlayer();
   soundPlayer.playSound(SoundPlayer::Sound::TEST_TONE);
   while (soundPlayer.isPlaying())
+    vTaskDelay(pdMS_TO_TICKS(100));
+
+  // Vibrating Motor Test
+  VibratingMotor &vibratingMotor = ApplicationDevices::getInstance().getVibratingMotor();
+  PeriodicAction<VibratingMotorAction> periodicVibratingMotorAction(1000, 10, 500, vibratingMotor);
+  periodicVibratingMotorAction.start();
+  while (periodicVibratingMotorAction.isActive())
     vTaskDelay(pdMS_TO_TICKS(100));
 
   // Frog Sound and Motor Action
