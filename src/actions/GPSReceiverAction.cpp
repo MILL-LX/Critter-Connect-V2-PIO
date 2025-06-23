@@ -96,9 +96,13 @@ void GPSReceiverAction::processLocationUpdate(GPSReceiver::GPSData gpsData)
             _neoPixel.setColor(NeoPixel::StateColor::OK);
 
             if (currentZone == SpeciesZone::Zone::SPECIES_FROG_ZONE)
+            {
                 _soundButtonAction_frog->start();
+            }
             else if (currentZone == SpeciesZone::Zone::SPECIES_PIGEON_ZONE)
+            {
                 _soundButtonAction_pigeon->start();
+            }
             else
             {
                 Serial.println("Species Zone Status INVALID - Proximity check returned unexpected value.");

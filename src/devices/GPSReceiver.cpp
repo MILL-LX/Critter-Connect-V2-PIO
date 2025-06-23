@@ -113,39 +113,40 @@ GPSReceiver::GPSData GPSReceiver::mockGpsData(GPSReceiver::GPSData gpsData,
     }
 
     GPSReceiver::GPSData mockGgpsData = gpsData;
-    if (millis() < 60000)
+    if (millis() < 60000) // spend a minute in a non-species zone
     {
-        Serial.println("Simulating location in  non-species zone for testing purposes.");
-        mockGgpsData.lat = 1.0; // Example latitude
-        mockGgpsData.lon = 1.0; // Example longitude
+        Serial.println("Simulating location in non-species zone for testing purposes.");
+        mockGgpsData.lat = 1.0;
+        mockGgpsData.lon = 1.0;
     }
-    else if (millis() < 120000)
+    else if (millis() < 200000) // spend a little over 2 minutes in a species 1 zone
     {
         Serial.println("Simulating location in  species zone 1 for testing purposes.");
-        mockGgpsData.lat = 32.6585412143;  // Example latitude
-        mockGgpsData.lon = -16.8685332416; // Example longitude
+        mockGgpsData.lat = 32.6585412143;
+        mockGgpsData.lon = -16.8685332416;
     }
-    else if (millis() < 180000)
+    else if (millis() < 260000) // spend a minute in a non-species zone
     {
         Serial.println("Simulating location in  non-species zone for testing purposes.");
-        mockGgpsData.lat = 1.0; // Example latitude
-        mockGgpsData.lon = 1.0; // Example longitude
+        mockGgpsData.lat = 1.0;
+        mockGgpsData.lon = 1.0;
     }
-    else if (millis() < 240000)
+    else if (millis() < 400000) // spend a little over 2 minutes in a species 2 zone
     {
         Serial.println("Simulating location in  species zone 2 for testing purposes.");
-        mockGgpsData.lat = 32.662040384700205;  // Example latitude
-        mockGgpsData.lon = -16.868402420468072; // Example longitude
+        mockGgpsData.lat = 32.662040384700205;
+        mockGgpsData.lon = -16.868402420468072;
     }
-    else if (millis() < 300000)
+    else if (millis() < 460000) // spend a minute in a non-species zone
     {
         Serial.println("Simulating location in  non-species zone for testing purposes.");
-        mockGgpsData.lat = 1.0; // Example latitude
-        mockGgpsData.lon = 1.0; // Example longitude
+        mockGgpsData.lat = 1.0; 
+        mockGgpsData.lon = 1.0;
     }
     else
     {
-        Serial.println("Using real GPS data.");
+        Serial.println("Simulation complete, using real GPS data.");
+        return gpsData; // Return original data if simulation is complete
     }
 
     mockGgpsData.dataReady = true; // Simulate data being ready
