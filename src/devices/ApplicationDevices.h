@@ -36,7 +36,7 @@ public:
     void setup()
     {
         // Access members directly within the class
-        getButton();      // Initializes _button if null
+        getSoundButton();      // Initializes _button if null
         getGpsReceiver(); // Initializes _gpsReceiver if null
         getMotor1();      // Initializes _motor if null
         getMotor2();      // Initializes _motor if null
@@ -46,7 +46,7 @@ public:
     }
 
     // --- Accessor methods ---
-    SoundButton &getButton()
+    SoundButton &getSoundButton()
     {
         if (!_button)
         {

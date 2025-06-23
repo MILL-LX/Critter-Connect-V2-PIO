@@ -15,11 +15,11 @@ void startupTest()
   neoPixel.setColor(NeoPixel::StateColor::TEST);
 
   Serial.println("Waiting for sound button press...");
-  SoundButton &button = ApplicationDevices::getInstance().getButton();
+  SoundButton &button = ApplicationDevices::getInstance().getSoundButton();
   while (!button.isPressed())
     ;
-  while (button.isPressed())
-    ;
+  // MOFIX while (button.isPressed())
+  //   ;
 
   Serial.println("Starting Startup Tests...");
   neoPixel.setColor(NeoPixel::StateColor::OK);

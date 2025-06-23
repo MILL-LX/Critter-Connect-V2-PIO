@@ -22,7 +22,7 @@ void GPSReceiverAction::performAction()
         setActive(true);
     }
 
-    long lastFound = 0;        // Initialize lastFound, perhaps with millis() if needed immediately
+    long lastFound = 0; // Initialize lastFound, perhaps with millis() if needed immediately
     while (isActive())
     {
         ulong currentMillis = millis();
@@ -71,24 +71,39 @@ void GPSReceiverAction::processLocationUpdate(GPSReceiver::GPSData gpsData)
     switch (currentZone)
     {
     case SpeciesZone::Zone::NON_SPECIES_ZONE:
-        _periodicNeopixelAction->start();
-
         if (currentZone != _previousZone)
+        {
             Serial.println("Leaving species zone.");
+            _neoPixel.setColor(NeoPixel::StateColor::OFF);
+            _periodicNeopixelAction->start();
+        }
         else
+        {
+            if(!_periodicNeopixelAction->isActive())
+            {
+                Serial.println("Starting periodic neopixel action for non-species zone.");
+                _periodicNeopixelAction->start();
+            }
+            else
+            {
+                Serial.println("Periodic neopixel action already active for non-species zone.");
+            }
             Serial.println("Outside of all species zones.");
+        }
         break;
     case SpeciesZone::Zone::SPECIES_FROG_ZONE:
     case SpeciesZone::Zone::SPECIES_PIGEON_ZONE:
-        _periodicNeopixelAction->stop();
-        while(_periodicNeopixelAction->isActive())
+        if (currentZone != _previousZone)
         {
-            Serial.println("Waiting for Periodic NeoPixel Action to stop...");
-            vTaskDelay(pdMS_TO_TICKS(100));
-        }
-        _neoPixel.setColor(NeoPixel::StateColor::OK);
+            Serial.printf("Entering %s zone.\n", (currentZone == SpeciesZone::Zone::SPECIES_FROG_ZONE) ? "Frog" : "Pigeon");
 
-        if (ApplicationDevices::getInstance().getButton().isPressed())
+            _periodicNeopixelAction->stop();
+            while (_periodicNeopixelAction->isActive())
+                vTaskDelay(pdMS_TO_TICKS(100));
+            _neoPixel.setColor(NeoPixel::StateColor::OK);
+        }
+
+        if (ApplicationDevices::getInstance().getSoundButton().isPressed())
         {
             Serial.println("Button pressed, playing sound.");
             if (!ApplicationDevices::getInstance().getSoundPlayer().isPlaying())
@@ -101,12 +116,8 @@ void GPSReceiverAction::processLocationUpdate(GPSReceiver::GPSData gpsData)
         {
             Serial.println("Button not pressed, not playing sound.");
         }
-
-        if (currentZone != _previousZone)
-            Serial.println("Entering %s zone.");
-        else
-            Serial.println("Inside %s zone.");
         break;
+
     default:
         Serial.println("Species Zone Status INVALID - Proximity check returned unexpected value.");
         _periodicNeopixelAction->stop();
