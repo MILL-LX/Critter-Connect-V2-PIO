@@ -52,4 +52,7 @@ private:
 
     void processLocationUpdate(GPSReceiver::GPSData gpsData);
     void setActive(bool value);
+
+    GPSReceiver::GPSData mockGpsData(GPSReceiver::GPSData gpsData, bool useMockData = false);
+
 };

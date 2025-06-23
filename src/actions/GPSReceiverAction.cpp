@@ -30,6 +30,9 @@ void GPSReceiverAction::performAction()
         Serial.printf("\n\nChecking for location update at %lu...\n", currentMillis);
         GPSReceiver::GPSData gpsData = _gpsReceiver.readData();
 
+        // MODEBUG
+        gpsData = mockGpsData(gpsData, false); // Possibly mock GPS data for testing purposes
+
         if (gpsData.locationValid)
         {
             Serial.println("GPS Location Data Found, updating application state...");
@@ -135,4 +138,22 @@ bool GPSReceiverAction::isActive()
 void GPSReceiverAction::setActive(bool value)
 {
     _isActive.store(value);
+}
+
+GPSReceiver::GPSData GPSReceiverAction::mockGpsData(GPSReceiver::GPSData gpsData, 
+                                                    bool useMockData)
+{
+    GPSReceiver::GPSData mockGgpsData = gpsData;
+
+    if (!useMockData)
+    {
+        return mockGgpsData; // Return original data if not using mock
+    }
+
+    // Mock data for testing purposes
+    mockGgpsData.locationValid = true;
+    mockGgpsData.lat = 37.7749; // Example latitude
+    mockGgpsData.lon = -122.4194; // Example longitude
+
+    return mockGgpsData;
 }
