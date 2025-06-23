@@ -103,8 +103,6 @@ void GPSReceiverAction::processLocationUpdate(GPSReceiver::GPSData gpsData)
                 vTaskDelay(pdMS_TO_TICKS(100));
             _neoPixel.setColor(NeoPixel::StateColor::OK);
 
-            _periodicVibratingMotorAction_5->start();
-
             if (currentZone == SpeciesZone::Zone::SPECIES_FROG_ZONE)
             {
                 _soundButtonAction_frog->start();
@@ -119,13 +117,20 @@ void GPSReceiverAction::processLocationUpdate(GPSReceiver::GPSData gpsData)
                 _periodicNeopixelAction->stop();
                 _neoPixel.setColor(NeoPixel::StateColor::WARN);
             }
+
+            Serial.println("Starting periodic vibrating motor action for 5 seconds.");
+            _periodicVibratingMotorAction_5->start();
+            Serial.println("Periodic vibrating motor action for 5 seconds started.");
         }
         else
         {
             Serial.printf("Still in %s zone.\n", (currentZone == SpeciesZone::Zone::SPECIES_FROG_ZONE) ? "Frog" : "Pigeon");
             if (!_periodicVibratingMotorAction_5->isActive() && !_periodicVibratingMotorAction_2->isActive())
             {
+
+                Serial.println("Starting periodic vibrating motor action for 2 seconds.");
                 _periodicVibratingMotorAction_2->start();
+                Serial.println("Periodic vibrating motor action for 2 seconds started.");
             }
         }
         break;
