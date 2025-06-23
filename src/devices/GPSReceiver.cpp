@@ -7,11 +7,11 @@ TinyGPSPlus gps;
 
 void GPSReceiver::update()
 {
-    // If using mock data, override the real GPS data
-    bool useMockData = true; // Set to true to use mock data for testing
-    if (useMockData)
+    // MODEBUG If using simulated data, override the real GPS data
+    bool useSimulatedData = true; // Set to true to use mock data for testing
+    if (useSimulatedData)
     {
-        _data = mockGpsData(_data, useMockData); // Set useMockData to false
+        _data = simulatedGpsData(_data, useSimulatedData); // Set useMockData to false
         return;
     }
 
@@ -103,7 +103,7 @@ void GPSReceiver::debugDumpGPSData()
     Serial.println("--- End GPS Data Dump ---");
 }
 
-GPSReceiver::GPSData GPSReceiver::mockGpsData(GPSReceiver::GPSData gpsData,
+GPSReceiver::GPSData GPSReceiver::simulatedGpsData(GPSReceiver::GPSData gpsData,
                                               bool useMockData)
 {
 
