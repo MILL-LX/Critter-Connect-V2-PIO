@@ -12,25 +12,30 @@ void SoundButtonAction::taskFunction(void *action)
         // Wait for the sound button to be pressed
         if (_this->_soundButton.isPressed())
         {
+            Serial.println("Sound button pressed, playing sound...");
             // If pressed, play the sound
             _this->_soundPlayer.playSound(_this->_sound);
             while (_this->_soundPlayer.isPlaying())
             {
                 vTaskDelay(pdMS_TO_TICKS(100));
             }
+            Serial.println("Sound playback finished.");
         }
     }
     Serial.println("SoundButtonAction task stopping...");
     _this->setActive(false);
-    _this->_taskHandle == nullptr;
+    _this->_taskHandle = nullptr;
     vTaskDelay(pdMS_TO_TICKS(100));
     vTaskDelete(nullptr);
 }
 
 void SoundButtonAction::start()
 {
+    Serial.println("Starting SoundButtonAction task...");
+
     if (_taskHandle == nullptr)
     {
+        Serial.println("Creating SoundButtonAction task...");
         // Create the task
         BaseType_t result = xTaskCreate(
             taskFunction,         // Task function
@@ -46,6 +51,7 @@ void SoundButtonAction::start()
             setActive(false);      // Reset flag on failure
             Serial.println("Failed to create SoundButtonAction task!");
         }
+        Serial.println("SoundButtonAction task started successfully.");
     }
     else
     {

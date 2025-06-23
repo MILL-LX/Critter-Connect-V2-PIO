@@ -117,6 +117,10 @@ void GPSReceiverAction::processLocationUpdate(GPSReceiver::GPSData gpsData)
                 _neoPixel.setColor(NeoPixel::StateColor::WARN);
             }
         }
+        else
+        {
+            Serial.printf("Still in %s zone, no action taken.\n", (currentZone == SpeciesZone::Zone::SPECIES_FROG_ZONE) ? "Frog" : "Pigeon");
+        }
         break;
 
     default:
