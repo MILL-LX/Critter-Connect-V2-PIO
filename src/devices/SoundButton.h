@@ -7,7 +7,7 @@
 namespace SoundButtonDefs
 {
     const int defaultPin = 4;
-    const TickType_t defaultDebounceDelay = pdMS_TO_TICKS(50);
+    const TickType_t defaultDebounceDelay = pdMS_TO_TICKS(100);
 }
 
 class SoundButton
