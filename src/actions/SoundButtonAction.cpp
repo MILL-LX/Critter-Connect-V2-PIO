@@ -19,7 +19,6 @@ void SoundButtonAction::taskFunction(void *action)
                 vTaskDelay(pdMS_TO_TICKS(100));
             }
         }
-        vTaskDelay(pdMS_TO_TICKS(100)); // Polling delay
     }
     _this->setActive(false);
 }

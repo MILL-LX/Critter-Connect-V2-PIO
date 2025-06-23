@@ -74,6 +74,12 @@ void GPSReceiverAction::processLocationUpdate(GPSReceiver::GPSData gpsData)
         if (currentZone != _previousZone)
         {
             Serial.println("Entering non-species zone.");
+
+            _soundButtonAction_frog->stop();
+            _soundButtonAction_pigeon->stop();
+            while (_soundButtonAction_frog->isActive() || _soundButtonAction_pigeon->isActive())
+                vTaskDelay(pdMS_TO_TICKS(100));
+
             _neoPixel.setColor(NeoPixel::StateColor::OFF);
             _periodicNeopixelAction->start();
         }
@@ -88,20 +94,17 @@ void GPSReceiverAction::processLocationUpdate(GPSReceiver::GPSData gpsData)
             while (_periodicNeopixelAction->isActive())
                 vTaskDelay(pdMS_TO_TICKS(100));
             _neoPixel.setColor(NeoPixel::StateColor::OK);
-        }
 
-        if (ApplicationDevices::getInstance().getSoundButton().isPressed())
-        {
-            Serial.println("Button pressed, playing sound.");
-            if (!ApplicationDevices::getInstance().getSoundPlayer().isPlaying())
+            if (currentZone == SpeciesZone::Zone::SPECIES_FROG_ZONE)
+                _soundButtonAction_frog->start();
+            else if (currentZone == SpeciesZone::Zone::SPECIES_PIGEON_ZONE)
+                _soundButtonAction_pigeon->start();
+            else
             {
-                SoundPlayer::Sound sound = (currentZone == SpeciesZone::Zone::SPECIES_FROG_ZONE) ? SoundPlayer::Sound::SPECIES_FROG : SoundPlayer::Sound::SPECIES_PIGEON;
-                ApplicationDevices::getInstance().getSoundPlayer().playSound(sound);
+                Serial.println("Species Zone Status INVALID - Proximity check returned unexpected value.");
+                _periodicNeopixelAction->stop();
+                _neoPixel.setColor(NeoPixel::StateColor::WARN);
             }
-        }
-        else
-        {
-            Serial.println("Button not pressed, not playing sound.");
         }
         break;
 

@@ -6,6 +6,7 @@
 #include "actions/PeriodicAction.h"
 #include "actions/NeoPixelAction.h"
 #include "actions/MotorAction.h"
+#include "actions/SoundButtonAction.h"
 
 #include "app/SpeciesZone.h"
 
@@ -14,6 +15,8 @@ class GPSReceiverAction
 public:
     GPSReceiverAction() : _periodicNeopixelAction(std::make_unique<PeriodicAction<NeoPixelAction>>(2000, UINT32_MAX, 1000, NeoPixel::StateColor::OK)),
                           _soundPlayer(ApplicationDevices::getInstance().getSoundPlayer()),
+                          _soundButtonAction_frog(std::make_unique<SoundButtonAction>(SoundPlayer::Sound::SPECIES_FROG)),
+                          _soundButtonAction_pigeon(std::make_unique<SoundButtonAction>(SoundPlayer::Sound::SPECIES_PIGEON)),
                           _neoPixel(ApplicationDevices::getInstance().getNeoPixel()),
                           _gpsReceiver(ApplicationDevices::getInstance().getGpsReceiver())
 
@@ -44,9 +47,13 @@ public:
 private:
     SpeciesZone::Zone _previousZone = SpeciesZone::Zone::UNKNOWN_ZONE;
 
-    std::unique_ptr<PeriodicAction<NeoPixelAction>> _periodicNeopixelAction;
-    SoundPlayer &_soundPlayer;
     NeoPixel &_neoPixel;
+    std::unique_ptr<PeriodicAction<NeoPixelAction>> _periodicNeopixelAction;
+
+    SoundPlayer &_soundPlayer;
+    std::unique_ptr<SoundButtonAction> _soundButtonAction_frog;
+    std::unique_ptr<SoundButtonAction> _soundButtonAction_pigeon;
+
     GPSReceiver &_gpsReceiver;
     std::atomic<bool> _isActive{false};
 
