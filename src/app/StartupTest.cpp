@@ -1,10 +1,10 @@
 #include "actions/PeriodicAction.h"
 #include "actions/MotorAction.h"
+#include "actions/VibratingMotorAction.h"
 #include "devices/SoundPlayer.h"
 #include "devices/SoundButton.h"
 #include "devices/ApplicationDevices.h"
 
-#include "devices/VibratingMotor.h"
 
 #include "StartupTest.h"
 
@@ -18,16 +18,24 @@ void startupTest()
   SoundButton &button = ApplicationDevices::getInstance().getSoundButton();
   while (!button.isPressed())
     ;
-  // MOFIX while (button.isPressed())
-  //   ;
 
   Serial.println("Starting Startup Tests...");
   neoPixel.setColor(NeoPixel::StateColor::OK);
 
+  // VibratingMotor &vibratingMotor = ApplicationDevices::getInstance().getVibratingMotor();
+  // PeriodicAction<VibratingMotorAction> periodicVibratingMotorAction(1000, UINT32_MAX, 500, vibratingMotor);
+  // periodicVibratingMotorAction.start();
+  // vTaskDelay(pdMS_TO_TICKS(10000)); 
+  // periodicVibratingMotorAction.stop();
+  // while (periodicVibratingMotorAction.isActive())
+  //   vTaskDelay(pdMS_TO_TICKS(100));
+
   VibratingMotor &vibratingMotor = ApplicationDevices::getInstance().getVibratingMotor();
-  vibratingMotor.start();
-  vTaskDelay(pdMS_TO_TICKS(3000));
-  vibratingMotor.stop();
+  PeriodicAction<VibratingMotorAction> periodicVibratingMotorAction(1000, 10, 500, vibratingMotor);
+  periodicVibratingMotorAction.start();
+  while (periodicVibratingMotorAction.isActive())
+    vTaskDelay(pdMS_TO_TICKS(100));
+
 
   // Test Tone
   SoundPlayer &soundPlayer = ApplicationDevices::getInstance().getSoundPlayer();

@@ -74,6 +74,8 @@ void PeriodicAction<ActionType>::taskFunction(void *parameters)
         iterationsLeft--;
     }
 
+    periodicAction->_continueAction.store(false); // Ensure the action is marked as stopped
+    
     Serial.println("PeriodicAction Task self-deleting.");
     vTaskDelay(pdMS_TO_TICKS(100));
 
