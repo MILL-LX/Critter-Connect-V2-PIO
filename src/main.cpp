@@ -24,6 +24,9 @@ void loop()
   gpsReceiverAction.performAction();
 
   // We should never get here
-  Serial.println("GPSReceiverAction completed unexpectedly. This should not happen.");
-  vTaskDelay(pdMS_TO_TICKS(1000)); // Wait a second before the next loop iteration
+  Serial.println("GPSReceiverAction completed unexpectedly. This should not happen.\nHalting application...");
+  while(true) {
+    // Keep the loop running indefinitely
+    vTaskDelay(pdMS_TO_TICKS(1000)); // Prevent watchdog timeout
+  }
 }
