@@ -56,4 +56,6 @@ private:
     GPSData _data;
 
     void update();
+
+    GPSReceiver::GPSData mockGpsData(GPSReceiver::GPSData gpsData, bool useMockData = false);
 };

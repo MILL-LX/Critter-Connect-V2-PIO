@@ -64,6 +64,10 @@ void GPSReceiver::update()
 GPSReceiver::GPSData GPSReceiver::readData()
 {
     update();
+
+    // If using mock data, override the real GPS data
+    _data = mockGpsData(_data, true); // Set useMockData to false
+    
     return _data;
 }
 
@@ -91,4 +95,55 @@ void GPSReceiver::debugDumpGPSData()
         Serial.printf("  Time: %02d:%02d:%02d.%02d\n", _data.hour, _data.minute, _data.second, _data.centisecond); // Format HH:MM:SS.CS
     }
     Serial.println("--- End GPS Data Dump ---");
+}
+
+
+GPSReceiver::GPSData GPSReceiver::mockGpsData(GPSReceiver::GPSData gpsData,
+                                                    bool useMockData)
+{
+    GPSReceiver::GPSData mockGgpsData = gpsData;
+
+    if (!useMockData)
+    {
+        return mockGgpsData; // Return original data if not using mock
+    }
+
+    if (millis() < 60000)
+    {
+        Serial.println("Enter non-species zone for testing purposes.");
+        mockGgpsData.lat = 1.0; // Example latitude
+        mockGgpsData.lon = 1.0; // Example longitude
+    }
+    else if (millis() < 120000)
+    {
+        Serial.println("Enter species zone 1 for testing purposes.");
+        mockGgpsData.lat = 32.6585412143;  // Example latitude
+        mockGgpsData.lon = -16.8685332416; // Example longitude
+    }
+    else if (millis() < 180000)
+    {
+        Serial.println("Enter non-species zone for testing purposes.");
+        mockGgpsData.lat = 1.0; // Example latitude
+        mockGgpsData.lon = 1.0; // Example longitude
+    }
+    else if (millis() < 240000)
+    {
+        Serial.println("Enter species zone 2 for testing purposes.");
+        mockGgpsData.lat = 32.662040384700205;  // Example latitude
+        mockGgpsData.lon = -16.868402420468072; // Example longitude
+    }
+    else if (millis() < 300000)
+    {
+        Serial.println("Enter non-species zone for testing purposes.");
+        mockGgpsData.lat = 1.0; // Example latitude
+        mockGgpsData.lon = 1.0; // Example longitude
+    }
+    else
+    {
+        Serial.println("Using real GPS data.");
+    }
+
+    mockGgpsData.dataReady = true; // Simulate data being ready
+    mockGgpsData.locationValid = true;
+    return mockGgpsData;
 }
