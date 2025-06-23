@@ -7,6 +7,7 @@
 #include "actions/NeoPixelAction.h"
 #include "actions/MotorAction.h"
 #include "actions/SoundButtonAction.h"
+#include "actions/VibratingMotorAction.h"
 
 #include "app/SpeciesZone.h"
 
@@ -17,6 +18,10 @@ public:
                           _soundPlayer(ApplicationDevices::getInstance().getSoundPlayer()),
                           _soundButtonAction_frog(std::make_unique<SoundButtonAction>(SoundPlayer::Sound::SPECIES_FROG)),
                           _soundButtonAction_pigeon(std::make_unique<SoundButtonAction>(SoundPlayer::Sound::SPECIES_PIGEON)),
+                          _periodicVibratingMotorAction_5(std::make_unique<PeriodicAction<VibratingMotorAction>>(60000, 1, 5000,
+                                                                                                                 ApplicationDevices::getInstance().getVibratingMotor())),
+                          _periodicVibratingMotorAction_2(std::make_unique<PeriodicAction<VibratingMotorAction>>(60000, UINT32_MAX, 2000,
+                                                                                                                 ApplicationDevices::getInstance().getVibratingMotor())),
                           _neoPixel(ApplicationDevices::getInstance().getNeoPixel()),
                           _gpsReceiver(ApplicationDevices::getInstance().getGpsReceiver())
 
@@ -53,6 +58,9 @@ private:
     SoundPlayer &_soundPlayer;
     std::unique_ptr<SoundButtonAction> _soundButtonAction_frog;
     std::unique_ptr<SoundButtonAction> _soundButtonAction_pigeon;
+
+    std::unique_ptr<PeriodicAction<VibratingMotorAction>> _periodicVibratingMotorAction_5;
+    std::unique_ptr<PeriodicAction<VibratingMotorAction>> _periodicVibratingMotorAction_2;
 
     GPSReceiver &_gpsReceiver;
     std::atomic<bool> _isActive{false};

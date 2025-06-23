@@ -77,18 +77,19 @@ void GPSReceiverAction::processLocationUpdate(GPSReceiver::GPSData gpsData)
 
             _soundButtonAction_frog->stop();
             _soundButtonAction_pigeon->stop();
-            while (_soundButtonAction_frog->isActive() || _soundButtonAction_pigeon->isActive()) 
-            {
-                Serial.println("Waiting for sound button actions to stop...");
+            _periodicVibratingMotorAction_2->stop();
+
+            while (_soundButtonAction_frog->isActive() || _soundButtonAction_pigeon->isActive() || _periodicVibratingMotorAction_2->isActive())
                 vTaskDelay(pdMS_TO_TICKS(100));
-            }
 
             _neoPixel.setColor(NeoPixel::StateColor::OFF);
             _periodicNeopixelAction->start();
+
+            _periodicVibratingMotorAction_5->start();
         }
         else
         {
-            Serial.println("Still in non-species zone, no action taken.");
+            Serial.println("Still in non-species zone");
         }
         break;
     case SpeciesZone::Zone::SPECIES_FROG_ZONE:
@@ -101,6 +102,8 @@ void GPSReceiverAction::processLocationUpdate(GPSReceiver::GPSData gpsData)
             while (_periodicNeopixelAction->isActive())
                 vTaskDelay(pdMS_TO_TICKS(100));
             _neoPixel.setColor(NeoPixel::StateColor::OK);
+
+            _periodicVibratingMotorAction_5->start();
 
             if (currentZone == SpeciesZone::Zone::SPECIES_FROG_ZONE)
             {
@@ -119,7 +122,11 @@ void GPSReceiverAction::processLocationUpdate(GPSReceiver::GPSData gpsData)
         }
         else
         {
-            Serial.printf("Still in %s zone, no action taken.\n", (currentZone == SpeciesZone::Zone::SPECIES_FROG_ZONE) ? "Frog" : "Pigeon");
+            Serial.printf("Still in %s zone.\n", (currentZone == SpeciesZone::Zone::SPECIES_FROG_ZONE) ? "Frog" : "Pigeon");
+            if (!_periodicVibratingMotorAction_5->isActive() && !_periodicVibratingMotorAction_2->isActive())
+            {
+                _periodicVibratingMotorAction_2->start();
+            }
         }
         break;
 
