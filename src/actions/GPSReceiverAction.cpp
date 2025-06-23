@@ -77,11 +77,18 @@ void GPSReceiverAction::processLocationUpdate(GPSReceiver::GPSData gpsData)
 
             _soundButtonAction_frog->stop();
             _soundButtonAction_pigeon->stop();
-            while (_soundButtonAction_frog->isActive() || _soundButtonAction_pigeon->isActive())
+            while (_soundButtonAction_frog->isActive() || _soundButtonAction_pigeon->isActive()) 
+            {
+                Serial.println("Waiting for sound button actions to stop...");
                 vTaskDelay(pdMS_TO_TICKS(100));
+            }
 
             _neoPixel.setColor(NeoPixel::StateColor::OFF);
             _periodicNeopixelAction->start();
+        }
+        else
+        {
+            Serial.println("Still in non-species zone, no action taken.");
         }
         break;
     case SpeciesZone::Zone::SPECIES_FROG_ZONE:

@@ -11,7 +11,7 @@ void GPSReceiver::update()
     bool useSimulatedData = true; // Set to true to use mock data for testing
     if (useSimulatedData)
     {
-        _data = simulatedGpsData(_data, useSimulatedData); // Set useMockData to false
+        _data = simulatedGpsData(_data);
         return;
     }
 
@@ -103,15 +103,8 @@ void GPSReceiver::debugDumpGPSData()
     Serial.println("--- End GPS Data Dump ---");
 }
 
-GPSReceiver::GPSData GPSReceiver::simulatedGpsData(GPSReceiver::GPSData gpsData,
-                                              bool useMockData)
+GPSReceiver::GPSData GPSReceiver::simulatedGpsData(GPSReceiver::GPSData gpsData)
 {
-
-    if (!useMockData)
-    {
-        return gpsData; // Return original data if not using mock
-    }
-
     GPSReceiver::GPSData mockGgpsData = gpsData;
     if (millis() < 60000) // spend a minute in a non-species zone
     {
@@ -121,27 +114,33 @@ GPSReceiver::GPSData GPSReceiver::simulatedGpsData(GPSReceiver::GPSData gpsData,
     }
     else if (millis() < 200000) // spend a little over 2 minutes in a species 1 zone
     {
-        Serial.println("Simulating location in  species zone 1 for testing purposes.");
+        Serial.println("Simulating location in species zone 1 for testing purposes.");
         mockGgpsData.lat = 32.6585412143;
         mockGgpsData.lon = -16.8685332416;
     }
     else if (millis() < 260000) // spend a minute in a non-species zone
     {
-        Serial.println("Simulating location in  non-species zone for testing purposes.");
+        Serial.println("Simulating location in non-species zone for testing purposes.");
         mockGgpsData.lat = 1.0;
         mockGgpsData.lon = 1.0;
     }
     else if (millis() < 400000) // spend a little over 2 minutes in a species 2 zone
     {
-        Serial.println("Simulating location in  species zone 2 for testing purposes.");
+        Serial.println("Simulating location in species zone 2 for testing purposes.");
         mockGgpsData.lat = 32.662040384700205;
         mockGgpsData.lon = -16.868402420468072;
     }
     else if (millis() < 460000) // spend a minute in a non-species zone
     {
-        Serial.println("Simulating location in  non-species zone for testing purposes.");
-        mockGgpsData.lat = 1.0; 
+        Serial.println("Simulating location in non-species zone for testing purposes.");
+        mockGgpsData.lat = 1.0;
         mockGgpsData.lon = 1.0;
+    }
+    else if (millis() < 600000) // spend a little over 2 minutes in a species 1 zone
+    {
+        Serial.println("Simulating location in species zone 1 for testing purposes.");
+        mockGgpsData.lat = 32.6585412143;
+        mockGgpsData.lon = -16.8685332416;
     }
     else
     {

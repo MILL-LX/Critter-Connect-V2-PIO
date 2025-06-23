@@ -20,7 +20,11 @@ void SoundButtonAction::taskFunction(void *action)
             }
         }
     }
+    Serial.println("SoundButtonAction task stopping...");
     _this->setActive(false);
+    _this->_taskHandle == nullptr;
+    vTaskDelay(pdMS_TO_TICKS(100));
+    vTaskDelete(nullptr);
 }
 
 void SoundButtonAction::start()
@@ -31,7 +35,7 @@ void SoundButtonAction::start()
         BaseType_t result = xTaskCreate(
             taskFunction,         // Task function
             "PeriodicActionTask", // Name of the task
-            2048,                 // Stack size (adjust as needed)
+            1024,                 // Stack size (adjust as needed)
             this,                 // Parameter passed to the task
             1,                    // Priority (adjust as needed)
             &_taskHandle          // Task handle
