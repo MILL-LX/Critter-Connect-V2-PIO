@@ -1,6 +1,7 @@
 #include <TinyGPSPlus.h>
-
 #include "devices/GPSReceiver.h"
+#include "FreeRTOS.h"
+#include "task.h"
 
 SerialUART *defaultSerial = &Serial1;
 TinyGPSPlus gps;
@@ -106,37 +107,43 @@ void GPSReceiver::debugDumpGPSData()
 GPSReceiver::GPSData GPSReceiver::simulatedGpsData(GPSReceiver::GPSData gpsData)
 {
     GPSReceiver::GPSData mockGgpsData = gpsData;
-    if (millis() < 60000) // spend a minute in a non-species zone
+
+    // Use FreeRTOS ticks instead of millis
+    TickType_t ticks = xTaskGetTickCount();
+    // Convert ticks to seconds (configTICK_RATE_HZ is ticks per second)
+    uint32_t seconds = ticks / configTICK_RATE_HZ;
+
+    if (seconds < 60) // spend a minute in a non-species zone
     {
         Serial.println("Simulating location in non-species zone for testing purposes.");
         mockGgpsData.lat = 1.0;
         mockGgpsData.lon = 1.0;
     }
-    else if (millis() < 200000) // spend a little over 2 minutes in a species 1 zone
+    else if (seconds < 200) // spend a little over 2 minutes in a species 1 zone
     {
         Serial.println("Simulating location in species zone 1 for testing purposes.");
         mockGgpsData.lat = 32.6585412143;
         mockGgpsData.lon = -16.8685332416;
     }
-    else if (millis() < 260000) // spend a minute in a non-species zone
+    else if (seconds < 260) // spend a minute in a non-species zone
     {
         Serial.println("Simulating location in non-species zone for testing purposes.");
         mockGgpsData.lat = 1.0;
         mockGgpsData.lon = 1.0;
     }
-    else if (millis() < 400000) // spend a little over 2 minutes in a species 2 zone
+    else if (seconds < 400) // spend a little over 2 minutes in a species 2 zone
     {
         Serial.println("Simulating location in species zone 2 for testing purposes.");
         mockGgpsData.lat = 32.662040384700205;
         mockGgpsData.lon = -16.868402420468072;
     }
-    else if (millis() < 460000) // spend a minute in a non-species zone
+    else if (seconds < 460) // spend a minute in a non-species zone
     {
         Serial.println("Simulating location in non-species zone for testing purposes.");
         mockGgpsData.lat = 1.0;
         mockGgpsData.lon = 1.0;
     }
-    else if (millis() < 600000) // spend a little over 2 minutes in a species 1 zone
+    else if (seconds < 600) // spend a little over 2 minutes in a species 1 zone
     {
         Serial.println("Simulating location in species zone 1 for testing purposes.");
         mockGgpsData.lat = 32.6585412143;
