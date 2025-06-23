@@ -34,6 +34,14 @@ void PeriodicAction<ActionType>::start()
             _continueAction.store(false); // Reset flag on failure
             Serial.println("Failed to create PeriodicAction task!");
         }
+        else
+        {
+            while (!isActive())
+            {
+                vTaskDelay(pdMS_TO_TICKS(100)); // Wait for the task to start
+            }
+            Serial.println("PeriodicAction task started successfully.");
+        }
     }
     else
     {
@@ -61,7 +69,7 @@ void PeriodicAction<ActionType>::taskFunction(void *parameters)
     periodicAction->_continueAction.store(true);
     while ((runUntilExplicitlyStopped || iterationsLeft) && periodicAction->_continueAction.load())
     {
-        String message = "Period of " + String(periodicAction->_actionPeriodMillis) + " millis running for " + (runUntilExplicitlyStopped ? "unlimited" : String(iterationsLeft))+ " more iterations.";
+        String message = "Period of " + String(periodicAction->_actionPeriodMillis) + " millis running for " + (runUntilExplicitlyStopped ? "unlimited" : String(iterationsLeft)) + " more iterations.";
         Serial.println(message);
 
         TickType_t periodStartTime = xTaskGetTickCount();
@@ -75,7 +83,7 @@ void PeriodicAction<ActionType>::taskFunction(void *parameters)
     }
 
     periodicAction->_continueAction.store(false); // Ensure the action is marked as stopped
-    
+
     Serial.println("PeriodicAction Task self-deleting.");
     vTaskDelay(pdMS_TO_TICKS(100));
 
