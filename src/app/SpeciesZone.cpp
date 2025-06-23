@@ -42,9 +42,16 @@ SpeciesZone::Zone SpeciesZone::zoneForLatLon(float lat, float lon)
   for (int i = 0; !matching_species && i < numSpeciesCoordinates; i++)
   {
     float distance = haversineDistance(speciesCoordinates[i].latitude, speciesCoordinates[i].longitude, lat, lon);
-    if(distance <= zoneRadius)
+    // MODEBUG: Uncomment the following line to enable debug output
+    // Serial.printf("Checking species %d at (%f, %f) against (%f, %f): distance = %f meters\n",
+    //               speciesCoordinates[i].species, speciesCoordinates[i].latitude, speciesCoordinates[i].longitude, lat, lon, distance);
+    if (distance <= zoneRadius)
+    {
+      Serial.printf("Found matching species %d at (%f, %f) within radius %f meters\n",
+                    speciesCoordinates[i].species, speciesCoordinates[i].latitude, speciesCoordinates[i].longitude, zoneRadius);
       matching_species = speciesCoordinates[i].species;
       break;
+    }
   }
 
   // Cast the matching species to the Zone enum. Slightly dirty but flexible when adding new species.

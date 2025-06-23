@@ -109,7 +109,7 @@ void GPSReceiverAction::processLocationUpdate(GPSReceiver::GPSData gpsData)
             if (!ApplicationDevices::getInstance().getSoundPlayer().isPlaying())
             {
                 SoundPlayer::Sound sound = (currentZone == SpeciesZone::Zone::SPECIES_FROG_ZONE) ? SoundPlayer::Sound::SPECIES_FROG : SoundPlayer::Sound::SPECIES_PIGEON;
-                ApplicationDevices::getInstance().getSoundPlayer().playSound(SoundPlayer::Sound::SPECIES_FROG);
+                ApplicationDevices::getInstance().getSoundPlayer().playSound(sound);
             }
         }
         else
