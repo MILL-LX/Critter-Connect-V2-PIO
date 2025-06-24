@@ -18,7 +18,7 @@ void PeriodicAction<ActionType>::start()
 {
     if (_taskHandle != nullptr)
     {
-        Serial.printf("PeriodicAction task %x seems to be running, will delete explicitly...\n", _taskHandle);
+        Serial.printf("PeriodicAction task %x seems to be running, deleting explicitly...\n", _taskHandle);
 
         vTaskDelete(_taskHandle);     // Delete the existing task
         _taskHandle = nullptr;        // Reset the task handle

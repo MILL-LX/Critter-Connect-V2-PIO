@@ -90,10 +90,6 @@ void GPSReceiverAction::processLocationUpdate(GPSReceiver::GPSData gpsData)
                 Serial.println("Left a species zone...");
 
                 Serial.println("Starting periodic vibrating motor action for 5 seconds.");
-                // MOFIX - there is a timing issue around task self-deletion that should be investigated. For now we have this workaround.
-                _periodicVibratingMotorAction_5->stop(); // Ensure it's stopped before starting
-                while (_periodicVibratingMotorAction_5->isActive())
-                    vTaskDelay(pdMS_TO_TICKS(100)); // Wait until the action is stopped
                 _periodicVibratingMotorAction_5->start();
                 Serial.println("Periodic vibrating motor action for 5 seconds started.");
             }
@@ -134,10 +130,6 @@ void GPSReceiverAction::processLocationUpdate(GPSReceiver::GPSData gpsData)
             }
 
             Serial.println("Starting periodic vibrating motor action for 5 seconds.");
-            // MOFIX - there is a timing issue around task self-deletion that should be investigated. For now we have this workaround.
-            _periodicVibratingMotorAction_5->stop(); // Ensure it's stopped before starting
-            while (_periodicVibratingMotorAction_5->isActive())
-                vTaskDelay(pdMS_TO_TICKS(100)); // Wait until the action is stopped
             _periodicVibratingMotorAction_5->start();
             Serial.println("Periodic vibrating motor action for 5 seconds started.");
         }
