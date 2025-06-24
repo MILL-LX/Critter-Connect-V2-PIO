@@ -77,9 +77,13 @@ void GPSReceiverAction::processLocationUpdate(GPSReceiver::GPSData gpsData)
 
             _soundButtonAction_frog->stop();
             _soundButtonAction_pigeon->stop();
-            _periodicVibratingMotorAction_2->stop();
+            _periodicVibratingMotorAction_short->stop();
+            _periodicMotorAction_frog_short->stop();
+            _periodicMotorAction_pigeon_short->stop();
 
-            while (_soundButtonAction_frog->isActive() || _soundButtonAction_pigeon->isActive() || _periodicVibratingMotorAction_2->isActive())
+            while (_soundButtonAction_frog->isActive() || _soundButtonAction_pigeon->isActive() || 
+                   _periodicVibratingMotorAction_short->isActive() || 
+                   _periodicMotorAction_frog_short->isActive() || _periodicMotorAction_pigeon_short->isActive())
                 vTaskDelay(pdMS_TO_TICKS(100));
 
             _neoPixel.setColor(NeoPixel::StateColor::OFF);
@@ -89,13 +93,15 @@ void GPSReceiverAction::processLocationUpdate(GPSReceiver::GPSData gpsData)
             {
                 Serial.println("Left a species zone...");
 
-                Serial.println("Starting periodic vibrating motor action for 5 seconds.");
-                _periodicVibratingMotorAction_5->start();
-                Serial.println("Periodic vibrating motor action for 5 seconds started.");
+                Serial.println("Starting long periodic motor actions...");
+                _periodicVibratingMotorAction_long->start();
+                _periodicMotorAction_frog_long->start();
+                _periodicMotorAction_pigeon_long->start();
+                Serial.println("Long periodic motor actions started.");
             }
             else
             {
-                Serial.println("Skipping 5 second motor action when application first starts...");
+                Serial.println("Skipping long motor actions when application first starts...");
             }
         }
         else
@@ -130,17 +136,17 @@ void GPSReceiverAction::processLocationUpdate(GPSReceiver::GPSData gpsData)
             }
 
             Serial.println("Starting periodic vibrating motor action for 5 seconds.");
-            _periodicVibratingMotorAction_5->start();
+            _periodicVibratingMotorAction_long->start();
             Serial.println("Periodic vibrating motor action for 5 seconds started.");
         }
         else
         {
             Serial.printf("Still in %s zone.\n", (currentZone == SpeciesZone::Zone::SPECIES_FROG_ZONE) ? "Frog" : "Pigeon");
-            if (!_periodicVibratingMotorAction_5->isActive() && !_periodicVibratingMotorAction_2->isActive())
+            if (!_periodicVibratingMotorAction_long->isActive() && !_periodicVibratingMotorAction_short->isActive())
             {
 
                 Serial.println("Starting periodic vibrating motor action for 2 seconds.");
-                _periodicVibratingMotorAction_2->start();
+                _periodicVibratingMotorAction_short->start();
                 Serial.println("Periodic vibrating motor action for 2 seconds started.");
             }
         }
