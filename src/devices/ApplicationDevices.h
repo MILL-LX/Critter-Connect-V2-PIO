@@ -38,8 +38,8 @@ public:
         // Access members directly within the class
         getSoundButton();      // Initializes _button if null
         getGpsReceiver(); // Initializes _gpsReceiver if null
-        getMotor1();      // Initializes _motor if null
-        getMotor2();      // Initializes _motor if null
+        getMotorFrog();      // Initializes _motor if null
+        getMotorPigeon();      // Initializes _motor if null
         getVibratingMotor(); // Initializes _vibratingMotor if null
         getNeoPixel();    // Initializes _neoPixel if null
         getSoundPlayer(); // Initializes _soundPlayer if null
@@ -65,7 +65,7 @@ public:
         return *_gpsReceiver;
     }
 
-    Motor &getMotor1()
+    Motor &getMotorFrog()
     {
         if (!_motor1)
         {
@@ -75,7 +75,7 @@ public:
         return *_motor1;
     }
 
-    Motor &getMotor2()
+    Motor &getMotorPigeon()
     {
         if (!_motor2)
         {

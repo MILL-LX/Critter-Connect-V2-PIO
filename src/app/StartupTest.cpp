@@ -35,7 +35,7 @@ void startupTest()
     vTaskDelay(pdMS_TO_TICKS(100));
 
   // Frog Sound and Motor Action
-  Motor &motor_frog = ApplicationDevices::getInstance().getMotor1();
+  Motor &motor_frog = ApplicationDevices::getInstance().getMotorFrog();
   PeriodicAction<MotorAction> periodicMotorAction_frog(10000, UINT32_MAX, 2, motor_frog);
   periodicMotorAction_frog.start();
 
@@ -51,7 +51,7 @@ void startupTest()
   vTaskDelay(pdMS_TO_TICKS(2000));
 
   // Pigeon Sound and Motor Action
-  Motor &motor_pigeon = ApplicationDevices::getInstance().getMotor2();
+  Motor &motor_pigeon = ApplicationDevices::getInstance().getMotorPigeon();
   PeriodicAction<MotorAction> periodicMotorAction_pigeon(10000, UINT32_MAX, 2, motor_pigeon);
   periodicMotorAction_pigeon.start();
 

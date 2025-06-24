@@ -18,6 +18,14 @@ public:
                           _soundPlayer(ApplicationDevices::getInstance().getSoundPlayer()),
                           _soundButtonAction_frog(std::make_unique<SoundButtonAction>(SoundPlayer::Sound::SPECIES_FROG)),
                           _soundButtonAction_pigeon(std::make_unique<SoundButtonAction>(SoundPlayer::Sound::SPECIES_PIGEON)),
+                          _periodicMotorAction_frog_long(std::make_unique<PeriodicAction<MotorAction>>(60000, 1, 4,
+                                                                                                       ApplicationDevices::getInstance().getMotorFrog())),
+                          _periodicMotorAction_frog_short(std::make_unique<PeriodicAction<MotorAction>>(60000, UINT32_MAX, 2,
+                                                                                                        ApplicationDevices::getInstance().getMotorFrog())),
+                          _periodicMotorAction_pigeon_long(std::make_unique<PeriodicAction<MotorAction>>(60000, 1, 4,
+                                                                                                         ApplicationDevices::getInstance().getMotorPigeon())),
+                          _periodicMotorAction_pigeon_short(std::make_unique<PeriodicAction<MotorAction>>(60000, UINT32_MAX, 2,
+                                                                                                          ApplicationDevices::getInstance().getMotorPigeon())),
                           _periodicVibratingMotorAction_5(std::make_unique<PeriodicAction<VibratingMotorAction>>(60000, 1, 5000,
                                                                                                                  ApplicationDevices::getInstance().getVibratingMotor())),
                           _periodicVibratingMotorAction_2(std::make_unique<PeriodicAction<VibratingMotorAction>>(60000, UINT32_MAX, 2000,
@@ -61,6 +69,11 @@ private:
 
     std::unique_ptr<PeriodicAction<VibratingMotorAction>> _periodicVibratingMotorAction_5;
     std::unique_ptr<PeriodicAction<VibratingMotorAction>> _periodicVibratingMotorAction_2;
+
+    std::unique_ptr<PeriodicAction<MotorAction>> _periodicMotorAction_frog_long;
+    std::unique_ptr<PeriodicAction<MotorAction>> _periodicMotorAction_frog_short;
+    std::unique_ptr<PeriodicAction<MotorAction>> _periodicMotorAction_pigeon_long;
+    std::unique_ptr<PeriodicAction<MotorAction>> _periodicMotorAction_pigeon_short;
 
     GPSReceiver &_gpsReceiver;
     std::atomic<bool> _isActive{false};
