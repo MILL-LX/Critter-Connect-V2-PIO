@@ -16,6 +16,17 @@ PeriodicAction<ActionType>::PeriodicAction(uint32_t actionPeriodMillis,
 template <typename ActionType>
 void PeriodicAction<ActionType>::start()
 {
+    if (_taskHandle != nullptr)
+    {
+        Serial.printf("PeriodicAction task %x seems to be running, will delete explicitly...\n", _taskHandle);
+
+        vTaskDelete(_taskHandle);     // Delete the existing task
+        _taskHandle = nullptr;        // Reset the task handle
+        _continueAction.store(false); // Reset the continue action flag
+        vTaskDelay(pdMS_TO_TICKS(100)); // Wait for the task to be deleted
+        Serial.println("PeriodicAction task explicitly deleted.");
+    }
+
     if (_taskHandle == nullptr)
     {
         _continueAction.store(true); // Atomic store
@@ -23,7 +34,7 @@ void PeriodicAction<ActionType>::start()
         BaseType_t result = xTaskCreate(
             taskFunction,         // Task function
             "PeriodicActionTask", // Name of the task
-            2048,                 // Stack size (adjust as needed)
+            1024,                 // Stack size (adjust as needed)
             this,                 // Parameter passed to the task
             1,                    // Priority (adjust as needed)
             &_taskHandle          // Task handle
@@ -45,7 +56,7 @@ void PeriodicAction<ActionType>::start()
     }
     else
     {
-        Serial.println("PeriodicAction task already started.");
+        Serial.printf("PeriodicAction task already started. %x is running.\n", _taskHandle);
     }
 }
 
@@ -84,10 +95,9 @@ void PeriodicAction<ActionType>::taskFunction(void *parameters)
 
     periodicAction->_continueAction.store(false); // Ensure the action is marked as stopped
 
-    Serial.println("PeriodicAction Task self-deleting.");
-    vTaskDelay(pdMS_TO_TICKS(100));
-
+    Serial.printf("PeriodicAction Task self-deleting %x...\n", periodicAction->_taskHandle);
     periodicAction->_taskHandle = nullptr;
+    vTaskDelay(pdMS_TO_TICKS(1000));
     vTaskDelete(nullptr);
 }
 
