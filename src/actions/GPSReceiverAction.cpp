@@ -81,8 +81,8 @@ void GPSReceiverAction::processLocationUpdate(GPSReceiver::GPSData gpsData)
             _periodicMotorAction_frog_short->stop();
             _periodicMotorAction_pigeon_short->stop();
 
-            while (_soundButtonAction_frog->isActive() || _soundButtonAction_pigeon->isActive() || 
-                   _periodicVibratingMotorAction_short->isActive() || 
+            while (_soundButtonAction_frog->isActive() || _soundButtonAction_pigeon->isActive() ||
+                   _periodicVibratingMotorAction_short->isActive() ||
                    _periodicMotorAction_frog_short->isActive() || _periodicMotorAction_pigeon_short->isActive())
                 vTaskDelay(pdMS_TO_TICKS(100));
 
@@ -123,10 +123,12 @@ void GPSReceiverAction::processLocationUpdate(GPSReceiver::GPSData gpsData)
             if (currentZone == SpeciesZone::Zone::SPECIES_FROG_ZONE)
             {
                 _soundButtonAction_frog->start();
+                _periodicMotorAction_frog_long->start();
             }
             else if (currentZone == SpeciesZone::Zone::SPECIES_PIGEON_ZONE)
             {
                 _soundButtonAction_pigeon->start();
+                _periodicMotorAction_pigeon_long->start();
             }
             else
             {
@@ -135,19 +137,38 @@ void GPSReceiverAction::processLocationUpdate(GPSReceiver::GPSData gpsData)
                 _neoPixel.setColor(NeoPixel::StateColor::WARN);
             }
 
-            Serial.println("Starting periodic vibrating motor action for 5 seconds.");
             _periodicVibratingMotorAction_long->start();
-            Serial.println("Periodic vibrating motor action for 5 seconds started.");
+            Serial.println("Periodic vibrating motor long action started.");
         }
         else
         {
             Serial.printf("Still in %s zone.\n", (currentZone == SpeciesZone::Zone::SPECIES_FROG_ZONE) ? "Frog" : "Pigeon");
-            if (!_periodicVibratingMotorAction_long->isActive() && !_periodicVibratingMotorAction_short->isActive())
+            if (!_periodicVibratingMotorAction_long->isActive() && !_periodicVibratingMotorAction_short->isActive() &&
+                !_periodicMotorAction_frog_long->isActive() && !_periodicMotorAction_pigeon_long->isActive())
             {
 
-                Serial.println("Starting periodic vibrating motor action for 2 seconds.");
+                Serial.println("Starting periodic short motor actions.");
+                if (currentZone == SpeciesZone::Zone::SPECIES_FROG_ZONE)
+                {
+                    _periodicMotorAction_frog_short->start();
+                }
+                else if (currentZone == SpeciesZone::Zone::SPECIES_PIGEON_ZONE)
+                {
+                    _periodicMotorAction_pigeon_short->start();
+                }
+                else
+                {
+                    Serial.println("Species Zone Status INVALID - Proximity check returned unexpected value.");
+                    _periodicNeopixelAction->stop();
+                    _neoPixel.setColor(NeoPixel::StateColor::WARN);
+                }
+                Serial.println("Periodic short motor actions started.");
+
                 _periodicVibratingMotorAction_short->start();
-                Serial.println("Periodic vibrating motor action for 2 seconds started.");
+            }
+            else
+            {
+                Serial.println("Waiting for long motor actions to stop....");
             }
         }
         break;
