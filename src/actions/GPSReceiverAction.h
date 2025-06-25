@@ -26,11 +26,13 @@ public:
                                                                                                          ApplicationDevices::getInstance().getMotorPigeon())),
                           _periodicMotorAction_pigeon_short(std::make_unique<PeriodicAction<MotorAction>>(60000, UINT32_MAX, 2,
                                                                                                           ApplicationDevices::getInstance().getMotorPigeon())),
-                          _periodicVibratingMotorAction_long(std::make_unique<PeriodicAction<VibratingMotorAction>>(60000, 1, 5000, 2500,
-                                                                                                                 ApplicationDevices::getInstance().getVibratingMotor())),
-                          _periodicVibratingMotorAction_short(std::make_unique<PeriodicAction<VibratingMotorAction>>(60000, UINT32_MAX, 3000, 500,
-                                                                                                                 ApplicationDevices::getInstance().getVibratingMotor())),
-                          _neoPixel(ApplicationDevices::getInstance().getNeoPixel()),
+                          _periodicVibratingMotorAction_long(std::make_unique<PeriodicAction<VibratingMotorAction>>(60000, 1, 5000, 5000,
+                                                                                                                    ApplicationDevices::getInstance().getVibratingMotor())),
+                          _periodicVibratingMotorAction_frog(std::make_unique<PeriodicAction<VibratingMotorAction>>(60000, UINT32_MAX, 3000, 500,
+                                                                                                                          ApplicationDevices::getInstance().getVibratingMotor())),
+                            _periodicVibratingMotorAction_pigeon(std::make_unique<PeriodicAction<VibratingMotorAction>>(60000, UINT32_MAX, 3000, 1000,
+                                                                                                                                ApplicationDevices::getInstance().getVibratingMotor())),
+                                                                                                                          _neoPixel(ApplicationDevices::getInstance().getNeoPixel()),
                           _gpsReceiver(ApplicationDevices::getInstance().getGpsReceiver())
 
     {
@@ -68,7 +70,8 @@ private:
     std::unique_ptr<SoundButtonAction> _soundButtonAction_pigeon;
 
     std::unique_ptr<PeriodicAction<VibratingMotorAction>> _periodicVibratingMotorAction_long;
-    std::unique_ptr<PeriodicAction<VibratingMotorAction>> _periodicVibratingMotorAction_short;
+    std::unique_ptr<PeriodicAction<VibratingMotorAction>> _periodicVibratingMotorAction_frog;
+    std::unique_ptr<PeriodicAction<VibratingMotorAction>> _periodicVibratingMotorAction_pigeon;
 
     std::unique_ptr<PeriodicAction<MotorAction>> _periodicMotorAction_frog_long;
     std::unique_ptr<PeriodicAction<MotorAction>> _periodicMotorAction_frog_short;

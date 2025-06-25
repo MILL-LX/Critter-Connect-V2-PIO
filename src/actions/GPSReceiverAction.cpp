@@ -78,19 +78,27 @@ void GPSReceiverAction::processLocationUpdate(GPSReceiver::GPSData gpsData)
 
             _soundButtonAction_frog->stop();
             _soundButtonAction_pigeon->stop();
-            _periodicVibratingMotorAction_short->stop();
+            _periodicVibratingMotorAction_frog->stop();
+            _periodicVibratingMotorAction_pigeon->stop();
             _periodicMotorAction_frog_short->stop();
             _periodicMotorAction_pigeon_short->stop();
 
             while (_soundButtonAction_frog->isActive() || _soundButtonAction_pigeon->isActive() ||
-                   _periodicVibratingMotorAction_short->isActive() ||
+                   _periodicVibratingMotorAction_frog->isActive() || _periodicVibratingMotorAction_pigeon->isActive() ||
                    _periodicMotorAction_frog_short->isActive() || _periodicMotorAction_pigeon_short->isActive())
+            {
+                Serial.println("Waiting for all short periodic actions to stop...");
                 vTaskDelay(pdMS_TO_TICKS(100));
+            }
 
             _neoPixel.setColor(NeoPixel::StateColor::OFF);
             _periodicNeopixelAction->start();
 
-            if (_previousZone != SpeciesZone::Zone::UNKNOWN_ZONE)
+            if (_previousZone == SpeciesZone::Zone::UNKNOWN_ZONE)
+            {
+                Serial.println("Skipping motor actions when application first starts...");
+            }
+            else
             {
                 Serial.println("Left a species zone...");
 
@@ -99,10 +107,6 @@ void GPSReceiverAction::processLocationUpdate(GPSReceiver::GPSData gpsData)
                 _periodicMotorAction_frog_long->start();
                 _periodicMotorAction_pigeon_long->start();
                 Serial.println("Long periodic motor actions started.");
-            }
-            else
-            {
-                Serial.println("Skipping long motor actions when application first starts...");
             }
         }
         else
@@ -121,55 +125,23 @@ void GPSReceiverAction::processLocationUpdate(GPSReceiver::GPSData gpsData)
                 vTaskDelay(pdMS_TO_TICKS(100));
             _neoPixel.setColor(NeoPixel::StateColor::OK);
 
+            Serial.println("Starting periodic motor actions.");
             if (currentZone == SpeciesZone::Zone::SPECIES_FROG_ZONE)
             {
                 _soundButtonAction_frog->start();
-                _periodicMotorAction_frog_long->start();
+                _periodicMotorAction_frog_short->start();
+                _periodicVibratingMotorAction_frog->start();
             }
             else if (currentZone == SpeciesZone::Zone::SPECIES_PIGEON_ZONE)
             {
                 _soundButtonAction_pigeon->start();
-                _periodicMotorAction_pigeon_long->start();
+                _periodicMotorAction_pigeon_short->start();
+                _periodicVibratingMotorAction_frog->start();
             }
-            else
-            {
-                Serial.println("Species Zone Status INVALID - Proximity check returned unexpected value.");
-                _periodicNeopixelAction->stop();
-                _neoPixel.setColor(NeoPixel::StateColor::WARN);
-            }
-
-            _periodicVibratingMotorAction_short->start();
-            Serial.println("Periodic vibrating short motor action started.");
         }
         else
         {
             Serial.printf("Still in %s zone.\n", (currentZone == SpeciesZone::Zone::SPECIES_FROG_ZONE) ? "Frog" : "Pigeon");
-            if (!_periodicVibratingMotorAction_short->isActive() &&
-                !_periodicMotorAction_frog_long->isActive() && !_periodicMotorAction_pigeon_long->isActive())
-            {
-
-                Serial.println("Starting periodic short motor actions.");
-                if (currentZone == SpeciesZone::Zone::SPECIES_FROG_ZONE)
-                {
-                    _periodicMotorAction_frog_short->start();
-                }
-                else if (currentZone == SpeciesZone::Zone::SPECIES_PIGEON_ZONE)
-                {
-                    _periodicMotorAction_pigeon_short->start();
-                }
-                else
-                {
-                    Serial.println("Species Zone Status INVALID - Proximity check returned unexpected value.");
-                    _periodicNeopixelAction->stop();
-                    _neoPixel.setColor(NeoPixel::StateColor::WARN);
-                }
-                Serial.println("Periodic short motor actions started.");
-                _periodicVibratingMotorAction_short->start();
-            }
-            else
-            {
-                Serial.println("Waiting for long motor actions to stop....");
-            }
         }
         break;
 
