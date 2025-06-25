@@ -6,13 +6,18 @@
 SerialUART *defaultSerial = &Serial1;
 TinyGPSPlus gps;
 
+TickType_t simulation_tick_offset = 0;
 void GPSReceiver::update()
 {
     // MODEBUG If using simulated data, override the real GPS data
     bool useSimulatedData = true; // Set to true to use mock data for testing
     if (useSimulatedData)
     {
-        _data = simulatedGpsData(_data);
+        if (simulation_tick_offset == 0)
+        {
+            simulation_tick_offset = xTaskGetTickCount(); // Initialize the offset only once
+        }
+        _data = simulatedGpsData(_data, simulation_tick_offset);
         return;
     }
 
@@ -104,7 +109,7 @@ void GPSReceiver::debugDumpGPSData()
     Serial.println("--- End GPS Data Dump ---");
 }
 
-GPSReceiver::GPSData GPSReceiver::simulatedGpsData(GPSReceiver::GPSData gpsData)
+GPSReceiver::GPSData GPSReceiver::simulatedGpsData(GPSReceiver::GPSData gpsData, TickType_t simulation_tick_offset)
 {
     GPSReceiver::GPSData mockGgpsData = gpsData;
 
@@ -112,38 +117,40 @@ GPSReceiver::GPSData GPSReceiver::simulatedGpsData(GPSReceiver::GPSData gpsData)
     TickType_t ticks = xTaskGetTickCount();
     // Convert ticks to seconds (configTICK_RATE_HZ is ticks per second)
     uint32_t seconds = ticks / configTICK_RATE_HZ;
+    uint32_t simulation_seconds_offset = simulation_tick_offset / configTICK_RATE_HZ;
 
-    if (seconds < 60) // spend a minute in a non-species zone
+    Serial.printf("Simulated GPS Data seconds offset %lu\n", simulation_seconds_offset);
+    if (seconds < (simulation_seconds_offset + 60)) // spend a minute in a non-species zone
     {
         Serial.println("Simulating location in non-species zone for testing purposes.");
         mockGgpsData.lat = 1.0;
         mockGgpsData.lon = 1.0;
     }
-    else if (seconds < 200) // spend a little over 2 minutes in a species 1 zone
+    else if (seconds < (simulation_seconds_offset + 200)) // spend a little over 2 minutes in a species 1 zone
     {
         Serial.println("Simulating location in species zone 1 for testing purposes.");
         mockGgpsData.lat = 32.6585412143;
         mockGgpsData.lon = -16.8685332416;
     }
-    else if (seconds < 260) // spend a minute in a non-species zone
+    else if (seconds < (simulation_seconds_offset + 260)) // spend a minute in a non-species zone
     {
         Serial.println("Simulating location in non-species zone for testing purposes.");
         mockGgpsData.lat = 1.0;
         mockGgpsData.lon = 1.0;
     }
-    else if (seconds < 400) // spend a little over 2 minutes in a species 2 zone
+    else if (seconds < (simulation_seconds_offset + 400)) // spend a little over 2 minutes in a species 2 zone
     {
         Serial.println("Simulating location in species zone 2 for testing purposes.");
         mockGgpsData.lat = 32.662040384700205;
         mockGgpsData.lon = -16.868402420468072;
     }
-    else if (seconds < 460) // spend a minute in a non-species zone
+    else if (seconds < (simulation_seconds_offset + 460)) // spend a minute in a non-species zone
     {
         Serial.println("Simulating location in non-species zone for testing purposes.");
         mockGgpsData.lat = 1.0;
         mockGgpsData.lon = 1.0;
     }
-    else if (seconds < 600) // spend a little over 2 minutes in a species 1 zone
+    else if (seconds < (simulation_seconds_offset + 600)) // spend a little over 2 minutes in a species 1 zone
     {
         Serial.println("Simulating location in species zone 1 for testing purposes.");
         mockGgpsData.lat = 32.6585412143;

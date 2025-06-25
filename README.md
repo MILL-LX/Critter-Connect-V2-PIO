@@ -197,6 +197,11 @@ playMode = (const char*)str[10];
 
 ## TODO
 
+- Change vibration pattern
+  - long pulse when entering non-species zone
+  - short pulses when entering frog
+  - longer pulses when entering pigeon
+
 - Propagate stop from PeriodicAction to member actions
 - Update this document to reflect the final selection of devices and libraries
 - Switch to auto pointers instead of deleting members in class destructors

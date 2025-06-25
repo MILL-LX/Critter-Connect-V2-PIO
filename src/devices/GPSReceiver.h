@@ -1,6 +1,7 @@
 #pragma once
 
 #include <Arduino.h> // Includes HardwareSerial.h or similar which defines SerialUART
+#include "FreeRTOS.h"
 
 extern SerialUART *defaultSerial;
 const int defaultBaudRate = 9600;
@@ -57,5 +58,5 @@ private:
 
     void update();
 
-    GPSReceiver::GPSData simulatedGpsData(GPSReceiver::GPSData gpsData);
+    GPSReceiver::GPSData simulatedGpsData(GPSReceiver::GPSData gpsData, TickType_t simulation_tick_offset = 0);
 };
