@@ -21,11 +21,12 @@ void startupTest()
   Serial.println("Starting Startup Tests...");
   neoPixel.setColor(NeoPixel::StateColor::OK);
 
+  // MODEBUG Disable this annoying sound. The other sounds prove the speaker works.
   // Test Tone
-  SoundPlayer &soundPlayer = ApplicationDevices::getInstance().getSoundPlayer();
-  soundPlayer.playSound(SoundPlayer::Sound::TEST_TONE);
-  while (soundPlayer.isPlaying())
-    vTaskDelay(pdMS_TO_TICKS(100));
+  // SoundPlayer &soundPlayer = ApplicationDevices::getInstance().getSoundPlayer();
+  // soundPlayer.playSound(SoundPlayer::Sound::TEST_TONE);
+  // while (soundPlayer.isPlaying())
+  //   vTaskDelay(pdMS_TO_TICKS(100));
 
   // Vibrating Motor Test
   VibratingMotor &vibratingMotor = ApplicationDevices::getInstance().getVibratingMotor();

@@ -15,6 +15,7 @@ void setup()
 
   Serial.println("Setup complete. Running startup tests...");
   startupTest();
+}
 
 void loop()
 {
