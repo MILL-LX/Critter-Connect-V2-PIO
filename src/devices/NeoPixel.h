@@ -17,6 +17,7 @@ public:
         OFF = 0x000000,
         TEST = 0x00ff00,
         WARN = 0xff0000,
+        START = 0x0000ff,
         OK = 0xffffff
     };
 
