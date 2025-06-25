@@ -19,6 +19,7 @@ void GPSReceiverAction::performAction()
     else
     {
         Serial.println("GPSReceiverAction starting...");
+        _neoPixel.setColor(NeoPixel::StateColor::OK);
         setActive(true);
     }
 
