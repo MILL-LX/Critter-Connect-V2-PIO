@@ -8,8 +8,9 @@
 class VibratingMotorAction
 {
 public:
-    VibratingMotorAction(uint32_t durationMillis, VibratingMotor vibratingMotor) : _durationMillis(durationMillis),
-                                                                                   _vibratingMotor(vibratingMotor)
+    VibratingMotorAction(uint32_t durationMillis, uint32_t pulseDurationMillis, VibratingMotor vibratingMotor) : _durationMillis(durationMillis),
+                                                                                                                 _pulseDurationMillis(pulseDurationMillis),
+                                                                                                                 _vibratingMotor(vibratingMotor)
     {
     }
 
@@ -18,6 +19,7 @@ public:
 
 private:
     uint32_t _durationMillis;
+    uint32_t _pulseDurationMillis;
     VibratingMotor _vibratingMotor;
     std::atomic<bool> _isActive{false};
 

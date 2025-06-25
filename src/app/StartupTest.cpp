@@ -29,7 +29,7 @@ void startupTest()
 
   // Vibrating Motor Test
   VibratingMotor &vibratingMotor = ApplicationDevices::getInstance().getVibratingMotor();
-  PeriodicAction<VibratingMotorAction> periodicVibratingMotorAction(1000, 10, 500, vibratingMotor);
+  PeriodicAction<VibratingMotorAction> periodicVibratingMotorAction(1000, 10, 500, 500, vibratingMotor);
   periodicVibratingMotorAction.start();
   while (periodicVibratingMotorAction.isActive())
     vTaskDelay(pdMS_TO_TICKS(100));
