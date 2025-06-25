@@ -21,9 +21,10 @@ void startupTest()
   Serial.println("Starting Startup Tests...");
   neoPixel.setColor(NeoPixel::StateColor::OK);
 
+  SoundPlayer &soundPlayer = ApplicationDevices::getInstance().getSoundPlayer();
+
   // MODEBUG Disable this annoying sound. The other sounds prove the speaker works.
   // Test Tone
-  // SoundPlayer &soundPlayer = ApplicationDevices::getInstance().getSoundPlayer();
   // soundPlayer.playSound(SoundPlayer::Sound::TEST_TONE);
   // while (soundPlayer.isPlaying())
   //   vTaskDelay(pdMS_TO_TICKS(100));
