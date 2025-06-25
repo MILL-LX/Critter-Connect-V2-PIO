@@ -120,37 +120,37 @@ GPSReceiver::GPSData GPSReceiver::simulatedGpsData(GPSReceiver::GPSData gpsData,
     uint32_t simulation_seconds_offset = simulation_tick_offset / configTICK_RATE_HZ;
 
     Serial.printf("Simulated GPS Data seconds offset %lu\n", simulation_seconds_offset);
-    if (seconds < (simulation_seconds_offset + 60)) // spend a minute in a non-species zone
+    if (seconds < (simulation_seconds_offset + 30)) // spend a 30 seconds in a non-species zone
     {
         Serial.println("Simulating location in non-species zone for testing purposes.");
         mockGgpsData.lat = 1.0;
         mockGgpsData.lon = 1.0;
     }
-    else if (seconds < (simulation_seconds_offset + 200)) // spend a little over 2 minutes in a species 1 zone
+    else if (seconds < (simulation_seconds_offset + 120)) // spend 90 seconds in a species 1 zone
     {
         Serial.println("Simulating location in species zone 1 for testing purposes.");
         mockGgpsData.lat = 32.6585412143;
         mockGgpsData.lon = -16.8685332416;
     }
-    else if (seconds < (simulation_seconds_offset + 260)) // spend a minute in a non-species zone
+    else if (seconds < (simulation_seconds_offset + 180)) // spend 30 seconds in a non-species zone
     {
         Serial.println("Simulating location in non-species zone for testing purposes.");
         mockGgpsData.lat = 1.0;
         mockGgpsData.lon = 1.0;
     }
-    else if (seconds < (simulation_seconds_offset + 400)) // spend a little over 2 minutes in a species 2 zone
+    else if (seconds < (simulation_seconds_offset + 270)) // spend 90 seconds in a species 2 zone
     {
         Serial.println("Simulating location in species zone 2 for testing purposes.");
         mockGgpsData.lat = 32.662040384700205;
         mockGgpsData.lon = -16.868402420468072;
     }
-    else if (seconds < (simulation_seconds_offset + 460)) // spend a minute in a non-species zone
+    else if (seconds < (simulation_seconds_offset + 300)) // spend 30 seconds in a non-species zone
     {
         Serial.println("Simulating location in non-species zone for testing purposes.");
         mockGgpsData.lat = 1.0;
         mockGgpsData.lon = 1.0;
     }
-    else if (seconds < (simulation_seconds_offset + 600)) // spend a little over 2 minutes in a species 1 zone
+    else if (seconds < (simulation_seconds_offset + 390)) // spend 90 seconds in a species 1 zone
     {
         Serial.println("Simulating location in species zone 1 for testing purposes.");
         mockGgpsData.lat = 32.6585412143;
