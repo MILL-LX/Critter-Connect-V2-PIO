@@ -59,6 +59,24 @@ void GPSReceiverAction::performAction()
     Serial.println("GPSReceiverAction stopping...");
 }
 
+void GPSReceiverAction::stopAllActions()
+{
+    Serial.println("Stopping all periodic actions...");
+    _periodicNeopixelAction->stop();
+
+    _soundButtonAction_frog->stop();
+    _soundButtonAction_pigeon->stop();
+
+    _periodicVibratingMotorAction_long->stop();
+    _periodicVibratingMotorAction_frog->stop();
+    _periodicVibratingMotorAction_pigeon->stop();
+
+    _periodicMotorAction_frog_long->stop();
+    _periodicMotorAction_frog_short->stop();
+    _periodicMotorAction_pigeon_long->stop();
+    _periodicMotorAction_pigeon_short->stop();
+}
+
 void GPSReceiverAction::processLocationUpdate(GPSReceiver::GPSData gpsData)
 {
     // Ensure gpsData.locationValid is true before using lat/lon
@@ -76,25 +94,7 @@ void GPSReceiverAction::processLocationUpdate(GPSReceiver::GPSData gpsData)
         {
             Serial.println("Entering non-species zone.");
 
-            _soundButtonAction_frog->stop();
-            _soundButtonAction_pigeon->stop();
-            _periodicVibratingMotorAction_frog->stop();
-            _periodicVibratingMotorAction_pigeon->stop();
-            _periodicMotorAction_frog_short->stop();
-            _periodicMotorAction_pigeon_short->stop();
-
-            // while (_soundButtonAction_frog->isActive() || _soundButtonAction_pigeon->isActive() ||
-            //        _periodicVibratingMotorAction_frog->isActive() || _periodicVibratingMotorAction_pigeon->isActive() ||
-            //        _periodicMotorAction_frog_short->isActive() || _periodicMotorAction_pigeon_short->isActive())
-            // {
-            //     Serial.println("Waiting for all short periodic actions to stop...");
-            //     vTaskDelay(pdMS_TO_TICKS(100));
-            // }
-
-            _periodicMotorAction_frog_long->stop();
-            _periodicMotorAction_pigeon_long->stop();
-
-            vTaskDelay(pdMS_TO_TICKS(2000));
+            stopAllActions();
 
             _neoPixel.setColor(NeoPixel::StateColor::OFF);
             _periodicNeopixelAction->start();
@@ -125,9 +125,8 @@ void GPSReceiverAction::processLocationUpdate(GPSReceiver::GPSData gpsData)
         {
             Serial.printf("Entering %s zone.\n", (currentZone == SpeciesZone::Zone::SPECIES_FROG_ZONE) ? "Frog" : "Pigeon");
 
-            _periodicNeopixelAction->stop();
-            while (_periodicNeopixelAction->isActive())
-                vTaskDelay(pdMS_TO_TICKS(100));
+            stopAllActions();
+
             _neoPixel.setColor(NeoPixel::StateColor::OK);
 
             Serial.println("Starting periodic motor actions.");
@@ -152,7 +151,7 @@ void GPSReceiverAction::processLocationUpdate(GPSReceiver::GPSData gpsData)
 
     default:
         Serial.println("Species Zone Status INVALID - Proximity check returned unexpected value.");
-        _periodicNeopixelAction->stop();
+        stopAllActions();
         _neoPixel.setColor(NeoPixel::StateColor::WARN);
         break;
     }

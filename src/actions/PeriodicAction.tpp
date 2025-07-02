@@ -18,13 +18,7 @@ void PeriodicAction<ActionType>::start()
 {
     if (_taskHandle != nullptr)
     {
-        Serial.printf("PeriodicAction task %x seems to be running, deleting explicitly...\n", _taskHandle);
-
-        vTaskDelete(_taskHandle);     // Delete the existing task
-        _taskHandle = nullptr;        // Reset the task handle
-        _continueAction.store(false); // Reset the continue action flag
-        vTaskDelay(pdMS_TO_TICKS(100)); // Wait for the task to be deleted
-        Serial.println("PeriodicAction task explicitly deleted.");
+        stop();
     }
 
     if (_taskHandle == nullptr)
@@ -64,6 +58,14 @@ template <typename ActionType>
 void PeriodicAction<ActionType>::stop()
 {
     _continueAction.store(false);
+    vTaskDelay(pdMS_TO_TICKS(500));
+    Serial.println("Explicitly stopping PeriodicAction task...");
+    if (_taskHandle != nullptr)
+    {
+        vTaskDelete(_taskHandle);
+        _taskHandle = nullptr;
+        vTaskDelay(pdMS_TO_TICKS(500));
+    }
 }
 
 template <typename ActionType>

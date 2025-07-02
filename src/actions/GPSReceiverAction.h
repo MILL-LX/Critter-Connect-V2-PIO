@@ -29,10 +29,10 @@ public:
                           _periodicVibratingMotorAction_long(std::make_unique<PeriodicAction<VibratingMotorAction>>(60000, 3, 10000, 10000,
                                                                                                                     ApplicationDevices::getInstance().getVibratingMotor())),
                           _periodicVibratingMotorAction_frog(std::make_unique<PeriodicAction<VibratingMotorAction>>(60000, UINT32_MAX, 3000, 500,
-                                                                                                                          ApplicationDevices::getInstance().getVibratingMotor())),
-                            _periodicVibratingMotorAction_pigeon(std::make_unique<PeriodicAction<VibratingMotorAction>>(60000, UINT32_MAX, 3000, 2000,
-                                                                                                                                ApplicationDevices::getInstance().getVibratingMotor())),
-                                                                                                                          _neoPixel(ApplicationDevices::getInstance().getNeoPixel()),
+                                                                                                                    ApplicationDevices::getInstance().getVibratingMotor())),
+                          _periodicVibratingMotorAction_pigeon(std::make_unique<PeriodicAction<VibratingMotorAction>>(60000, UINT32_MAX, 3000, 2000,
+                                                                                                                      ApplicationDevices::getInstance().getVibratingMotor())),
+                          _neoPixel(ApplicationDevices::getInstance().getNeoPixel()),
                           _gpsReceiver(ApplicationDevices::getInstance().getGpsReceiver())
 
     {
@@ -83,4 +83,5 @@ private:
 
     void processLocationUpdate(GPSReceiver::GPSData gpsData);
     void setActive(bool value);
+    void stopAllActions();
 };
