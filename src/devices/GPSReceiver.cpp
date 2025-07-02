@@ -10,7 +10,7 @@ TickType_t simulation_tick_offset = 0;
 void GPSReceiver::update()
 {
     // MODEBUG If using simulated data, override the real GPS data
-    bool useSimulatedData = true; // Set to true to use mock data for testing
+    bool useSimulatedData = false; // Set to true to use mock data for testing
     if (useSimulatedData)
     {
         if (simulation_tick_offset == 0)
