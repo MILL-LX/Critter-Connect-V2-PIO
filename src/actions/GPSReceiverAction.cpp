@@ -83,13 +83,18 @@ void GPSReceiverAction::processLocationUpdate(GPSReceiver::GPSData gpsData)
             _periodicMotorAction_frog_short->stop();
             _periodicMotorAction_pigeon_short->stop();
 
-            while (_soundButtonAction_frog->isActive() || _soundButtonAction_pigeon->isActive() ||
-                   _periodicVibratingMotorAction_frog->isActive() || _periodicVibratingMotorAction_pigeon->isActive() ||
-                   _periodicMotorAction_frog_short->isActive() || _periodicMotorAction_pigeon_short->isActive())
-            {
-                Serial.println("Waiting for all short periodic actions to stop...");
-                vTaskDelay(pdMS_TO_TICKS(100));
-            }
+            // while (_soundButtonAction_frog->isActive() || _soundButtonAction_pigeon->isActive() ||
+            //        _periodicVibratingMotorAction_frog->isActive() || _periodicVibratingMotorAction_pigeon->isActive() ||
+            //        _periodicMotorAction_frog_short->isActive() || _periodicMotorAction_pigeon_short->isActive())
+            // {
+            //     Serial.println("Waiting for all short periodic actions to stop...");
+            //     vTaskDelay(pdMS_TO_TICKS(100));
+            // }
+
+            _periodicMotorAction_frog_long->stop();
+            _periodicMotorAction_pigeon_long->stop();
+
+            vTaskDelay(pdMS_TO_TICKS(2000));
 
             _neoPixel.setColor(NeoPixel::StateColor::OFF);
             _periodicNeopixelAction->start();
