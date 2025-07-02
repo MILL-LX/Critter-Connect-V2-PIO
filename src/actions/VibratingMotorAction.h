@@ -16,12 +16,11 @@ public:
 
     void performAction();
     bool isActive();
+    void setActive(bool value);
 
 private:
     uint32_t _durationMillis;
     uint32_t _pulseDurationMillis;
     VibratingMotor _vibratingMotor;
     std::atomic<bool> _isActive{false};
-
-    void setActive(bool value);
 };

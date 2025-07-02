@@ -12,6 +12,7 @@ public:
     void start();
     void stop();
     bool isActive();
+    void setActive(bool value);
 
 private:
     std::atomic<bool> _shouldRun{false};
@@ -23,7 +24,6 @@ private:
 
     void setShouldRun(bool value);
     bool shouldRun();
-    void setActive(bool value);
 
     static void taskFunction(void *parameters);
     TaskHandle_t _taskHandle = nullptr;

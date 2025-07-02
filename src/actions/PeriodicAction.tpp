@@ -58,6 +58,8 @@ template <typename ActionType>
 void PeriodicAction<ActionType>::stop()
 {
     _continueAction.store(false);
+    _actionInstance.setActive(false);
+
     vTaskDelay(pdMS_TO_TICKS(500));
     Serial.println("Explicitly stopping PeriodicAction task...");
     if (_taskHandle != nullptr)
@@ -66,6 +68,7 @@ void PeriodicAction<ActionType>::stop()
         _taskHandle = nullptr;
         vTaskDelay(pdMS_TO_TICKS(500));
     }
+    Serial.println("PeriodicAction task stopped...");
 }
 
 template <typename ActionType>
