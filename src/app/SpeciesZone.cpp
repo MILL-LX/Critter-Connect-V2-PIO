@@ -4,7 +4,7 @@
 #include "SpeciesCoordinates.h"
 
 const float earthRadius = 6371000;
-const float zoneRadius = 35.0; // Radius in meters for species zones
+const float zoneRadius = 27.0; // Radius in meters for species zones
 
 float toRadians(float degree)
 {
