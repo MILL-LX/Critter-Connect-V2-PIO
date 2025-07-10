@@ -9,7 +9,7 @@
 # The order of the species is determined by the order of the input files.
 # The output will be printed to standard output, which can be redirected to a file.
 #
-# Examplefor usage this project: ./geojson_to_c.py Frog_data_FINAL.geojson Pigeon_data_FINAL.geojson > ../../src/app/SpeciesCoordinates.cpp
+# Example usage for this project: ./geojson_to_c.py Frog_data_FINAL.geojson Pigeon_data_FINAL.geojson > ../../src/app/SpeciesCoordinates.cpp
 ###########################################################################################################################################
 
 import json
