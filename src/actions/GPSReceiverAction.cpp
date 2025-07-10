@@ -8,7 +8,7 @@
 
 #include "devices/ApplicationDevices.h"
 
-const ulong gpsCheckIntervalMillis = 15000;
+const ulong gpsCheckIntervalMillis = 3000;
 void GPSReceiverAction::performAction()
 {
     if (isActive())
